@@ -1,0 +1,39 @@
+service myFlow {
+	FINALLY{
+		INVOKE pub.math:addInts {
+		    comment : "Adds two numbers"
+		    input {
+			    a -> num1;
+			    b -> num2;
+		 	 }
+		 	output {
+		    	result -> sum;
+		  	}
+	  	};
+	}
+	TRY {
+		INVOKE pub.math:addInts {
+		    comment : "Adds two numbers"
+		    input {
+			    a -> num1;
+			    b -> num2;
+		 	 }
+		 	output {
+		    	result -> sum;
+		  	}
+  		};
+	}
+	CATCH {
+		INVOKE pub.math:addInts {
+		    comment : "Adds two numbers"
+		    input {
+			    a -> num1;
+			    b -> num2;
+		 	 }
+		 	output {
+		    	result -> sum;
+		  	}
+	  	};
+	}
+	
+}
