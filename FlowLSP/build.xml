@@ -43,7 +43,7 @@
 		</java>
 	</target>
 
-	<target depends="clean,init,generateCode" name="build">
+	<target depends="clean,generateCode,init" name="build">
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
 			<src path="src"/>
 			<src path="target/generated-sources/antlr4/src"/>
