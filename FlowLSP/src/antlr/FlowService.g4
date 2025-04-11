@@ -30,14 +30,14 @@ qualifiedServiceName : ID ('.' ID)* ':' ID ;
 // MAP step
 
 mapStep
-	: 'MAP' '{' mappingEntry*? transformStep*? dropStep*?'}' ';'
+	: 'MAP' ('{' (mappingSetEntry|mappingCopyEntry|transformStep|dropStep)*?'}')? ';'
 	;
 	
 transformStep
     : 'TRANSFORM' qualifiedServiceName ('{' mappingBlock*? '}')? ';'
     ;
 dropStep
-    : 'DROP' ID ';'
+    : 'drop' ID ';'
     ;
 
 // INVOKE Step
@@ -46,12 +46,16 @@ invokeStep
     ;
 
 mappingBlock
-    : 'input'  '{' mappingEntry* '}'
-    | 'output' '{' mappingEntry* '}'
+    : 'input'  '{' (mappingCopyEntry|mappingSetEntry)*? '}'
+    | 'output' '{' (mappingCopyEntry|mappingSetEntry)*? '}'
     ;
 
-mappingEntry
-    : ID '->' ID ';'
+mappingCopyEntry
+    : 'copy' ID '->' ID ';'
+    ;
+    
+mappingSetEntry
+    : 'set' ID '=' INT ';'
     ;
 
 invokeProperty
@@ -138,7 +142,7 @@ repeatProperty
 // EXIT Step
 
 exitStep
-    : 'EXIT' ('{' exitProperty*? '}')? 
+    : 'EXIT' ('{' exitProperty*? '}')? ';'
     ;
     
 exitProperty

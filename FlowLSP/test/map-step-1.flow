@@ -1,15 +1,8 @@
 service myFlow {
   MAP{
-  	x->y;
-  	TRANSFORM pub.strings:append{
-  		input {
-		    a -> num1;
-		    b -> num2;
-	 	 }
-	 	output {
-	    	result -> sum;
-	  	}
-  	};
-  	DROP X;
+  	copy x -> y;
+  	drop X;
   };
+  
+  MAP;
 }

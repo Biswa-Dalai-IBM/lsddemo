@@ -2,14 +2,13 @@ service myFlow {
   INVOKE pub.math:addInts {
 	    comment : "Adds two numbers"
 	    input {
-		    a -> num1;
-		    b -> num2;
+		    copy a -> num1;
+		    copy b -> num2;
 	 	 }
 	 	output {
-	    	result -> sum;
+	    	copy result -> sum;
 	  	}
   	};
-  MAP;
   LOOP {
   	comment : "Adds two numbers"
   	inputArray : "x/y"
@@ -18,24 +17,23 @@ service myFlow {
     INVOKE pub.math:addInts {
 	    validateOutput : false
 	    input {
-		    a -> num1;
-		    b -> num2;
+		    copy a -> num1;
+		    copy b -> num2;
 	 	 }
 	 	output {
-	    	result -> sum;
+	    	copy result -> sum;
 	  	}
   	};
-    MAP;
   }
   SEQUENCE {
-  	exitOn : DONE
+  	exitOn : "DONE"
     INVOKE pub.math:addInts {
 	    input {
-		    a -> num1;
-		    b -> num2;
+		    copy a -> num1;
+		    copy b -> num2;
 	 	 }
 	 	output {
-	    	result -> sum;
+	    	copy result -> sum;
 	  	}
   	};
   	INVOKE pub.math:addInts;
