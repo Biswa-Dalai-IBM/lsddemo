@@ -2,7 +2,7 @@ package expressions.map;
 
 import expressions.FlowElementExpression;
 
-public class FlowMapDropExpression extends FlowElementExpression{
+public class FlowMapDropExpression extends FlowMapExpression{
 	
 	String fieldName;
 	

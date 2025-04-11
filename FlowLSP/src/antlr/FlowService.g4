@@ -37,7 +37,7 @@ transformStep
     : 'TRANSFORM' qualifiedServiceName ('{' mappingBlock*? '}')? ';'
     ;
 dropStep
-    : 'drop' ID ';'
+    : 'drop' ID ('/' ID)*  ';'
     ;
 
 // INVOKE Step
@@ -51,11 +51,11 @@ mappingBlock
     ;
 
 mappingCopyEntry
-    : 'copy' ID '->' ID ';'
+    : 'copy' ID ('/' ID)*  '->' ID ('/' ID)*  ';'
     ;
     
 mappingSetEntry
-    : 'set' ID '=' INT ';'
+    : 'set' ID ('/' ID)*  '=' INT ';'
     ;
 
 invokeProperty

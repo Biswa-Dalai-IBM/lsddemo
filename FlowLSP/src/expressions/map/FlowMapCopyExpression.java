@@ -1,8 +1,6 @@
 package expressions.map;
 
-import expressions.FlowElementExpression;
-
-public class FlowMapCopyExpression extends FlowElementExpression{
+public class FlowMapCopyExpression extends FlowMapExpression{
 	
 	String from;
 	String to;

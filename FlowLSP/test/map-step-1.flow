@@ -1,6 +1,8 @@
 service myFlow {
   MAP{
-  	copy x -> y;
+  	copy x -> y/z;
+  	copy p/q/r -> a/b/c;
+  	set k/m/n = 5;
   	drop X;
   };
   

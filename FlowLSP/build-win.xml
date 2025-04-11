@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="FlowLSP">
+	<property environment="env"/>
+	<path id="FlowLSP.classpath">
+		<pathelement location="bin"/>
+		<pathelement location="lib/antlr-4.13.2-complete.jar"/>
+	</path>
+	<target name="init">
+		<mkdir dir="bin"/>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="target/generated-sources/antlr4">
+				<exclude name="**/*.launch"/>
+				<exclude name="**/*.java"/>
+				<exclude name="antlr/src/"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="bin"/>
+		<delete dir="target"/>
+	</target>
+	
+	<target name="generateCode">
+		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
+			<arg value="-visitor"/>
+			<arg value="src/antlr/FlowService.g4"/>
+			<arg value="-o"/>
+			<arg value="target/generated-sources/antlr4/src/antlr"/>
+			<arg value="-encoding"/>
+			<arg value="UTF-8"/>
+		</java>
+	</target>
+
+	<target depends="clean,generateCode,init" name="build">
+		<javac debug="true" destdir="bin" includeantruntime="false">
+			<src path="src"/>
+			<src path="target/generated-sources/antlr4"/>
+			<exclude name="antlr/src/"/>
+			<classpath refid="FlowLSP.classpath"/>
+		</javac>
+	</target>
+
+</project>
