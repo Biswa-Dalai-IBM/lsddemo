@@ -2,10 +2,6 @@
 
 <project basedir="." default="build" name="FlowLSP">
 	<property environment="env"/>
-	<property name="file_prompt" value="${file_prompt}"/>
-	<property name="debuglevel" value="source,lines,vars"/>
-	<property name="target" value="17"/>
-	<property name="source" value="17"/>
 	<path id="FlowLSP.classpath">
 		<pathelement location="bin"/>
 		<pathelement location="lib/antlr-4.13.2-complete.jar"/>
@@ -29,7 +25,7 @@
 	
 	<target name="clean">
 		<delete dir="bin"/>
-		<delete dir="target/generated-sources/antlr4/src"/>
+		<delete dir="target"/>
 	</target>
 	
 	<target name="generateCode">
@@ -44,10 +40,9 @@
 	</target>
 
 	<target depends="clean,generateCode,init" name="build">
-		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+		<javac debug="true" destdir="bin" includeantruntime="false">
 			<src path="src"/>
 			<src path="target/generated-sources/antlr4/src"/>
-			<exclude name="antlr/src/"/>
 			<classpath refid="FlowLSP.classpath"/>
 		</javac>
 	</target>

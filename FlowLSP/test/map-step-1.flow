@@ -3,6 +3,7 @@ service myFlow {
   	copy x -> y/z;
   	copy p/q/r -> a/b/c;
   	set k/m/n = 5;
+  	set k/m/n1 = "Hello";
   	drop X;
   };
   

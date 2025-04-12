@@ -30,7 +30,7 @@ qualifiedServiceName : ID ('.' ID)* ':' ID ;
 // MAP step
 
 mapStep
-	: 'MAP' ('{' (mappingSetEntry|mappingCopyEntry|transformStep|dropStep)*?'}')? ';'
+	: 'MAP' ('{' (stepProperty|mappingSetEntry|mappingCopyEntry|transformStep|dropStep)*?'}')? ';'
 	;
 	
 transformStep
@@ -55,9 +55,12 @@ mappingCopyEntry
     ;
     
 mappingSetEntry
-    : 'set' ID ('/' ID)*  '=' INT ';'
+    : 'set' ID ('/' ID)*  '=' value ';'
     ;
-
+value
+    : INT
+    | STRING_LITERAL
+    ;
 invokeProperty
     : 'validateInput' ':' BOOL
     | 'validateOutput' ':' BOOL
