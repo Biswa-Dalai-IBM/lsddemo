@@ -3,11 +3,11 @@ service myFlow {
 		INVOKE pub.math:addInts {
 		    comment : "Adds two numbers"
 		    input {
-			    a -> num1;
-			    b -> num2;
+			    copy a -> num1;
+			    copy b -> num2;
 		 	 }
 		 	output {
-		    	result -> sum;
+		    	copy result -> sum;
 		  	}
   		};
 	}
@@ -15,11 +15,11 @@ service myFlow {
 		INVOKE pub.math:addInts {
 		    comment : "Adds two numbers"
 		    input {
-			    a -> num1;
-			    b -> num2;
+			  	copy  a -> num1;
+			 	copy  b -> num2;
 		 	 }
 		 	output {
-		    	result -> sum;
+		    	copy result -> sum;
 		  	}
 	  	};
 	}
@@ -27,11 +27,11 @@ service myFlow {
 		INVOKE pub.math:addInts {
 		    comment : "Adds two numbers"
 		    input {
-			    a -> num1;
-			    b -> num2;
+			    copy a -> num1;
+			    copy b -> num2;
 		 	 }
 		 	output {
-		    	result -> sum;
+		    	copy result -> sum;
 		  	}
 	  	};
 	}

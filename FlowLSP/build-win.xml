@@ -5,6 +5,11 @@
 	<path id="FlowLSP.classpath">
 		<pathelement location="bin"/>
 		<pathelement location="lib/antlr-4.13.2-complete.jar"/>
+		<pathelement location="lib/ext/enttoolkit.jar"/>
+		<pathelement location="lib/ext/icu4j.jar"/>
+		<pathelement location="lib/glassfish/gf.jakarta.mail.jar"/>
+		<pathelement location="lib//wm-g11nutils.jar"/>
+		<pathelement location="lib/wm-isclient.jar"/>
 	</path>
 	<target name="init">
 		<mkdir dir="bin"/>
