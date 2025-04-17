@@ -8,5 +8,9 @@ public class FlowMapDropExpression extends FlowMapExpression{
 		super();
 		this.fieldName = fieldName;
 	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
 	
 }

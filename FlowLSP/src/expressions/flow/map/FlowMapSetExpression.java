@@ -2,6 +2,7 @@ package expressions.flow.map;
 
 public class FlowMapSetExpression extends FlowMapExpression{
 	
+
 	String fieldPath;
 	String value;
 	
@@ -11,4 +12,11 @@ public class FlowMapSetExpression extends FlowMapExpression{
 		this.value = value;
 	}
 	
+	public String getFieldPath() {
+		return fieldPath;
+	}
+	
+	public String getValue() {
+		return value;
+	}
 }

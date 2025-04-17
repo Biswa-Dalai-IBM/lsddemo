@@ -23,4 +23,11 @@ public class FlowContainerExpression extends FlowElementExpression{
 		properties.add(property);
 	}
 	
+	public List<FlowElementExpression> getExpressions() {
+		return expressions;
+	}
+
+	public List<FlowStepProperty> getProperties() {
+		return properties;
+	}
 }

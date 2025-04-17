@@ -7,10 +7,10 @@ import expressions.FlowElementExpression;
 import expressions.flow.FlowStepProperty;
 
 public class FlowMapElementExpression extends FlowElementExpression {
-	List<FlowMapExpression> expressions;
+	List<FlowElementExpression> expressions;
 	List<FlowStepProperty> properties;
 	public FlowMapElementExpression() {
-		expressions = new ArrayList<FlowMapExpression>();
+		expressions = new ArrayList<FlowElementExpression>();
 		properties = new ArrayList<FlowStepProperty>();
 	}
 
@@ -21,4 +21,14 @@ public class FlowMapElementExpression extends FlowElementExpression {
 	public void addProperty(FlowStepProperty property) {
 		properties.add(property);
 	}
+
+	public List<FlowElementExpression> getExpressions() {
+		return expressions;
+	}
+
+	public List<FlowStepProperty> getProperties() {
+		return properties;
+	}
+	
+	
 }

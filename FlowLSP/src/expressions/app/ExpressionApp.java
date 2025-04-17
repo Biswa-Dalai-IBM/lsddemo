@@ -24,6 +24,8 @@ public class ExpressionApp {
 			
 			AntlrToProgram program = new AntlrToProgram();
 			FlowProgram flowProgram = program.visit(antlrAST);
+			FlowGenerator flowGenerator = new FlowGenerator();
+			flowGenerator.generateFlow(flowProgram);
 			System.out.println(flowProgram);
 		}
 
