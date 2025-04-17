@@ -6,7 +6,25 @@ Bundle-Vendor: My Company
 Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: com.webmethods.flow; singleton:=true
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/antlr-generator-3.2.0-patch.jar,
+ .
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.xbase,
- org.eclipse.equinox.common;bundle-version="3.19.0"
+ org.eclipse.equinox.common;bundle-version="3.19.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.38.0",
+ org.eclipse.emf.common,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
+Export-Package: com.webmethods.flow.flowService.util,
+ com.webmethods.flow.serializer,
+ com.webmethods.flow.flowService,
+ com.webmethods.flow.generator,
+ com.webmethods.flow.parser.antlr,
+ com.webmethods.flow.services,
+ com.webmethods.flow.flowService.impl,
+ com.webmethods.flow.scoping,
+ com.webmethods.flow,
+ com.webmethods.flow.parser.antlr.internal,
+ com.webmethods.flow.validation
+Import-Package: org.apache.log4j

@@ -33,7 +33,7 @@ QualifiedServiceName:
 
 // === MAP Step ===
 MapStep:
-    'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
+    {MapStep} 'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
 
 MapElement:
     StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep;
@@ -54,8 +54,8 @@ InvokeStep:
     '}')? ';';
 
 MappingBlock:
-    'input' '{' entries+=MappingEntry* '}'
-    | 'output' '{' entries+=MappingEntry* '}';
+    {MappingBlock} 'input' '{' entries+=MappingEntry* '}'
+    | {MappingBlock} 'output' '{' entries+=MappingEntry* '}';
 
 MappingEntry:
     MappingCopyEntry | MappingSetEntry;
@@ -80,7 +80,7 @@ ValidateOutput:
 
 // === LOOP Step ===
 LoopStep:
-    'LOOP' ('{' 
+    {LoopStep} 'LOOP' ('{' 
         properties+=StepProperty* 
         loopProps+=LoopProperty* 
         steps+=Step* 
@@ -93,7 +93,7 @@ LoopProperty:
 
 // === SEQUENCE Step ===
 SequenceStep:
-    'SEQUENCE' ('{' 
+    {SequenceStep} 'SEQUENCE' ('{' 
         properties+=StepProperty* 
         seqProps+=SequenceProperty* 
         steps+=Step* 
@@ -104,7 +104,7 @@ SequenceProperty:
 
 // === TRY / CATCH / FINALLY ===
 TryStep:
-    'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}' 
+    {TryStep} 'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}' 
     catches+=CatchStep* 
     finallyBlock=FinallyStep?;
 
@@ -112,7 +112,7 @@ TryProperty:
     'exitOn' ':' value=STRING;
 
 CatchStep:
-    'CATCH' ('{' 
+    {CatchStep} 'CATCH' ('{' 
         properties+=StepProperty* 
         catchProps+=CatchProperty* 
         steps+=Step* 
@@ -124,7 +124,7 @@ CatchProperty:
     'selection' ':' selection=STRING;
 
 FinallyStep:
-    'FINALLY' ('{' 
+    {FinallyStep} 'FINALLY' ('{' 
         properties+=StepProperty* 
         finalProps+=FinallyProperty* 
         steps+=Step* 
@@ -135,7 +135,7 @@ FinallyProperty:
 
 // === BRANCH Step ===
 BranchStep:
-    'BRANCH' ('{' 
+    {BranchStep} 'BRANCH' ('{' 
         properties+=StepProperty* 
         branchProps+=BranchProperty* 
         steps+=Step* 
@@ -147,7 +147,7 @@ BranchProperty:
 
 // === REPEAT Step ===
 RepeatStep:
-    'REPEAT' ('{' 
+    {RepeatStep} 'REPEAT' ('{' 
         properties+=StepProperty* 
         repeatProps+=RepeatProperty* 
         steps+=Step* 
@@ -160,7 +160,7 @@ RepeatProperty:
 
 // === EXIT Step ===
 ExitStep:
-    'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
+    {ExitStep} 'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
 
 ExitProperty:
     'comment' ':' comment=STRING |
