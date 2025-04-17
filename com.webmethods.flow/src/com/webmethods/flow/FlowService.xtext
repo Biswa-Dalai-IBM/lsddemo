@@ -1,0 +1,9 @@
+grammar com.webmethods.flow.FlowService with org.eclipse.xtext.common.Terminals
+
+generate flowService "http://www.webmethods.com/flow/FlowService"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
