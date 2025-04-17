@@ -3,11 +3,19 @@
  */
 package com.webmethods.flow.ui.labeling;
 
-import com.google.inject.Inject;
-import com.webmethods.flow.flowService.InvokeStep;
-
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
+
+import com.google.inject.Inject;
+import com.webmethods.flow.flowService.BranchStep;
+import com.webmethods.flow.flowService.ExitStep;
+import com.webmethods.flow.flowService.FlowService;
+import com.webmethods.flow.flowService.InvokeStep;
+import com.webmethods.flow.flowService.LoopStep;
+import com.webmethods.flow.flowService.MapStep;
+import com.webmethods.flow.flowService.RepeatStep;
+import com.webmethods.flow.flowService.SequenceStep;
+import com.webmethods.flow.flowService.TryStep;
 
 /**
  * Provides labels for EObjects.
@@ -21,9 +29,41 @@ public class FlowServiceLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate);
 	}
 
-	public String text(InvokeStep step) {
-		return "INVOKE";
-	}
+	   String text(InvokeStep step) {
+	        return "INVOKE";
+	    }
+
+	    String text(MapStep step) {
+	        return "MAP";
+	    }
+
+	    String text(LoopStep step) {
+	        return "LOOP";
+	    }
+
+	    String text(SequenceStep step) {
+	        return "SEQUENCE";
+	    }
+
+	    String text(BranchStep step) {
+	        return "BRANCH";
+	    }
+
+	    String text(RepeatStep step) {
+	        return "REPEAT";
+	    }
+
+	    String text(TryStep step) {
+	        return "TRY";
+	    }
+
+	    String text(ExitStep step) {
+	        return "EXIT";
+	    }
+
+	    String text(FlowService service) {
+	        return "service: " + service.getName();
+	    }
 	// Labels and icons can be computed like this:
 	
 //	String text(Greeting ele) {
