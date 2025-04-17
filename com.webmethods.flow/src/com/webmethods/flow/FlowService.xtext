@@ -3,7 +3,173 @@ grammar com.webmethods.flow.FlowService with org.eclipse.xtext.common.Terminals
 generate flowService "http://www.webmethods.com/flow/FlowService"
 
 Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+    services+=FlowService*;
+
+FlowService:
+    'service' name=ID '{' steps+=Step* '}';
+
+Step:
+    InvokeStep | MapStep | LoopStep | SequenceStep |
+    BranchStep | RepeatStep | TryStep | ExitStep;
+
+StepProperty:
+    CommentProperty | ScopeProperty | TimeoutProperty | LabelProperty;
+
+CommentProperty:
+    'comment' ':' value=STRING;
+
+ScopeProperty:
+    'scope' ':' value=ID;
+
+TimeoutProperty:
+    'timeout' ':' value=INT;
+
+LabelProperty:
+    'label' ':' value=STRING;
+
+// Qualified Service Name: abc.def:MyService
+QualifiedServiceName:
+    namespace+=ID ('.' namespace+=ID)* ':' name=ID;
+
+// === MAP Step ===
+MapStep:
+    'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
+
+MapElement:
+    StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep;
+
+// TRANSFORM Step
+TransformStep:
+    'TRANSFORM' service=QualifiedServiceName ('{' mappings+=MappingBlock* '}')? ';';
+
+DropStep:
+    'drop' path+=ID ('/' path+=ID)* ';';
+
+// INVOKE Step
+InvokeStep:
+    'INVOKE' service=QualifiedServiceName ('{' 
+        properties+=StepProperty* 
+        invokeProps+=InvokeProperty* 
+        mappings+=MappingBlock* 
+    '}')? ';';
+
+MappingBlock:
+    'input' '{' entries+=MappingEntry* '}'
+    | 'output' '{' entries+=MappingEntry* '}';
+
+MappingEntry:
+    MappingCopyEntry | MappingSetEntry;
+
+MappingCopyEntry:
+    'copy' fromPath+=ID ('/' fromPath+=ID)* '->' toPath+=ID ('/' toPath+=ID)* ';';
+
+MappingSetEntry:
+    'set' path+=ID ('/' path+=ID)* '=' value=Value ';';
+
+Value:
+    INT | STRING;
+
+InvokeProperty:
+    ValidateInput | ValidateOutput;
+
+ValidateInput:
+    'validateInput' ':' value=BOOL;
+
+ValidateOutput:
+    'validateOutput' ':' value=BOOL;
+
+// === LOOP Step ===
+LoopStep:
+    'LOOP' ('{' 
+        properties+=StepProperty* 
+        loopProps+=LoopProperty* 
+        steps+=Step* 
+    '}')?;
+
+// === LOOP Props ===
+LoopProperty:
+    'inputArray' ':' input=STRING |
+    'outputArray' ':' output=STRING;
+
+// === SEQUENCE Step ===
+SequenceStep:
+    'SEQUENCE' ('{' 
+        properties+=StepProperty* 
+        seqProps+=SequenceProperty* 
+        steps+=Step* 
+    '}')?;
+
+SequenceProperty:
+    'exitOn' ':' value=STRING;
+
+// === TRY / CATCH / FINALLY ===
+TryStep:
+    'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}' 
+    catches+=CatchStep* 
+    finallyBlock=FinallyStep?;
+
+TryProperty:
+    'exitOn' ':' value=STRING;
+
+CatchStep:
+    'CATCH' ('{' 
+        properties+=StepProperty* 
+        catchProps+=CatchProperty* 
+        steps+=Step* 
+    '}')?;
+
+CatchProperty:
+    'exitOn' ':' exit=STRING |
+    'failures' ':' failures=STRING |
+    'selection' ':' selection=STRING;
+
+FinallyStep:
+    'FINALLY' ('{' 
+        properties+=StepProperty* 
+        finalProps+=FinallyProperty* 
+        steps+=Step* 
+    '}')?;
+
+FinallyProperty:
+    'exitOn' ':' value=STRING;
+
+// === BRANCH Step ===
+BranchStep:
+    'BRANCH' ('{' 
+        properties+=StepProperty* 
+        branchProps+=BranchProperty* 
+        steps+=Step* 
+    '}')?;
+
+BranchProperty:
+    'switch' ':' switch=STRING |
+    'evaluateLabels' ':' eval=BOOL;
+
+// === REPEAT Step ===
+RepeatStep:
+    'REPEAT' ('{' 
+        properties+=StepProperty* 
+        repeatProps+=RepeatProperty* 
+        steps+=Step* 
+    '}')?;
+
+RepeatProperty:
+    'count' ':' count=INT |
+    'repeatInterval' ':' interval=INT |
+    'repeatOn' ':' on=STRING;
+
+// === EXIT Step ===
+ExitStep:
+    'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
+
+ExitProperty:
+    'comment' ':' comment=STRING |
+    'label' ':' label=STRING |
+    'signal' ':' signal=STRING |
+    'failureName' ':' failureName=STRING |
+    'failureInstance' ':' failureInstance=STRING |
+    'exitForm' ':' exitForm=STRING |
+    'failureMessage' ':' failureMessage=STRING;
+
+// === Terminals ===
+terminal BOOL: 'true' | 'false';
