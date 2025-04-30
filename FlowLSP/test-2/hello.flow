@@ -1,0 +1,37 @@
+service("myFlow") {
+  
+  invoke("pub.math:addInts")
+    .setComment("Adds two numbers")
+    .mapInput("a", "num1")
+    .mapInput("b", "num2")
+    .mapOutput("result", "sum");
+
+  loop("x/y")
+    .setComment("Adds two numbers")
+    .setOutputArray("x/y")
+    .withSteps(
+      invoke("pub.math:addInts")
+        .setValidateOutput(false)
+        .mapInput("a", "num1")
+        .mapInput("b", "num2")
+        .mapOutput("result", "sum")
+    );
+
+  sequence()
+    .exitOn("DONE")
+    .withSteps(
+      invoke("pub.math:addInts")
+        .mapInput("a", "num1")
+        .mapInput("b", "num2")
+        .mapOutput("result", "sum");
+
+      invoke("pub.math:addInts");
+
+      exit()
+    );
+
+  repeat()
+    .withSteps(
+      invoke("pub.math:addInts")
+    );
+}

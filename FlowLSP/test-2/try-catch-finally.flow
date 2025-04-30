@@ -1,0 +1,27 @@
+service("myFlow") {
+  
+  try()
+    .withSteps(
+      invoke("pub.math:addInts")
+        .setComment("Adds two numbers")
+        .mapInput("a", "num1")
+        .mapInput("b", "num2")
+        .mapOutput("result", "sum")
+    )
+    .catch()
+      .withSteps(
+        invoke("pub.math:addInts")
+          .setComment("Adds two numbers")
+          .mapInput("a", "num1")
+          .mapInput("b", "num2")
+          .mapOutput("result", "sum")
+      )
+    .finally()
+      .withSteps(
+        invoke("pub.math:addInts")
+          .setComment("Adds two numbers")
+          .mapInput("a", "num1")
+          .mapInput("b", "num2")
+          .mapOutput("result", "sum")
+      );
+}
