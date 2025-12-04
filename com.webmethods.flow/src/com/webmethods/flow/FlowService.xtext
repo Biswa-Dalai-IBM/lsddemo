@@ -33,7 +33,7 @@ QualifiedServiceName:
 
 // === MAP Step ===
 MapStep:
-    {MapStep} 'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
+   {MapStep} 'MAP' ('{' mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)* '}')? ';';
 
 MapElement:
     StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep;
@@ -54,9 +54,7 @@ InvokeStep:
     '}')? ';';
 
 MappingBlock:
-    {MappingBlock} 'input' '{' entries+=MappingEntry* '}'
-    | {MappingBlock} 'output' '{' entries+=MappingEntry* '}';
-
+	direction=('input'|'output') '{' entries+=( MappingCopyEntry | MappingSetEntry)* '}';
 MappingEntry:
     MappingCopyEntry | MappingSetEntry;
 
