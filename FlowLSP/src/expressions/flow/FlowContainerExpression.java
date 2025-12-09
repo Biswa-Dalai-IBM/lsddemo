@@ -5,7 +5,7 @@ import java.util.List;
 
 import expressions.FlowElementExpression;
 
-public class FlowContainerExpression extends FlowElementExpression{
+public class FlowContainerExpression extends FlowElementExpression {
 	
 	List<FlowStepProperty> properties;
 	List<FlowElementExpression> expressions;
@@ -29,5 +29,26 @@ public class FlowContainerExpression extends FlowElementExpression{
 
 	public List<FlowStepProperty> getProperties() {
 		return properties;
+	}
+	
+	public boolean hasExpressions() {
+		return expressions != null && !expressions.isEmpty();
+	}
+	
+	public boolean hasProperties() {
+		return properties != null && !properties.isEmpty();
+	}
+	
+	public FlowStepProperty getProperty(String key) {
+		if (properties == null) return null;
+		return properties.stream()
+				.filter(p -> p.getKey().equals(key))
+				.findFirst()
+				.orElse(null);
+	}
+	
+	public String getPropertyValue(String key) {
+		FlowStepProperty prop = getProperty(key);
+		return prop != null ? prop.getValue() : null;
 	}
 }

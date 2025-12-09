@@ -1,0 +1,44 @@
+// Basic Flow Service Example
+service OrderProcessingService (
+  input {
+    String orderId [required];
+    String customerId [required];
+    Integer quantity [optional, default = 1];
+    Float discount;
+  }
+  output {
+    Boolean success;
+    String message;
+    String transactionId;
+  }
+) {
+  // Simple INVOKE step
+  INVOKE com.example.validation:validateOrder {
+    comment: "Validate order details";
+    timeout: 30;
+    input {
+      copy orderId -> orderNumber;
+      copy customerId -> custId;
+      set validateStock = true;
+    }
+    output {
+      copy isValid -> validationResult;
+      copy errorMessage -> validationError;
+    }
+  };
+
+  // MAP step with transformations
+  MAP {
+    comment: "Prepare order data";
+    set status = "PENDING";
+    set timestamp = "2024-01-01T00:00:00Z";
+    copy validationResult -> isOrderValid;
+  };
+
+  // Simple EXIT on failure
+  EXIT {
+    comment: "Exit if validation failed";
+    signal: "FAILURE";
+    failureMessage: "Order validation failed";
+  };
+}

@@ -1,0 +1,33 @@
+// Simple Flow Service Test
+service SimpleTestService (
+  input {
+    String orderId [required];
+    Integer quantity;
+  }
+  output {
+    Boolean success;
+    String message;
+  }
+) {
+  // Basic INVOKE
+  INVOKE com.example:validateOrder {
+    comment: "Validate order";
+    timeout: 30;
+    validateInput: true;
+    validateOutput: true;
+    input {
+      copy orderId -> orderNumber;
+      set validateStock = true;
+    }
+    output {
+      copy isValid -> validationResult;
+    }
+  };
+
+  // Basic MAP
+  MAP {
+    comment: "Set status";
+    set status = "PENDING";
+    copy validationResult -> isOrderValid;
+  };
+}

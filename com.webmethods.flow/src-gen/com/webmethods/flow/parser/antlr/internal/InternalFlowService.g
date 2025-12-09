@@ -587,105 +587,115 @@ ruleMapStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='MAP'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getMapStepAccess().getMapStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='MAP'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getMapStepAccess().getMAPKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getMapStepAccess().getMAPKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getMapStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getMapStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
-					{
-						newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsMapElementParserRuleCall_1_1_0());
-					}
-					lv_mapElements_2_0=ruleMapElement
-					{
-						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getMapStepRule());
+					(
+						{
+							newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsStepPropertyParserRuleCall_2_1_0_0());
 						}
-						add(
-							$current,
-							"mapElements",
-							lv_mapElements_2_0,
-							"com.webmethods.flow.FlowService.MapElement");
-						afterParserOrEnumRuleCall();
-					}
+						lv_mapElements_3_1=ruleStepProperty
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getMapStepRule());
+							}
+							add(
+								$current,
+								"mapElements",
+								lv_mapElements_3_1,
+								"com.webmethods.flow.FlowService.StepProperty");
+							afterParserOrEnumRuleCall();
+						}
+						    |
+						{
+							newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsMappingSetEntryParserRuleCall_2_1_0_1());
+						}
+						lv_mapElements_3_2=ruleMappingSetEntry
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getMapStepRule());
+							}
+							add(
+								$current,
+								"mapElements",
+								lv_mapElements_3_2,
+								"com.webmethods.flow.FlowService.MappingSetEntry");
+							afterParserOrEnumRuleCall();
+						}
+						    |
+						{
+							newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsMappingCopyEntryParserRuleCall_2_1_0_2());
+						}
+						lv_mapElements_3_3=ruleMappingCopyEntry
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getMapStepRule());
+							}
+							add(
+								$current,
+								"mapElements",
+								lv_mapElements_3_3,
+								"com.webmethods.flow.FlowService.MappingCopyEntry");
+							afterParserOrEnumRuleCall();
+						}
+						    |
+						{
+							newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsTransformStepParserRuleCall_2_1_0_3());
+						}
+						lv_mapElements_3_4=ruleTransformStep
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getMapStepRule());
+							}
+							add(
+								$current,
+								"mapElements",
+								lv_mapElements_3_4,
+								"com.webmethods.flow.FlowService.TransformStep");
+							afterParserOrEnumRuleCall();
+						}
+						    |
+						{
+							newCompositeNode(grammarAccess.getMapStepAccess().getMapElementsDropStepParserRuleCall_2_1_0_4());
+						}
+						lv_mapElements_3_5=ruleDropStep
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getMapStepRule());
+							}
+							add(
+								$current,
+								"mapElements",
+								lv_mapElements_3_5,
+								"com.webmethods.flow.FlowService.DropStep");
+							afterParserOrEnumRuleCall();
+						}
+					)
 				)
 			)*
-			otherlv_3='}'
+			otherlv_4='}'
 			{
-				newLeafNode(otherlv_3, grammarAccess.getMapStepAccess().getRightCurlyBracketKeyword_1_2());
+				newLeafNode(otherlv_4, grammarAccess.getMapStepAccess().getRightCurlyBracketKeyword_2_2());
 			}
 		)?
-		otherlv_4=';'
+		otherlv_5=';'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getMapStepAccess().getSemicolonKeyword_2());
-		}
-	)
-;
-
-// Entry rule entryRuleMapElement
-entryRuleMapElement returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getMapElementRule()); }
-	iv_ruleMapElement=ruleMapElement
-	{ $current=$iv_ruleMapElement.current; }
-	EOF;
-
-// Rule MapElement
-ruleMapElement returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		{
-			newCompositeNode(grammarAccess.getMapElementAccess().getStepPropertyParserRuleCall_0());
-		}
-		this_StepProperty_0=ruleStepProperty
-		{
-			$current = $this_StepProperty_0.current;
-			afterParserOrEnumRuleCall();
-		}
-		    |
-		{
-			newCompositeNode(grammarAccess.getMapElementAccess().getMappingSetEntryParserRuleCall_1());
-		}
-		this_MappingSetEntry_1=ruleMappingSetEntry
-		{
-			$current = $this_MappingSetEntry_1.current;
-			afterParserOrEnumRuleCall();
-		}
-		    |
-		{
-			newCompositeNode(grammarAccess.getMapElementAccess().getMappingCopyEntryParserRuleCall_2());
-		}
-		this_MappingCopyEntry_2=ruleMappingCopyEntry
-		{
-			$current = $this_MappingCopyEntry_2.current;
-			afterParserOrEnumRuleCall();
-		}
-		    |
-		{
-			newCompositeNode(grammarAccess.getMapElementAccess().getTransformStepParserRuleCall_3());
-		}
-		this_TransformStep_3=ruleTransformStep
-		{
-			$current = $this_TransformStep_3.current;
-			afterParserOrEnumRuleCall();
-		}
-		    |
-		{
-			newCompositeNode(grammarAccess.getMapElementAccess().getDropStepParserRuleCall_4());
-		}
-		this_DropStep_4=ruleDropStep
-		{
-			$current = $this_DropStep_4.current;
-			afterParserOrEnumRuleCall();
+			newLeafNode(otherlv_5, grammarAccess.getMapStepAccess().getSemicolonKeyword_3());
 		}
 	)
 ;
@@ -964,54 +974,43 @@ ruleMappingBlock returns [EObject current=null]
 }:
 	(
 		(
-			otherlv_0='input'
-			{
-				newLeafNode(otherlv_0, grammarAccess.getMappingBlockAccess().getInputKeyword_0_0());
-			}
-			otherlv_1='{'
-			{
-				newLeafNode(otherlv_1, grammarAccess.getMappingBlockAccess().getLeftCurlyBracketKeyword_0_1());
-			}
 			(
 				(
+					lv_direction_0_1='input'
 					{
-						newCompositeNode(grammarAccess.getMappingBlockAccess().getEntriesMappingEntryParserRuleCall_0_2_0());
+						newLeafNode(lv_direction_0_1, grammarAccess.getMappingBlockAccess().getDirectionInputKeyword_0_0_0());
 					}
-					lv_entries_2_0=ruleMappingEntry
 					{
 						if ($current==null) {
-							$current = createModelElementForParent(grammarAccess.getMappingBlockRule());
+							$current = createModelElement(grammarAccess.getMappingBlockRule());
 						}
-						add(
-							$current,
-							"entries",
-							lv_entries_2_0,
-							"com.webmethods.flow.FlowService.MappingEntry");
-						afterParserOrEnumRuleCall();
+						setWithLastConsumed($current, "direction", lv_direction_0_1, null);
+					}
+					    |
+					lv_direction_0_2='output'
+					{
+						newLeafNode(lv_direction_0_2, grammarAccess.getMappingBlockAccess().getDirectionOutputKeyword_0_0_1());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getMappingBlockRule());
+						}
+						setWithLastConsumed($current, "direction", lv_direction_0_2, null);
 					}
 				)
-			)*
-			otherlv_3='}'
-			{
-				newLeafNode(otherlv_3, grammarAccess.getMappingBlockAccess().getRightCurlyBracketKeyword_0_3());
-			}
+			)
 		)
-		    |
+		otherlv_1='{'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getMappingBlockAccess().getLeftCurlyBracketKeyword_1());
+		}
 		(
-			otherlv_4='output'
-			{
-				newLeafNode(otherlv_4, grammarAccess.getMappingBlockAccess().getOutputKeyword_1_0());
-			}
-			otherlv_5='{'
-			{
-				newLeafNode(otherlv_5, grammarAccess.getMappingBlockAccess().getLeftCurlyBracketKeyword_1_1());
-			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getMappingBlockAccess().getEntriesMappingEntryParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getMappingBlockAccess().getEntriesMappingCopyEntryParserRuleCall_2_0_0());
 					}
-					lv_entries_6_0=ruleMappingEntry
+					lv_entries_2_1=ruleMappingCopyEntry
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getMappingBlockRule());
@@ -1019,52 +1018,32 @@ ruleMappingBlock returns [EObject current=null]
 						add(
 							$current,
 							"entries",
-							lv_entries_6_0,
-							"com.webmethods.flow.FlowService.MappingEntry");
+							lv_entries_2_1,
+							"com.webmethods.flow.FlowService.MappingCopyEntry");
+						afterParserOrEnumRuleCall();
+					}
+					    |
+					{
+						newCompositeNode(grammarAccess.getMappingBlockAccess().getEntriesMappingSetEntryParserRuleCall_2_0_1());
+					}
+					lv_entries_2_2=ruleMappingSetEntry
+					{
+						if ($current==null) {
+							$current = createModelElementForParent(grammarAccess.getMappingBlockRule());
+						}
+						add(
+							$current,
+							"entries",
+							lv_entries_2_2,
+							"com.webmethods.flow.FlowService.MappingSetEntry");
 						afterParserOrEnumRuleCall();
 					}
 				)
-			)*
-			otherlv_7='}'
-			{
-				newLeafNode(otherlv_7, grammarAccess.getMappingBlockAccess().getRightCurlyBracketKeyword_1_3());
-			}
-		)
-	)
-;
-
-// Entry rule entryRuleMappingEntry
-entryRuleMappingEntry returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getMappingEntryRule()); }
-	iv_ruleMappingEntry=ruleMappingEntry
-	{ $current=$iv_ruleMappingEntry.current; }
-	EOF;
-
-// Rule MappingEntry
-ruleMappingEntry returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
+			)
+		)*
+		otherlv_3='}'
 		{
-			newCompositeNode(grammarAccess.getMappingEntryAccess().getMappingCopyEntryParserRuleCall_0());
-		}
-		this_MappingCopyEntry_0=ruleMappingCopyEntry
-		{
-			$current = $this_MappingCopyEntry_0.current;
-			afterParserOrEnumRuleCall();
-		}
-		    |
-		{
-			newCompositeNode(grammarAccess.getMappingEntryAccess().getMappingSetEntryParserRuleCall_1());
-		}
-		this_MappingSetEntry_1=ruleMappingSetEntry
-		{
-			$current = $this_MappingSetEntry_1.current;
-			afterParserOrEnumRuleCall();
+			newLeafNode(otherlv_3, grammarAccess.getMappingBlockAccess().getRightCurlyBracketKeyword_3());
 		}
 	)
 ;
@@ -1452,21 +1431,28 @@ ruleLoopStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='LOOP'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getLoopStepAccess().getLoopStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='LOOP'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getLoopStepAccess().getLOOPKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getLoopStepAccess().getLOOPKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getLoopStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getLoopStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getLoopStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getLoopStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getLoopStepRule());
@@ -1474,7 +1460,7 @@ ruleLoopStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1483,9 +1469,9 @@ ruleLoopStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getLoopStepAccess().getLoopPropsLoopPropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getLoopStepAccess().getLoopPropsLoopPropertyParserRuleCall_2_2_0());
 					}
-					lv_loopProps_3_0=ruleLoopProperty
+					lv_loopProps_4_0=ruleLoopProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getLoopStepRule());
@@ -1493,7 +1479,7 @@ ruleLoopStep returns [EObject current=null]
 						add(
 							$current,
 							"loopProps",
-							lv_loopProps_3_0,
+							lv_loopProps_4_0,
 							"com.webmethods.flow.FlowService.LoopProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1502,9 +1488,9 @@ ruleLoopStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getLoopStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getLoopStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getLoopStepRule());
@@ -1512,15 +1498,15 @@ ruleLoopStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getLoopStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getLoopStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -1618,21 +1604,28 @@ ruleSequenceStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='SEQUENCE'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getSequenceStepAccess().getSequenceStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='SEQUENCE'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getSequenceStepAccess().getSEQUENCEKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getSequenceStepAccess().getSEQUENCEKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getSequenceStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getSequenceStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getSequenceStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getSequenceStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getSequenceStepRule());
@@ -1640,7 +1633,7 @@ ruleSequenceStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1649,9 +1642,9 @@ ruleSequenceStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getSequenceStepAccess().getSeqPropsSequencePropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getSequenceStepAccess().getSeqPropsSequencePropertyParserRuleCall_2_2_0());
 					}
-					lv_seqProps_3_0=ruleSequenceProperty
+					lv_seqProps_4_0=ruleSequenceProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getSequenceStepRule());
@@ -1659,7 +1652,7 @@ ruleSequenceStep returns [EObject current=null]
 						add(
 							$current,
 							"seqProps",
-							lv_seqProps_3_0,
+							lv_seqProps_4_0,
 							"com.webmethods.flow.FlowService.SequenceProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1668,9 +1661,9 @@ ruleSequenceStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getSequenceStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getSequenceStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getSequenceStepRule());
@@ -1678,15 +1671,15 @@ ruleSequenceStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getSequenceStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getSequenceStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -1753,21 +1746,28 @@ ruleTryStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='TRY'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getTryStepAccess().getTryStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='TRY'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getTryStepAccess().getTRYKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getTryStepAccess().getTRYKeyword_1());
 		}
-		otherlv_1='{'
+		otherlv_2='{'
 		{
-			newLeafNode(otherlv_1, grammarAccess.getTryStepAccess().getLeftCurlyBracketKeyword_1());
+			newLeafNode(otherlv_2, grammarAccess.getTryStepAccess().getLeftCurlyBracketKeyword_2());
 		}
 		(
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getTryStepAccess().getPropertiesStepPropertyParserRuleCall_2_0_0());
+						newCompositeNode(grammarAccess.getTryStepAccess().getPropertiesStepPropertyParserRuleCall_3_0_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getTryStepRule());
@@ -1775,7 +1775,7 @@ ruleTryStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1785,9 +1785,9 @@ ruleTryStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getTryStepAccess().getTryPropsTryPropertyParserRuleCall_2_1_0());
+						newCompositeNode(grammarAccess.getTryStepAccess().getTryPropsTryPropertyParserRuleCall_3_1_0());
 					}
-					lv_tryProps_3_0=ruleTryProperty
+					lv_tryProps_4_0=ruleTryProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getTryStepRule());
@@ -1795,7 +1795,7 @@ ruleTryStep returns [EObject current=null]
 						add(
 							$current,
 							"tryProps",
-							lv_tryProps_3_0,
+							lv_tryProps_4_0,
 							"com.webmethods.flow.FlowService.TryProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1805,9 +1805,9 @@ ruleTryStep returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getTryStepAccess().getStepsStepParserRuleCall_3_0());
+					newCompositeNode(grammarAccess.getTryStepAccess().getStepsStepParserRuleCall_4_0());
 				}
-				lv_steps_4_0=ruleStep
+				lv_steps_5_0=ruleStep
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getTryStepRule());
@@ -1815,22 +1815,22 @@ ruleTryStep returns [EObject current=null]
 					add(
 						$current,
 						"steps",
-						lv_steps_4_0,
+						lv_steps_5_0,
 						"com.webmethods.flow.FlowService.Step");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)*
-		otherlv_5='}'
+		otherlv_6='}'
 		{
-			newLeafNode(otherlv_5, grammarAccess.getTryStepAccess().getRightCurlyBracketKeyword_4());
+			newLeafNode(otherlv_6, grammarAccess.getTryStepAccess().getRightCurlyBracketKeyword_5());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getTryStepAccess().getCatchesCatchStepParserRuleCall_5_0());
+					newCompositeNode(grammarAccess.getTryStepAccess().getCatchesCatchStepParserRuleCall_6_0());
 				}
-				lv_catches_6_0=ruleCatchStep
+				lv_catches_7_0=ruleCatchStep
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getTryStepRule());
@@ -1838,7 +1838,7 @@ ruleTryStep returns [EObject current=null]
 					add(
 						$current,
 						"catches",
-						lv_catches_6_0,
+						lv_catches_7_0,
 						"com.webmethods.flow.FlowService.CatchStep");
 					afterParserOrEnumRuleCall();
 				}
@@ -1847,9 +1847,9 @@ ruleTryStep returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getTryStepAccess().getFinallyBlockFinallyStepParserRuleCall_6_0());
+					newCompositeNode(grammarAccess.getTryStepAccess().getFinallyBlockFinallyStepParserRuleCall_7_0());
 				}
-				lv_finallyBlock_7_0=ruleFinallyStep
+				lv_finallyBlock_8_0=ruleFinallyStep
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getTryStepRule());
@@ -1857,7 +1857,7 @@ ruleTryStep returns [EObject current=null]
 					set(
 						$current,
 						"finallyBlock",
-						lv_finallyBlock_7_0,
+						lv_finallyBlock_8_0,
 						"com.webmethods.flow.FlowService.FinallyStep");
 					afterParserOrEnumRuleCall();
 				}
@@ -1927,21 +1927,28 @@ ruleCatchStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='CATCH'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getCatchStepAccess().getCatchStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='CATCH'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getCatchStepAccess().getCATCHKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getCatchStepAccess().getCATCHKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getCatchStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getCatchStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getCatchStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getCatchStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getCatchStepRule());
@@ -1949,7 +1956,7 @@ ruleCatchStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1958,9 +1965,9 @@ ruleCatchStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getCatchStepAccess().getCatchPropsCatchPropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getCatchStepAccess().getCatchPropsCatchPropertyParserRuleCall_2_2_0());
 					}
-					lv_catchProps_3_0=ruleCatchProperty
+					lv_catchProps_4_0=ruleCatchProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getCatchStepRule());
@@ -1968,7 +1975,7 @@ ruleCatchStep returns [EObject current=null]
 						add(
 							$current,
 							"catchProps",
-							lv_catchProps_3_0,
+							lv_catchProps_4_0,
 							"com.webmethods.flow.FlowService.CatchProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -1977,9 +1984,9 @@ ruleCatchStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getCatchStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getCatchStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getCatchStepRule());
@@ -1987,15 +1994,15 @@ ruleCatchStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getCatchStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getCatchStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -2122,21 +2129,28 @@ ruleFinallyStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='FINALLY'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getFinallyStepAccess().getFinallyStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='FINALLY'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getFinallyStepAccess().getFINALLYKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getFinallyStepAccess().getFINALLYKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getFinallyStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getFinallyStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getFinallyStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getFinallyStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getFinallyStepRule());
@@ -2144,7 +2158,7 @@ ruleFinallyStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2153,9 +2167,9 @@ ruleFinallyStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getFinallyStepAccess().getFinalPropsFinallyPropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getFinallyStepAccess().getFinalPropsFinallyPropertyParserRuleCall_2_2_0());
 					}
-					lv_finalProps_3_0=ruleFinallyProperty
+					lv_finalProps_4_0=ruleFinallyProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getFinallyStepRule());
@@ -2163,7 +2177,7 @@ ruleFinallyStep returns [EObject current=null]
 						add(
 							$current,
 							"finalProps",
-							lv_finalProps_3_0,
+							lv_finalProps_4_0,
 							"com.webmethods.flow.FlowService.FinallyProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2172,9 +2186,9 @@ ruleFinallyStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getFinallyStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getFinallyStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getFinallyStepRule());
@@ -2182,15 +2196,15 @@ ruleFinallyStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getFinallyStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getFinallyStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -2257,21 +2271,28 @@ ruleBranchStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='BRANCH'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getBranchStepAccess().getBranchStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='BRANCH'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getBranchStepAccess().getBRANCHKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getBranchStepAccess().getBRANCHKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getBranchStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getBranchStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getBranchStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getBranchStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getBranchStepRule());
@@ -2279,7 +2300,7 @@ ruleBranchStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2288,9 +2309,9 @@ ruleBranchStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getBranchStepAccess().getBranchPropsBranchPropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getBranchStepAccess().getBranchPropsBranchPropertyParserRuleCall_2_2_0());
 					}
-					lv_branchProps_3_0=ruleBranchProperty
+					lv_branchProps_4_0=ruleBranchProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getBranchStepRule());
@@ -2298,7 +2319,7 @@ ruleBranchStep returns [EObject current=null]
 						add(
 							$current,
 							"branchProps",
-							lv_branchProps_3_0,
+							lv_branchProps_4_0,
 							"com.webmethods.flow.FlowService.BranchProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2307,9 +2328,9 @@ ruleBranchStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getBranchStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getBranchStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getBranchStepRule());
@@ -2317,15 +2338,15 @@ ruleBranchStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getBranchStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getBranchStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -2423,21 +2444,28 @@ ruleRepeatStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='REPEAT'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getRepeatStepAccess().getRepeatStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='REPEAT'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getRepeatStepAccess().getREPEATKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getRepeatStepAccess().getREPEATKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getRepeatStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getRepeatStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getRepeatStepAccess().getPropertiesStepPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getRepeatStepAccess().getPropertiesStepPropertyParserRuleCall_2_1_0());
 					}
-					lv_properties_2_0=ruleStepProperty
+					lv_properties_3_0=ruleStepProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getRepeatStepRule());
@@ -2445,7 +2473,7 @@ ruleRepeatStep returns [EObject current=null]
 						add(
 							$current,
 							"properties",
-							lv_properties_2_0,
+							lv_properties_3_0,
 							"com.webmethods.flow.FlowService.StepProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2454,9 +2482,9 @@ ruleRepeatStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getRepeatStepAccess().getRepeatPropsRepeatPropertyParserRuleCall_1_2_0());
+						newCompositeNode(grammarAccess.getRepeatStepAccess().getRepeatPropsRepeatPropertyParserRuleCall_2_2_0());
 					}
-					lv_repeatProps_3_0=ruleRepeatProperty
+					lv_repeatProps_4_0=ruleRepeatProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getRepeatStepRule());
@@ -2464,7 +2492,7 @@ ruleRepeatStep returns [EObject current=null]
 						add(
 							$current,
 							"repeatProps",
-							lv_repeatProps_3_0,
+							lv_repeatProps_4_0,
 							"com.webmethods.flow.FlowService.RepeatProperty");
 						afterParserOrEnumRuleCall();
 					}
@@ -2473,9 +2501,9 @@ ruleRepeatStep returns [EObject current=null]
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getRepeatStepAccess().getStepsStepParserRuleCall_1_3_0());
+						newCompositeNode(grammarAccess.getRepeatStepAccess().getStepsStepParserRuleCall_2_3_0());
 					}
-					lv_steps_4_0=ruleStep
+					lv_steps_5_0=ruleStep
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getRepeatStepRule());
@@ -2483,15 +2511,15 @@ ruleRepeatStep returns [EObject current=null]
 						add(
 							$current,
 							"steps",
-							lv_steps_4_0,
+							lv_steps_5_0,
 							"com.webmethods.flow.FlowService.Step");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_5='}'
+			otherlv_6='}'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getRepeatStepAccess().getRightCurlyBracketKeyword_1_4());
+				newLeafNode(otherlv_6, grammarAccess.getRepeatStepAccess().getRightCurlyBracketKeyword_2_4());
 			}
 		)?
 	)
@@ -2618,21 +2646,28 @@ ruleExitStep returns [EObject current=null]
 	leaveRule();
 }:
 	(
-		otherlv_0='EXIT'
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getExitStepAccess().getExitStepAction_0(),
+					$current);
+			}
+		)
+		otherlv_1='EXIT'
 		{
-			newLeafNode(otherlv_0, grammarAccess.getExitStepAccess().getEXITKeyword_0());
+			newLeafNode(otherlv_1, grammarAccess.getExitStepAccess().getEXITKeyword_1());
 		}
 		(
-			otherlv_1='{'
+			otherlv_2='{'
 			{
-				newLeafNode(otherlv_1, grammarAccess.getExitStepAccess().getLeftCurlyBracketKeyword_1_0());
+				newLeafNode(otherlv_2, grammarAccess.getExitStepAccess().getLeftCurlyBracketKeyword_2_0());
 			}
 			(
 				(
 					{
-						newCompositeNode(grammarAccess.getExitStepAccess().getExitPropsExitPropertyParserRuleCall_1_1_0());
+						newCompositeNode(grammarAccess.getExitStepAccess().getExitPropsExitPropertyParserRuleCall_2_1_0());
 					}
-					lv_exitProps_2_0=ruleExitProperty
+					lv_exitProps_3_0=ruleExitProperty
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getExitStepRule());
@@ -2640,20 +2675,20 @@ ruleExitStep returns [EObject current=null]
 						add(
 							$current,
 							"exitProps",
-							lv_exitProps_2_0,
+							lv_exitProps_3_0,
 							"com.webmethods.flow.FlowService.ExitProperty");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)*
-			otherlv_3='}'
+			otherlv_4='}'
 			{
-				newLeafNode(otherlv_3, grammarAccess.getExitStepAccess().getRightCurlyBracketKeyword_1_2());
+				newLeafNode(otherlv_4, grammarAccess.getExitStepAccess().getRightCurlyBracketKeyword_2_2());
 			}
 		)?
-		otherlv_4=';'
+		otherlv_5=';'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getExitStepAccess().getSemicolonKeyword_2());
+			newLeafNode(otherlv_5, grammarAccess.getExitStepAccess().getSemicolonKeyword_3());
 		}
 	)
 ;

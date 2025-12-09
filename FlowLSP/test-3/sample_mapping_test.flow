@@ -1,0 +1,81 @@
+// Mapping and Transformation Test
+service MappingTestService (
+  input {
+    record customer {
+      String customerId [required];
+      String name;
+      String email;
+    };
+    recordList orders {
+      String orderId;
+      Float amount;
+      Integer quantity;
+    };
+  }
+  output {
+    Boolean success;
+    recordList results {
+      String id;
+      String status;
+    };
+  }
+) {
+  // MAP with copy and set operations
+  MAP {
+    comment: "Initialize variables";
+    set processStartTime = "2024-01-01T00:00:00Z";
+    set totalAmount = 0;
+    copy customer/customerId -> customerId;
+    copy customer/name -> customerName;
+  };
+  
+  // INVOKE with input/output mapping
+  INVOKE com.example:processCustomer {
+    comment: "Process customer data";
+    timeout: 30;
+    validateInput: true;
+    validateOutput: true;
+    input {
+      copy customer/customerId -> custId;
+      copy customer/email -> emailAddress;
+      set validateEmail = true;
+    }
+    output {
+      copy isValid -> customerValid;
+      copy validationMessage -> custValidationMsg;
+    }
+  };
+  
+  // TRANSFORM step
+  MAP {
+    TRANSFORM com.example:calculateTotal {
+      input {
+        copy orders -> orderList;
+      }
+      output {
+        copy total -> totalAmount;
+      }
+    };
+  };
+  
+  // MAP with drop operation
+  MAP {
+    comment: "Cleanup temporary variables";
+    drop processStartTime;
+    drop customerValid;
+    drop custValidationMsg;
+  };
+  
+  // Complex mapping with nested paths
+  MAP {
+    comment: "Map nested structures";
+    copy customer/customerId -> results/id;
+    set results/status = "PROCESSED";
+    copy totalAmount -> results/totalAmount;
+  };
+  
+  // Final result mapping
+  MAP {
+    set success = true;
+  };
+}

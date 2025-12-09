@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link com.webmethods.flow.flowService.MappingBlock#getDirection <em>Direction</em>}</li>
  *   <li>{@link com.webmethods.flow.flowService.MappingBlock#getEntries <em>Entries</em>}</li>
  * </ul>
  *
@@ -26,8 +27,30 @@ import org.eclipse.emf.ecore.EObject;
 public interface MappingBlock extends EObject
 {
   /**
+   * Returns the value of the '<em><b>Direction</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Direction</em>' attribute.
+   * @see #setDirection(String)
+   * @see com.webmethods.flow.flowService.FlowServicePackage#getMappingBlock_Direction()
+   * @model
+   * @generated
+   */
+  String getDirection();
+
+  /**
+   * Sets the value of the '{@link com.webmethods.flow.flowService.MappingBlock#getDirection <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Direction</em>' attribute.
+   * @see #getDirection()
+   * @generated
+   */
+  void setDirection(String value);
+
+  /**
    * Returns the value of the '<em><b>Entries</b></em>' containment reference list.
-   * The list contents are of type {@link com.webmethods.flow.flowService.MappingEntry}.
+   * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Entries</em>' containment reference list.
@@ -35,6 +58,6 @@ public interface MappingBlock extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<MappingEntry> getEntries();
+  EList<EObject> getEntries();
 
 } // MappingBlock

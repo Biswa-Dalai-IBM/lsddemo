@@ -5,17 +5,19 @@ package com.webmethods.flow.flowService.impl;
 
 import com.webmethods.flow.flowService.FlowServicePackage;
 import com.webmethods.flow.flowService.MappingBlock;
-import com.webmethods.flow.flowService.MappingEntry;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -29,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link com.webmethods.flow.flowService.impl.MappingBlockImpl#getDirection <em>Direction</em>}</li>
  *   <li>{@link com.webmethods.flow.flowService.impl.MappingBlockImpl#getEntries <em>Entries</em>}</li>
  * </ul>
  *
@@ -37,6 +40,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class MappingBlockImpl extends MinimalEObjectImpl.Container implements MappingBlock
 {
   /**
+   * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected static final String DIRECTION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDirection()
+   * @generated
+   * @ordered
+   */
+  protected String direction = DIRECTION_EDEFAULT;
+
+  /**
    * The cached value of the '{@link #getEntries() <em>Entries</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -44,7 +67,7 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
    * @generated
    * @ordered
    */
-  protected EList<MappingEntry> entries;
+  protected EList<EObject> entries;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,11 +96,36 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
    * @generated
    */
   @Override
-  public EList<MappingEntry> getEntries()
+  public String getDirection()
+  {
+    return direction;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setDirection(String newDirection)
+  {
+    String oldDirection = direction;
+    direction = newDirection;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, FlowServicePackage.MAPPING_BLOCK__DIRECTION, oldDirection, direction));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EList<EObject> getEntries()
   {
     if (entries == null)
     {
-      entries = new EObjectContainmentEList<MappingEntry>(MappingEntry.class, this, FlowServicePackage.MAPPING_BLOCK__ENTRIES);
+      entries = new EObjectContainmentEList<EObject>(EObject.class, this, FlowServicePackage.MAPPING_BLOCK__ENTRIES);
     }
     return entries;
   }
@@ -108,6 +156,8 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
   {
     switch (featureID)
     {
+      case FlowServicePackage.MAPPING_BLOCK__DIRECTION:
+        return getDirection();
       case FlowServicePackage.MAPPING_BLOCK__ENTRIES:
         return getEntries();
     }
@@ -125,9 +175,12 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
   {
     switch (featureID)
     {
+      case FlowServicePackage.MAPPING_BLOCK__DIRECTION:
+        setDirection((String)newValue);
+        return;
       case FlowServicePackage.MAPPING_BLOCK__ENTRIES:
         getEntries().clear();
-        getEntries().addAll((Collection<? extends MappingEntry>)newValue);
+        getEntries().addAll((Collection<? extends EObject>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,6 +196,9 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
   {
     switch (featureID)
     {
+      case FlowServicePackage.MAPPING_BLOCK__DIRECTION:
+        setDirection(DIRECTION_EDEFAULT);
+        return;
       case FlowServicePackage.MAPPING_BLOCK__ENTRIES:
         getEntries().clear();
         return;
@@ -160,10 +216,29 @@ public class MappingBlockImpl extends MinimalEObjectImpl.Container implements Ma
   {
     switch (featureID)
     {
+      case FlowServicePackage.MAPPING_BLOCK__DIRECTION:
+        return DIRECTION_EDEFAULT == null ? direction != null : !DIRECTION_EDEFAULT.equals(direction);
       case FlowServicePackage.MAPPING_BLOCK__ENTRIES:
         return entries != null && !entries.isEmpty();
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (direction: ");
+    result.append(direction);
+    result.append(')');
+    return result.toString();
   }
 
 } //MappingBlockImpl

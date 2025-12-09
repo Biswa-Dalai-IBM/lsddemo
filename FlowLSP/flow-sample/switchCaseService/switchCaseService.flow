@@ -1,0 +1,39 @@
+service switchCaseService(
+    input{
+       String day; 
+    }
+    output {
+        String output;
+    }
+){
+    SWITCH(day){
+        CASE 1:
+            MAP{
+                set output = "MONDAY";
+            };
+        CASE 2:
+            MAP{
+                set output = "TUESDAY";
+            };
+        CASE 3:
+            MAP{
+                set output = "WEDNESDAY";
+            };
+        CASE 4:
+            MAP{
+                set output = "THURSDAY";
+            };
+        CASE 5:
+            MAP{
+                set output = "FRIDAY";
+            };
+        CASE 6:
+            MAP{
+                set output = "SATURDAY";
+            };
+        CASE 7:
+            MAP{
+                set output = "SUNDAY";
+            };                                                                        
+    };
+}

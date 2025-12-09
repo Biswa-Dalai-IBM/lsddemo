@@ -1,0 +1,138 @@
+// Control Flow Structures Test
+service ControlFlowTestService (
+  input {
+    String[] items [required];
+    Integer maxRetries;
+    Boolean enableProcessing;
+  }
+  output {
+    Boolean success;
+    String status;
+  }
+) {
+  // SEQUENCE with exitOn
+  SEQUENCE {
+    comment: "Validation sequence";
+    exitOn: validationFailed == true;
+    
+    INVOKE com.example:validate {
+      input {
+        copy items -> inputItems;
+      }
+      output {
+        copy isValid -> validationResult;
+      }
+    };
+    
+    MAP {
+      set validationFailed = !validationResult;
+    };
+  };
+  
+  // LOOP through items
+  LOOP {
+    comment: "Process items";
+    inputArray: "items";
+    outputArray: "processedItems";
+    
+    INVOKE com.example:processItem {
+      input {
+        copy items -> currentItem;
+      }
+      output {
+        copy result -> itemResult;
+      }
+    };
+  };
+  
+  // BRANCH based on condition
+  BRANCH {
+    comment: "Branch on status";
+    switch: processingStatus;
+    evaluateLabels: true;
+    
+    SEQUENCE {
+      label: "SUCCESS";
+      MAP {
+        set status = "COMPLETED";
+      };
+    };
+    
+    SEQUENCE {
+      label: "FAILED";
+      MAP {
+        set status = "ERROR";
+      };
+    };
+  };
+  
+  // REPEAT with retry logic
+  REPEAT {
+    comment: "Retry operation";
+    count: 3;
+    repeatInterval: 5000;
+    repeatOn: retryCount < maxRetries;
+    
+    INVOKE com.example:retryableOperation {
+      input {
+        copy items -> data;
+      }
+      output {
+        copy success -> operationSuccess;
+      }
+    };
+    
+    MAP {
+      set retryCount = retryCount + 1;
+    };
+  };
+  
+  // TRY-CATCH-FINALLY
+  TRY {
+    comment: "Main processing";
+    exitOn: fatalError == true;
+    
+    INVOKE com.example:mainProcess {
+      input {
+        copy items -> inputData;
+      }
+      output {
+        copy result -> processResult;
+      }
+    };
+    
+    MAP {
+      set success = true;
+    };
+    
+  } CATCH {
+    comment: "Handle errors";
+    failures: "com.example.ProcessException";
+    exitOn: errorCount > 3;
+    
+    MAP {
+      set success = false;
+      set errorCount = errorCount + 1;
+    };
+    
+  } FINALLY {
+    comment: "Cleanup";
+    exitOn: cleanupFailed == true;
+    
+    INVOKE com.example:cleanup {
+      input {
+        copy items -> dataToClean;
+      }
+      output {
+        copy status -> cleanupStatus;
+      }
+    };
+  };
+  
+  // EXIT on failure
+  EXIT {
+    comment: "Exit on critical failure";
+    signal: "FAILURE";
+    failureMessage: "Critical error occurred";
+  };
+}

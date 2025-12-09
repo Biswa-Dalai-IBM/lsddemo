@@ -1,0 +1,35 @@
+service whileService(
+    input{
+        String count; 
+    }
+    output {
+        String out;
+    }
+){
+    MAP {
+      set temp = 1;
+    };
+    
+    WHILE(count>temp){
+        INVOKE pub.math:addInts {
+            timeout: 30;
+            validateInput: true;
+            validateOutput: true;
+            input {
+                copy temp -> num1;
+                set  num2=1;
+            }
+            output {
+                copy value -> temp;
+            }
+         };
+    }
+
+    MAP {
+      set temp = out;
+      drop temp;
+      drop num1;
+      drop num2;
+      drop value;
+    };
+}

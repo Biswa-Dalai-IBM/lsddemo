@@ -5,165 +5,340 @@ grammar FlowService;
 }
 
 
-flowService : 'service' ID '{' step* '}' ;
+flowService : 'service' ID signature? '{' step* '}' ;
+
+signature : '(' signatureBlock* ')' ;
+
+signatureBlock
+    : 'input' '{' parameterDeclaration* '}'
+    | 'output' '{' parameterDeclaration* '}'
+    ;
+
+parameterDeclaration
+    : fieldDeclaration
+    | recordDeclaration
+    | recordListDeclaration
+    ;
+
+fieldDeclaration
+    : dataType ('[' ']')? identifier constraints? ';'
+    ;
+
+recordDeclaration
+    : 'record' identifier '{' parameterDeclaration* '}' constraints? ';'
+    ;
+
+recordListDeclaration
+    : 'recordList' identifier '{' parameterDeclaration* '}' constraints? ';'
+    ;
+
+dataType
+    : STRING_TYPE
+    | OBJECT_TYPE
+    | INTEGER_TYPE
+    | FLOAT_TYPE
+    | DOUBLE_TYPE
+    | BOOLEAN_TYPE
+    | DATETIME_TYPE
+    | DOCUMENT_TYPE
+    ;
+
+constraints
+    : '[' constraint (',' constraint)* ']'
+    ;
+
+constraint
+    : 'required'
+    | 'optional'
+    | 'default' '=' value
+    | 'minLength' '=' INT
+    | 'maxLength' '=' INT
+    | 'pattern' '=' STRING_LITERAL
+    ;
 
 step
     : invokeStep
     | mapStep
-    | loopStep 
+    | loopStep
     | sequenceStep
     | branchStep
     | repeatStep
     | tryStep
     | exitStep
+    | doUntilStep
+    | ifThenStep
+    | switchCaseStep
+    | whileStep
     ;
     
 
 stepProperty
-    : 'comment' ':' STRING_LITERAL
-    | 'scope' ':' ID
-    | 'timeout' ':' INT
-    | 'label' ':' STRING_LITERAL
+    : 'comment' ':' STRING_LITERAL ';'
+    | 'scope' ':' ID ';'
+    | 'timeout' ':' INT ';'
+    | 'label' ':' STRING_LITERAL ';'
     ;
     
 qualifiedServiceName : ID ('.' ID)* ':' ID ;    
 // MAP step
 
 mapStep
-	: 'MAP' ('{' (stepProperty|mappingSetEntry|mappingCopyEntry|transformStep|dropStep)*?'}')? ';'
+	: 'MAP' ('{' (stepProperty|mappingSetEntry|mappingCopyEntry|transformStep|dropStep)* '}')? ';'
 	;
 	
 transformStep
-    : 'TRANSFORM' qualifiedServiceName ('{' mappingBlock*? '}')? ';'
+    : 'TRANSFORM' qualifiedServiceName ('{' mappingBlock* '}')? ';'
     ;
 dropStep
-    : 'drop' ID ('/' ID)*  ';'
+    : 'drop' identifier ('/' identifier)*  ';'
     ;
 
 // INVOKE Step
 invokeStep
-    : 'INVOKE' qualifiedServiceName ('{' stepProperty*? invokeProperty*? mappingBlock*? '}')? ';'
+    : 'INVOKE' qualifiedServiceName ('{' stepProperty* invokeProperty* mappingBlock* '}')? ';'
     ;
 
 mappingBlock
-    : 'input'  '{' (mappingCopyEntry|mappingSetEntry)*? '}'
-    | 'output' '{' (mappingCopyEntry|mappingSetEntry)*? '}'
+    : 'input'  '{' (mappingCopyEntry|mappingSetEntry)* '}'
+    | 'output' '{' (mappingCopyEntry|mappingSetEntry)* '}'
     ;
 
 mappingCopyEntry
-    : 'copy' ID ('/' ID)*  '->' ID ('/' ID)*  ';'
+    : 'copy' variableRef  '->' variableRef  ';'
+    ;
+
+variableRef
+    : SPECIAL_VAR ('/' identifier)*
+    | identifier ('/' identifier)*
     ;
     
 mappingSetEntry
-    : 'set' ID ('/' ID)*  '=' value ';'
+    : 'set' identifier ('/' identifier)*  '=' value ';'
+    ;
+
+// Allow certain keywords to be used as identifiers
+identifier
+    : ID
+    | 'input'
+    | 'output'
+    | 'count'
     ;
 value
     : INT
     | STRING_LITERAL
+    | BOOL
+    | expression
+    ;
+
+// Expression support for conditions and values
+expression
+    : primaryExpression (binaryOperator primaryExpression)*
+    ;
+
+primaryExpression
+    : variableRef                            // Variable reference (with optional $ prefix)
+    | ID ('.' ID)* ':' ID                   // Service reference
+    | literal
+    | '(' expression ')'                     // Parenthesized expression
+    | unaryOperator primaryExpression        // Unary operations
+    ;
+
+literal
+    : INT
+    | STRING_LITERAL
+    | BOOL
+    | 'null'
+    ;
+
+binaryOperator
+    : '+'  | '-'  | '*'  | '/'  | '%'       // Arithmetic
+    | '==' | '!=' | '<'  | '>'  | '<=' | '>=' // Comparison
+    | '&&' | '||'                            // Logical
+    ;
+
+unaryOperator
+    : '!' | '-'
     ;
 invokeProperty
-    : 'validateInput' ':' BOOL
-    | 'validateOutput' ':' BOOL
+    : 'validateInput' ':' BOOL ';'
+    | 'validateOutput' ':' BOOL ';'
     ;
 
 //LOOP Step
 
 loopStep
-    : 'LOOP' ('{' stepProperty*? loopProperty*? step*? '}')? 
+    : 'LOOP' ('{' stepProperty* loopProperty* step* '}')? ';'
     ;
     
 loopProperty
-    : 'inputArray' ':' STRING_LITERAL
-    | 'outputArray' ':' STRING_LITERAL
+    : 'inputArray' ':' STRING_LITERAL ';'
+    | 'outputArray' ':' STRING_LITERAL ';'
     ;
 
 //SEQUENCE Step
 
 sequenceStep
-    : 'SEQUENCE' ('{' stepProperty*? sequenceProperty*? step*? '}')? 
+    : 'SEQUENCE' ('{' stepProperty* sequenceProperty* step* '}')? ';'
     ;
     
 sequenceProperty
-    : 'exitOn' ':' STRING_LITERAL
+    : 'exitOn' ':' expression ';'
     ;
 
 //TRY Step
 
 tryStep
-    : 'TRY' '{'(stepProperty| tryProperty)*?  step*'}' catchStep* finallyStep?
+    : 'TRY' '{' (stepProperty| tryProperty)* step* '}' catchStep* finallyStep? ';'
     ;
     
 tryProperty
-    : 'exitOn' ':' STRING_LITERAL
+    : 'exitOn' ':' expression ';'
     ;
     
 //CATCH Step
 
 catchStep
-    : 'CATCH' ('{' stepProperty*? catchProperty*? step*? '}')? 
+    : 'CATCH' ('{' stepProperty* catchProperty* step* '}')?
     ;
     
 catchProperty
-    : 'exitOn' ':' STRING_LITERAL
-    | 'failures' ':' STRING_LITERAL
-    | 'selection' ':' STRING_LITERAL 
+    : 'exitOn' ':' expression ';'
+    | 'failures' ':' STRING_LITERAL ';'
+    | 'selection' ':' expression ';'
     ;
 
 //FINALLY Step
 
 finallyStep
-    : 'FINALLY' ('{' stepProperty*? finallyProperty*? step*? '}')? 
+    : 'FINALLY' ('{' stepProperty* finallyProperty* step* '}')?
     ;
     
 finallyProperty
-    : 'exitOn' ':' STRING_LITERAL
-    ;    
+    : 'exitOn' ':' expression ';'
+    ;
     
 //BRANCH Step
 
 branchStep
-    : 'BRANCH' ('{' stepProperty*? branchProperty*? step*? '}')? 
+    : 'BRANCH' ('{' stepProperty* branchProperty* step* '}')? ';'
     ;
     
 branchProperty
-    : 'switch' ':' STRING_LITERAL
-    | 'evaluateLabels' ':' BOOL
+    : 'switch' ':' expression ';'
+    | 'evaluateLabels' ':' BOOL ';'
     ;
 
 //REPEAT Step
 
 repeatStep
-    : 'REPEAT' ('{' stepProperty*? repeatProperty*? step*? '}')? 
+    : 'REPEAT' ('{' stepProperty* repeatProperty* step* '}')? ';'
     ;
     
 repeatProperty
-    : 'count' ':' INT
-    | 'repeatInterval' ':' INT
-    | 'repeatOn' ':' STRING_LITERAL
+    : 'count' ':' INT ';'
+    | 'repeatInterval' ':' INT ';'
+    | 'repeatOn' ':' expression ';'
+    ;
+
+//DO UNTIL Step
+
+doUntilStep
+    : 'DO' '{' doUntilProperty* step* '}' 'UNTIL' '(' expression ')' ';'
+    ;
+    
+doUntilProperty
+    : 'maxIteration' ':' ('-')? INT ';'
+    ;
+
+//IF THEN ELSE Step
+
+ifThenStep
+    : 'IF' '(' expression ')' '{' step* '}' elseIfBlock* elseBlock? ';'
+    ;
+
+elseIfBlock
+    : 'ELSEIF' '(' expression ')' '{' step* '}'
+    ;
+
+elseBlock
+    : 'ELSE' '{' step* '}'
+    ;
+
+//SWITCH CASE Step
+
+switchCaseStep
+    : 'SWITCH' '(' expression ')' '{' caseBlock+ '}' ';'
+    ;
+
+caseBlock
+    : 'CASE' value ':' step*
+    ;
+
+//WHILE Step
+
+whileStep
+    : 'WHILE' '(' expression ')' '{' step* '}'
     ;
 
 // EXIT Step
 
 exitStep
-    : 'EXIT' ('{' exitProperty*? '}')? ';'
+    : 'EXIT' ('{' exitProperty* '}')? ';'
     ;
     
 exitProperty
-    : 'comment' ':' STRING_LITERAL
-    | 'label' ':' STRING_LITERAL
-    | 'signal' ':' STRING_LITERAL
-    | 'failureName' ':' STRING_LITERAL
-    | 'failureInstance' ':' STRING_LITERAL
-    | 'exitForm' ':' STRING_LITERAL
-    | 'failureMessage' ':' STRING_LITERAL
+    : 'comment' ':' STRING_LITERAL ';'
+    | 'label' ':' STRING_LITERAL ';'
+    | 'signal' ':' STRING_LITERAL ';'
+    | 'failureName' ':' STRING_LITERAL ';'
+    | 'failureInstance' ':' STRING_LITERAL ';'
+    | 'exitForm' ':' STRING_LITERAL ';'
+    | 'failureMessage' ':' STRING_LITERAL ';'
     ;
     
     
 
 
+// Keywords (must come before ID to have priority)
+STRING_TYPE   : 'String' ;
+OBJECT_TYPE   : 'Object' ;
+INTEGER_TYPE  : 'Integer' ;
+FLOAT_TYPE    : 'Float' ;
+DOUBLE_TYPE   : 'Double' ;
+BOOLEAN_TYPE  : 'Boolean' ;
+DATETIME_TYPE : 'DateTime' ;
+DOCUMENT_TYPE : 'Document' ;
+
+// Operators (must come before ID to avoid conflicts)
+PLUS  : '+' ;
+MINUS : '-' ;
+MULT  : '*' ;
+DIV   : '/' ;
+MOD   : '%' ;
+EQ    : '==' ;
+NEQ   : '!=' ;
+LT    : '<' ;
+GT    : '>' ;
+LTE   : '<=' ;
+GTE   : '>=' ;
+AND   : '&&' ;
+OR    : '||' ;
+NOT   : '!' ;
+
+// Literals and identifiers
 BOOL : 'true' | 'false' ;
+NULL : 'null' ;
+SPECIAL_VAR : '$' [a-zA-Z_][a-zA-Z0-9_]* ;  // Special variables like $error, $last, etc.
 ID    : [a-zA-Z_][a-zA-Z0-9_]* ;
 INT   : [0-9]+ ;
+FLOAT_LITERAL : [0-9]+ '.' [0-9]+ ;
 STRING_LITERAL : '"' (~["\\] | '\\' .)* '"' ;
+
+// Whitespace and comments
 WS    : [ \t\r\n]+ -> skip ;
+LINE_COMMENT : '//' ~[\r\n]* -> skip ;
+BLOCK_COMMENT : '/*' .*? '*/' -> skip ;
+
+// Error handling - catch any unexpected character
+ERROR_CHAR : . ;
 

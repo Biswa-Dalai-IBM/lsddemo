@@ -150,10 +150,10 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 	public FlowElementExpression visitDropStep(DropStepContext ctx) {
 
 		List<String> path = new ArrayList<>();
-		path.add(ctx.ID().get(0).getText()); 
+		path.add(ctx.identifier().get(0).getText()); 
 
-		for (int i = 1; i < ctx.ID().size(); i++) {
-			path.add(ctx.ID(i).getText());
+		for (int i = 1; i < ctx.identifier().size(); i++) {
+			path.add(ctx.identifier(i).getText());
 		}
 
 		String fieldPath = path.stream().collect(Collectors.joining("/"));
@@ -265,10 +265,10 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 	@Override
 	public FlowElementExpression visitMappingSetEntry(MappingSetEntryContext ctx) {
 		List<String> path = new ArrayList<>();
-		path.add(ctx.ID().get(0).getText()); 
+		path.add(ctx.identifier().get(0).getText()); 
 
-		for (int i = 1; i < ctx.ID().size(); i++) {
-			path.add(ctx.ID(i).getText());
+		for (int i = 1; i < ctx.identifier().size(); i++) {
+			path.add(ctx.identifier(i).getText());
 		}
 
 		String fieldPath = path.stream().collect(Collectors.joining("/"));

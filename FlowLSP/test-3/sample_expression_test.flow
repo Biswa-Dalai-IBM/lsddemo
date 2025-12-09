@@ -1,0 +1,129 @@
+// Expression Support Test
+service ExpressionTestService (
+  input {
+    Integer itemCount;
+    Float price;
+    Boolean isActive;
+    String status;
+  }
+  output {
+    Boolean result;
+    Integer calculatedValue;
+  }
+) {
+  // Arithmetic expressions in MAP
+  MAP {
+    comment: "Arithmetic operations";
+    set total = itemCount * price;
+    set discounted = total - 100;
+    set tax = discounted * 8;
+    set finalAmount = discounted + tax;
+  };
+  
+  // Comparison expressions in SEQUENCE exitOn
+  SEQUENCE {
+    comment: "Comparison test";
+    exitOn: itemCount > 100;
+    
+    MAP {
+      set isValid = itemCount >= 1;
+    };
+  };
+  
+  // Logical expressions in BRANCH switch
+  BRANCH {
+    comment: "Logical branching";
+    switch: isActive && status == "APPROVED";
+    evaluateLabels: true;
+    
+    SEQUENCE {
+      label: "true";
+      MAP {
+        set result = true;
+      };
+    };
+    
+    SEQUENCE {
+      label: "false";
+      MAP {
+        set result = false;
+      };
+    };
+  };
+  
+  // Complex expressions in REPEAT
+  REPEAT {
+    comment: "Retry with expression";
+    count: 5;
+    repeatInterval: 1000;
+    repeatOn: retryCount < 3 && !success;
+    
+    INVOKE com.example:operation {
+      input {
+        copy itemCount -> inputCount;
+      }
+      output {
+        copy result -> success;
+      }
+    };
+    
+    MAP {
+      set retryCount = retryCount + 1;
+    };
+  };
+  
+  // Expressions in TRY-CATCH
+  TRY {
+    comment: "Exception handling";
+    exitOn: errorCount >= 3;
+    
+    INVOKE com.example:riskyOp {
+      input {
+        copy itemCount -> data;
+      }
+      output {
+        copy status -> opStatus;
+      }
+    };
+    
+  } CATCH {
+    comment: "Error handler";
+    failures: "com.example.Exception";
+    exitOn: errorCount > 5;
+    
+    MAP {
+      set errorCount = errorCount + 1;
+    };
+  };
+  
+  // Unary expressions
+  MAP {
+    comment: "Unary operations";
+    set isInactive = !isActive;
+    set negativeCount = -itemCount;
+  };
+  
+  // Parenthesized expressions
+  SEQUENCE {
+    comment: "Precedence test";
+    exitOn: itemCount > 10 && price < 100;
+    
+    MAP {
+      set result1 = itemCount + 5;
+      set result2 = price - 10;
+    };
+  };
+  
+  // Variable path expressions
+  MAP {
+    comment: "Path references";
+    copy customer/id -> customerId;
+    set pathValid = customer/id != null;
+  };
+  
+  // Final calculation
+  MAP {
+    set calculatedValue = itemCount * 100;
+    set result = success && isValid;
+  };
+}

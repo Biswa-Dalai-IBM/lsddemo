@@ -487,13 +487,22 @@ public interface FlowServicePackage extends EPackage
   int MAPPING_BLOCK = 14;
 
   /**
+   * The feature id for the '<em><b>Direction</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int MAPPING_BLOCK__DIRECTION = 0;
+
+  /**
    * The feature id for the '<em><b>Entries</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MAPPING_BLOCK__ENTRIES = 0;
+  int MAPPING_BLOCK__ENTRIES = 1;
 
   /**
    * The number of structural features of the '<em>Mapping Block</em>' class.
@@ -502,7 +511,7 @@ public interface FlowServicePackage extends EPackage
    * @generated
    * @ordered
    */
-  int MAPPING_BLOCK_FEATURE_COUNT = 1;
+  int MAPPING_BLOCK_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link com.webmethods.flow.flowService.impl.MappingEntryImpl <em>Mapping Entry</em>}' class.
@@ -1720,6 +1729,17 @@ public interface FlowServicePackage extends EPackage
   EClass getMappingBlock();
 
   /**
+   * Returns the meta object for the attribute '{@link com.webmethods.flow.flowService.MappingBlock#getDirection <em>Direction</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Direction</em>'.
+   * @see com.webmethods.flow.flowService.MappingBlock#getDirection()
+   * @see #getMappingBlock()
+   * @generated
+   */
+  EAttribute getMappingBlock_Direction();
+
+  /**
    * Returns the meta object for the containment reference list '{@link com.webmethods.flow.flowService.MappingBlock#getEntries <em>Entries</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2797,6 +2817,14 @@ public interface FlowServicePackage extends EPackage
      * @generated
      */
     EClass MAPPING_BLOCK = eINSTANCE.getMappingBlock();
+
+    /**
+     * The meta object literal for the '<em><b>Direction</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute MAPPING_BLOCK__DIRECTION = eINSTANCE.getMappingBlock_Direction();
 
     /**
      * The meta object literal for the '<em><b>Entries</b></em>' containment reference list feature.

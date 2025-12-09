@@ -1,0 +1,248 @@
+// Advanced Flow Service with Complex Control Structures
+service AdvancedOrderProcessing (
+  input {
+    String orderId [required];
+    record customer {
+      String customerId [required];
+      String name;
+      String email [pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"];
+      Integer loyaltyPoints;
+    } [required];
+    recordList items {
+      String itemId [required];
+      String productName;
+      Integer quantity [required];
+      Float unitPrice [required];
+    } [required];
+    Boolean applyDiscount [optional];
+  }
+  output {
+    Boolean success;
+    String status;
+    Float totalAmount;
+    recordList processedItems {
+      String itemId;
+      String status;
+      Float finalPrice;
+    };
+    String errorMessage;
+  }
+) {
+  // TRY-CATCH-FINALLY block
+  TRY {
+    comment: "Main processing logic";
+    exitOn: status == "FATAL_ERROR";
+    
+    // SEQUENCE with exit condition
+    SEQUENCE {
+      comment: "Validate and prepare order";
+      exitOn: validationFailed == true;
+      
+      // Validate customer
+      INVOKE com.example.customer:validateCustomer {
+        validateInput: true;
+        validateOutput: true;
+        input {
+          copy customer/customerId -> custId;
+          copy customer/email -> emailAddress;
+        }
+        output {
+          copy isValid -> customerValid;
+          copy validationError -> custValidationError;
+        }
+      };
+      
+      // Check validation result with expression
+      MAP {
+        set validationFailed = !customerValid;
+      };
+    };
+    
+    // LOOP through items
+    LOOP {
+      comment: "Process each order item";
+      inputArray: "items";
+      outputArray: "processedItems";
+      
+      // BRANCH based on item type
+      BRANCH {
+        comment: "Handle different product types";
+        switch: items/productType;
+        evaluateLabels: true;
+        
+        // Physical product processing
+        SEQUENCE {
+          label: "PHYSICAL";
+          
+          INVOKE com.example.inventory:checkStock {
+            input {
+              copy items/itemId -> productId;
+              copy items/quantity -> requestedQty;
+            }
+            output {
+              copy available -> stockAvailable;
+              copy reservationId -> stockReservation;
+            }
+          };
+          
+          MAP {
+            set items/status = "RESERVED";
+            copy stockReservation -> items/reservationId;
+          };
+        };
+        
+        // Digital product processing
+        SEQUENCE {
+          label: "DIGITAL";
+          
+          INVOKE com.example.digital:generateLicense {
+            input {
+              copy items/itemId -> productId;
+              copy customer/customerId -> customerId;
+            }
+            output {
+              copy licenseKey -> items/licenseKey;
+            }
+          };
+          
+          MAP {
+            set items/status = "LICENSED";
+          };
+        };
+      };
+      
+      // Calculate item price with discount
+      MAP {
+        comment: "Calculate final price";
+        set items/basePrice = items/quantity * items/unitPrice;
+        
+        TRANSFORM com.example.pricing:applyDiscount {
+          input {
+            copy items/basePrice -> amount;
+            copy customer/loyaltyPoints -> points;
+            copy applyDiscount -> shouldApplyDiscount;
+          }
+          output {
+            copy discountedPrice -> items/finalPrice;
+            copy discountApplied -> items/discountAmount;
+          }
+        };
+      };
+    };
+    
+    // Calculate total with expression
+    MAP {
+      comment: "Calculate order total";
+      set totalAmount = 0;
+    };
+    
+    INVOKE com.example.calculation:sumItemPrices {
+      input {
+        copy  items -> processedItems;
+      }
+      output {
+        copy total -> totalAmount;
+      }
+    };
+    
+    // REPEAT payment processing with retry logic
+    REPEAT {
+      comment: "Attempt payment processing";
+      count: 3;
+      repeatInterval: 5000;
+      repeatOn: paymentStatus != "SUCCESS" && retryCount < 3;
+      
+      INVOKE com.example.payment:processPayment {
+        timeout: 30;
+        input {
+          copy orderId -> orderReference;
+          copy customer/customerId -> customerId;
+          copy totalAmount -> amount;
+        }
+        output {
+          copy status -> paymentStatus;
+          copy transactionId -> paymentTransactionId;
+        }
+      };
+      
+      MAP {
+        set retryCount = retryCount + 1;
+      };
+    };
+    
+    // Final success mapping
+    MAP {
+      set success = true;
+      set status = "COMPLETED";
+      copy paymentTransactionId -> transactionId;
+    };
+    
+  } CATCH {
+    comment: "Handle processing errors";
+    failures: "com.example.ValidationException,com.example.PaymentException";
+    exitOn: isFatalError == true;
+    
+    MAP {
+      set success = false;
+      set status = "FAILED";
+      copy $error/message -> errorMessage;
+      set isFatalError = errorMessage == "FATAL";
+    };
+    
+    // Log error
+    INVOKE com.example.logging:logError {
+      input {
+        copy orderId -> orderRef;
+        copy errorMessage -> error;
+        set severity = "ERROR";
+      }
+    };
+    
+  } CATCH {
+    comment: "Handle all other exceptions";
+    selection: $error/type == "SystemException";
+    
+    MAP {
+      set success = false;
+      set status = "SYSTEM_ERROR";
+      copy $error/message -> errorMessage;
+    };
+    
+  } FINALLY {
+    comment: "Cleanup and finalization";
+    exitOn: cleanupFailed == true;
+    
+    // Release resources
+    INVOKE com.example.cleanup:releaseResources {
+      input {
+        copy orderId -> orderRef;
+        copy processedItems -> items;
+      }
+      output {
+        copy cleanupStatus -> cleanupResult;
+      }
+    };
+    
+    MAP {
+      set cleanupFailed = cleanupResult != "SUCCESS";
+    };
+    
+    // Audit logging
+    INVOKE com.example.audit:logTransaction {
+      input {
+        copy orderId -> orderRef;
+        copy status -> finalStatus;
+        copy totalAmount -> amount;
+        set timestamp = "2024-01-01T00:00:00Z";
+      }
+    };
+  };
+  
+  // Drop temporary variables
+  MAP {
+    drop validationFailed;
+    drop retryCount;
+    drop paymentStatus;
+    drop cleanupResult;
+  };
+}

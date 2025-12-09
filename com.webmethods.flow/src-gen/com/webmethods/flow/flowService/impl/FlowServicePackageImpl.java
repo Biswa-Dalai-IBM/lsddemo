@@ -737,9 +737,20 @@ public class FlowServicePackageImpl extends EPackageImpl implements FlowServiceP
    * @generated
    */
   @Override
+  public EAttribute getMappingBlock_Direction()
+  {
+    return (EAttribute)mappingBlockEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getMappingBlock_Entries()
   {
-    return (EReference)mappingBlockEClass.getEStructuralFeatures().get(0);
+    return (EReference)mappingBlockEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1600,6 +1611,7 @@ public class FlowServicePackageImpl extends EPackageImpl implements FlowServiceP
     createEReference(invokeStepEClass, INVOKE_STEP__MAPPINGS);
 
     mappingBlockEClass = createEClass(MAPPING_BLOCK);
+    createEAttribute(mappingBlockEClass, MAPPING_BLOCK__DIRECTION);
     createEReference(mappingBlockEClass, MAPPING_BLOCK__ENTRIES);
 
     mappingEntryEClass = createEClass(MAPPING_ENTRY);
@@ -1794,7 +1806,8 @@ public class FlowServicePackageImpl extends EPackageImpl implements FlowServiceP
     initEReference(getInvokeStep_Mappings(), this.getMappingBlock(), null, "mappings", null, 0, -1, InvokeStep.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mappingBlockEClass, MappingBlock.class, "MappingBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getMappingBlock_Entries(), this.getMappingEntry(), null, "entries", null, 0, -1, MappingBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getMappingBlock_Direction(), ecorePackage.getEString(), "direction", null, 0, 1, MappingBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getMappingBlock_Entries(), ecorePackage.getEObject(), null, "entries", null, 0, -1, MappingBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(mappingEntryEClass, MappingEntry.class, "MappingEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

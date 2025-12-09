@@ -185,7 +185,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     BranchStep returns BranchStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* branchProps+=BranchProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* branchProps+=BranchProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_BranchStep(ISerializationContext context, BranchStep semanticObject) {
@@ -213,7 +213,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     CatchStep returns CatchStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* catchProps+=CatchProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* catchProps+=CatchProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_CatchStep(ISerializationContext context, CatchStep semanticObject) {
@@ -287,7 +287,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     ExitStep returns ExitStep
 	 *
 	 * Constraint:
-	 *     exitProps+=ExitProperty+
+	 *     exitProps+=ExitProperty*
 	 * </pre>
 	 */
 	protected void sequence_ExitStep(ISerializationContext context, ExitStep semanticObject) {
@@ -321,7 +321,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     FinallyStep returns FinallyStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* finalProps+=FinallyProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* finalProps+=FinallyProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_FinallyStep(ISerializationContext context, FinallyStep semanticObject) {
@@ -401,7 +401,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     LoopStep returns LoopStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* loopProps+=LoopProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* loopProps+=LoopProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_LoopStep(ISerializationContext context, LoopStep semanticObject) {
@@ -416,7 +416,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     MapStep returns MapStep
 	 *
 	 * Constraint:
-	 *     mapElements+=MapElement+
+	 *     (mapElements+=StepProperty | mapElements+=MappingSetEntry | mapElements+=MappingCopyEntry | mapElements+=TransformStep | mapElements+=DropStep)*
 	 * </pre>
 	 */
 	protected void sequence_MapStep(ISerializationContext context, MapStep semanticObject) {
@@ -430,7 +430,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     MappingBlock returns MappingBlock
 	 *
 	 * Constraint:
-	 *     (entries+=MappingEntry+ | entries+=MappingEntry+)
+	 *     ((direction='input' | direction='output') entries+=MappingCopyEntry? (entries+=MappingSetEntry? entries+=MappingCopyEntry?)*)
 	 * </pre>
 	 */
 	protected void sequence_MappingBlock(ISerializationContext context, MappingBlock semanticObject) {
@@ -519,7 +519,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     RepeatStep returns RepeatStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* repeatProps+=RepeatProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* repeatProps+=RepeatProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_RepeatStep(ISerializationContext context, RepeatStep semanticObject) {
@@ -576,7 +576,7 @@ public class FlowServiceSemanticSequencer extends AbstractDelegatingSemanticSequ
 	 *     SequenceStep returns SequenceStep
 	 *
 	 * Constraint:
-	 *     ((properties+=StepProperty* seqProps+=SequenceProperty+ steps+=Step+) | (properties+=StepProperty* steps+=Step+) | steps+=Step+)?
+	 *     (properties+=StepProperty* seqProps+=SequenceProperty* steps+=Step*)
 	 * </pre>
 	 */
 	protected void sequence_SequenceStep(ISerializationContext context, SequenceStep semanticObject) {

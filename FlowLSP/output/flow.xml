@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FLOW VERSION="3.2" CLEANUP="true">
+
+  <!-- nodes -->
+
+<SEQUENCE TIMEOUT="" EXIT-ON="FAILURE" FORM="TRY">
+  <COMMENT></COMMENT>
+
+  <!-- nodes -->
+
+  <INVOKE TIMEOUT="30" SERVICE="pub.math:divideInts" VALIDATE-IN="true" VALIDATE-OUT="true">
+    <COMMENT></COMMENT>
+
+    <!-- nodes -->
+
+    <MAP MODE="INPUT">
+      <MAPTARGET>
+
+    <Values version="2.0">
+      <record name="xml" javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="modifiable">true</value>
+      </record>
+    </Values>
+    </MAPTARGET>
+      <MAPSOURCE>
+
+    <Values version="2.0">
+      <record name="xml" javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="modifiable">true</value>
+      </record>
+    </Values>
+    </MAPSOURCE>
+
+      <!-- nodes -->
+
+    <MAPCOPY FROM="" TO="">
+    </MAPCOPY>
+
+    <MAPCOPY FROM="" TO="">
+    </MAPCOPY>
+
+    </MAP>
+
+    <MAP MODE="OUTPUT">
+    <MAPCOPY FROM="" TO="">
+    </MAPCOPY>
+
+    </MAP>
+
+  </INVOKE>
+</SEQUENCE>
+
+</FLOW>

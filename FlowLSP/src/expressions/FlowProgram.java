@@ -10,7 +10,7 @@ public class FlowProgram extends FlowElementExpression{
 	List<FlowStepProperty> properties;
 	List<FlowElementExpression> expressions;
 
-	String serviceName;
+	public String serviceName;
 	public FlowProgram() {
 		properties = new ArrayList<FlowStepProperty>();
 		expressions = new ArrayList<FlowElementExpression>();

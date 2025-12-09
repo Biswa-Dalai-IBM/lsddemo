@@ -53,4 +53,8 @@ public class FlowInvokeExpression extends FlowElementExpression{
 		properties.add(property);
 	}
 	
+	public List<FlowStepProperty> getProperties() {
+		return properties;
+	}
+	
 }

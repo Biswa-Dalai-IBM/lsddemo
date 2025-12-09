@@ -6,6 +6,7 @@ package com.webmethods.flow.services;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import org.eclipse.xtext.Action;
 import org.eclipse.xtext.Alternatives;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.Grammar;
@@ -307,42 +308,66 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class MapStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.MapStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cMAPKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cMapElementsAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cMapElementsMapElementParserRuleCall_1_1_0 = (RuleCall)cMapElementsAssignment_1_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
-		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Action cMapStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cMAPKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cMapElementsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final Alternatives cMapElementsAlternatives_2_1_0 = (Alternatives)cMapElementsAssignment_2_1.eContents().get(0);
+		private final RuleCall cMapElementsStepPropertyParserRuleCall_2_1_0_0 = (RuleCall)cMapElementsAlternatives_2_1_0.eContents().get(0);
+		private final RuleCall cMapElementsMappingSetEntryParserRuleCall_2_1_0_1 = (RuleCall)cMapElementsAlternatives_2_1_0.eContents().get(1);
+		private final RuleCall cMapElementsMappingCopyEntryParserRuleCall_2_1_0_2 = (RuleCall)cMapElementsAlternatives_2_1_0.eContents().get(2);
+		private final RuleCall cMapElementsTransformStepParserRuleCall_2_1_0_3 = (RuleCall)cMapElementsAlternatives_2_1_0.eContents().get(3);
+		private final RuleCall cMapElementsDropStepParserRuleCall_2_1_0_4 = (RuleCall)cMapElementsAlternatives_2_1_0.eContents().get(4);
+		private final Keyword cRightCurlyBracketKeyword_2_2 = (Keyword)cGroup_2.eContents().get(2);
+		private final Keyword cSemicolonKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//// === MAP Step ===
 		//MapStep:
-		//    'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
+		//   {MapStep} 'MAP' ('{' mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)* '}')? ';';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'MAP' ('{' (mapElements+=MapElement)* '}')? ';'
+		//{MapStep} 'MAP' ('{' mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)* '}')? ';'
 		public Group getGroup() { return cGroup; }
 		
-		//'MAP'
-		public Keyword getMAPKeyword_0() { return cMAPKeyword_0; }
+		//{MapStep}
+		public Action getMapStepAction_0() { return cMapStepAction_0; }
 		
-		//('{' (mapElements+=MapElement)* '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		//'MAP'
+		public Keyword getMAPKeyword_1() { return cMAPKeyword_1; }
+		
+		//('{' mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)* '}')?
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
-		//(mapElements+=MapElement)*
-		public Assignment getMapElementsAssignment_1_1() { return cMapElementsAssignment_1_1; }
+		//mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)*
+		public Assignment getMapElementsAssignment_2_1() { return cMapElementsAssignment_2_1; }
 		
-		//MapElement
-		public RuleCall getMapElementsMapElementParserRuleCall_1_1_0() { return cMapElementsMapElementParserRuleCall_1_1_0; }
+		//(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)
+		public Alternatives getMapElementsAlternatives_2_1_0() { return cMapElementsAlternatives_2_1_0; }
+		
+		//StepProperty
+		public RuleCall getMapElementsStepPropertyParserRuleCall_2_1_0_0() { return cMapElementsStepPropertyParserRuleCall_2_1_0_0; }
+		
+		//MappingSetEntry
+		public RuleCall getMapElementsMappingSetEntryParserRuleCall_2_1_0_1() { return cMapElementsMappingSetEntryParserRuleCall_2_1_0_1; }
+		
+		//MappingCopyEntry
+		public RuleCall getMapElementsMappingCopyEntryParserRuleCall_2_1_0_2() { return cMapElementsMappingCopyEntryParserRuleCall_2_1_0_2; }
+		
+		//TransformStep
+		public RuleCall getMapElementsTransformStepParserRuleCall_2_1_0_3() { return cMapElementsTransformStepParserRuleCall_2_1_0_3; }
+		
+		//DropStep
+		public RuleCall getMapElementsDropStepParserRuleCall_2_1_0_4() { return cMapElementsDropStepParserRuleCall_2_1_0_4; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_2() { return cRightCurlyBracketKeyword_1_2; }
+		public Keyword getRightCurlyBracketKeyword_2_2() { return cRightCurlyBracketKeyword_2_2; }
 		
 		//';'
-		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
+		public Keyword getSemicolonKeyword_3() { return cSemicolonKeyword_3; }
 	}
 	public class MapElementElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.MapElement");
@@ -544,64 +569,54 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	}
 	public class MappingBlockElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.MappingBlock");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
-		private final Keyword cInputKeyword_0_0 = (Keyword)cGroup_0.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
-		private final Assignment cEntriesAssignment_0_2 = (Assignment)cGroup_0.eContents().get(2);
-		private final RuleCall cEntriesMappingEntryParserRuleCall_0_2_0 = (RuleCall)cEntriesAssignment_0_2.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_0_3 = (Keyword)cGroup_0.eContents().get(3);
-		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
-		private final Keyword cOutputKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
-		private final Assignment cEntriesAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cEntriesMappingEntryParserRuleCall_1_2_0 = (RuleCall)cEntriesAssignment_1_2.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cDirectionAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final Alternatives cDirectionAlternatives_0_0 = (Alternatives)cDirectionAssignment_0.eContents().get(0);
+		private final Keyword cDirectionInputKeyword_0_0_0 = (Keyword)cDirectionAlternatives_0_0.eContents().get(0);
+		private final Keyword cDirectionOutputKeyword_0_0_1 = (Keyword)cDirectionAlternatives_0_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cEntriesAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final Alternatives cEntriesAlternatives_2_0 = (Alternatives)cEntriesAssignment_2.eContents().get(0);
+		private final RuleCall cEntriesMappingCopyEntryParserRuleCall_2_0_0 = (RuleCall)cEntriesAlternatives_2_0.eContents().get(0);
+		private final RuleCall cEntriesMappingSetEntryParserRuleCall_2_0_1 = (RuleCall)cEntriesAlternatives_2_0.eContents().get(1);
+		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//MappingBlock:
-		//    'input' '{' entries+=MappingEntry* '}'
-		//    | 'output' '{' entries+=MappingEntry* '}';
+		//    direction=('input'|'output') '{' entries+=( MappingCopyEntry | MappingSetEntry)* '}';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'input' '{' entries+=MappingEntry* '}'
-		//| 'output' '{' entries+=MappingEntry* '}'
-		public Alternatives getAlternatives() { return cAlternatives; }
+		//direction=('input'|'output') '{' entries+=( MappingCopyEntry | MappingSetEntry)* '}'
+		public Group getGroup() { return cGroup; }
 		
-		//'input' '{' entries+=MappingEntry* '}'
-		public Group getGroup_0() { return cGroup_0; }
+		//direction=('input'|'output')
+		public Assignment getDirectionAssignment_0() { return cDirectionAssignment_0; }
+		
+		//('input'|'output')
+		public Alternatives getDirectionAlternatives_0_0() { return cDirectionAlternatives_0_0; }
 		
 		//'input'
-		public Keyword getInputKeyword_0_0() { return cInputKeyword_0_0; }
-		
-		//'{'
-		public Keyword getLeftCurlyBracketKeyword_0_1() { return cLeftCurlyBracketKeyword_0_1; }
-		
-		//entries+=MappingEntry*
-		public Assignment getEntriesAssignment_0_2() { return cEntriesAssignment_0_2; }
-		
-		//MappingEntry
-		public RuleCall getEntriesMappingEntryParserRuleCall_0_2_0() { return cEntriesMappingEntryParserRuleCall_0_2_0; }
-		
-		//'}'
-		public Keyword getRightCurlyBracketKeyword_0_3() { return cRightCurlyBracketKeyword_0_3; }
-		
-		//'output' '{' entries+=MappingEntry* '}'
-		public Group getGroup_1() { return cGroup_1; }
+		public Keyword getDirectionInputKeyword_0_0_0() { return cDirectionInputKeyword_0_0_0; }
 		
 		//'output'
-		public Keyword getOutputKeyword_1_0() { return cOutputKeyword_1_0; }
+		public Keyword getDirectionOutputKeyword_0_0_1() { return cDirectionOutputKeyword_0_0_1; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_1() { return cLeftCurlyBracketKeyword_1_1; }
+		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
 		
-		//entries+=MappingEntry*
-		public Assignment getEntriesAssignment_1_2() { return cEntriesAssignment_1_2; }
+		//entries+=( MappingCopyEntry | MappingSetEntry)*
+		public Assignment getEntriesAssignment_2() { return cEntriesAssignment_2; }
 		
-		//MappingEntry
-		public RuleCall getEntriesMappingEntryParserRuleCall_1_2_0() { return cEntriesMappingEntryParserRuleCall_1_2_0; }
+		//( MappingCopyEntry | MappingSetEntry)
+		public Alternatives getEntriesAlternatives_2_0() { return cEntriesAlternatives_2_0; }
+		
+		//MappingCopyEntry
+		public RuleCall getEntriesMappingCopyEntryParserRuleCall_2_0_0() { return cEntriesMappingCopyEntryParserRuleCall_2_0_0; }
+		
+		//MappingSetEntry
+		public RuleCall getEntriesMappingSetEntryParserRuleCall_2_0_1() { return cEntriesMappingSetEntryParserRuleCall_2_0_1; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_3() { return cRightCurlyBracketKeyword_1_3; }
+		public Keyword getRightCurlyBracketKeyword_3() { return cRightCurlyBracketKeyword_3; }
 	}
 	public class MappingEntryElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.MappingEntry");
@@ -843,66 +858,70 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class LoopStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.LoopStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cLOOPKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cLoopPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cLoopPropsLoopPropertyParserRuleCall_1_2_0 = (RuleCall)cLoopPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cLoopStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cLOOPKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cLoopPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cLoopPropsLoopPropertyParserRuleCall_2_2_0 = (RuleCall)cLoopPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//// === LOOP Step ===
 		//LoopStep:
-		//    'LOOP' ('{'
+		//    {LoopStep} 'LOOP' ('{'
 		//        properties+=StepProperty*
 		//        loopProps+=LoopProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'LOOP' ('{'
+		//{LoopStep} 'LOOP' ('{'
 		//    properties+=StepProperty*
 		//    loopProps+=LoopProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{LoopStep}
+		public Action getLoopStepAction_0() { return cLoopStepAction_0; }
+		
 		//'LOOP'
-		public Keyword getLOOPKeyword_0() { return cLOOPKeyword_0; }
+		public Keyword getLOOPKeyword_1() { return cLOOPKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       loopProps+=LoopProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//loopProps+=LoopProperty*
-		public Assignment getLoopPropsAssignment_1_2() { return cLoopPropsAssignment_1_2; }
+		public Assignment getLoopPropsAssignment_2_2() { return cLoopPropsAssignment_2_2; }
 		
 		//LoopProperty
-		public RuleCall getLoopPropsLoopPropertyParserRuleCall_1_2_0() { return cLoopPropsLoopPropertyParserRuleCall_1_2_0; }
+		public RuleCall getLoopPropsLoopPropertyParserRuleCall_2_2_0() { return cLoopPropsLoopPropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class LoopPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.LoopProperty");
@@ -961,66 +980,70 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class SequenceStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.SequenceStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cSEQUENCEKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cSeqPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cSeqPropsSequencePropertyParserRuleCall_1_2_0 = (RuleCall)cSeqPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cSequenceStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cSEQUENCEKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cSeqPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cSeqPropsSequencePropertyParserRuleCall_2_2_0 = (RuleCall)cSeqPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//// === SEQUENCE Step ===
 		//SequenceStep:
-		//    'SEQUENCE' ('{'
+		//    {SequenceStep} 'SEQUENCE' ('{'
 		//        properties+=StepProperty*
 		//        seqProps+=SequenceProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'SEQUENCE' ('{'
+		//{SequenceStep} 'SEQUENCE' ('{'
 		//    properties+=StepProperty*
 		//    seqProps+=SequenceProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{SequenceStep}
+		public Action getSequenceStepAction_0() { return cSequenceStepAction_0; }
+		
 		//'SEQUENCE'
-		public Keyword getSEQUENCEKeyword_0() { return cSEQUENCEKeyword_0; }
+		public Keyword getSEQUENCEKeyword_1() { return cSEQUENCEKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       seqProps+=SequenceProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//seqProps+=SequenceProperty*
-		public Assignment getSeqPropsAssignment_1_2() { return cSeqPropsAssignment_1_2; }
+		public Assignment getSeqPropsAssignment_2_2() { return cSeqPropsAssignment_2_2; }
 		
 		//SequenceProperty
-		public RuleCall getSeqPropsSequencePropertyParserRuleCall_1_2_0() { return cSeqPropsSequencePropertyParserRuleCall_1_2_0; }
+		public RuleCall getSeqPropsSequencePropertyParserRuleCall_2_2_0() { return cSeqPropsSequencePropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class SequencePropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.SequenceProperty");
@@ -1052,74 +1075,78 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class TryStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.TryStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cTRYKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
-		private final Assignment cPropertiesAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_0_0 = (RuleCall)cPropertiesAssignment_2_0.eContents().get(0);
-		private final Assignment cTryPropsAssignment_2_1 = (Assignment)cAlternatives_2.eContents().get(1);
-		private final RuleCall cTryPropsTryPropertyParserRuleCall_2_1_0 = (RuleCall)cTryPropsAssignment_2_1.eContents().get(0);
-		private final Assignment cStepsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_3_0 = (RuleCall)cStepsAssignment_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cCatchesAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cCatchesCatchStepParserRuleCall_5_0 = (RuleCall)cCatchesAssignment_5.eContents().get(0);
-		private final Assignment cFinallyBlockAssignment_6 = (Assignment)cGroup.eContents().get(6);
-		private final RuleCall cFinallyBlockFinallyStepParserRuleCall_6_0 = (RuleCall)cFinallyBlockAssignment_6.eContents().get(0);
+		private final Action cTryStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cTRYKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Assignment cPropertiesAssignment_3_0 = (Assignment)cAlternatives_3.eContents().get(0);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_3_0_0 = (RuleCall)cPropertiesAssignment_3_0.eContents().get(0);
+		private final Assignment cTryPropsAssignment_3_1 = (Assignment)cAlternatives_3.eContents().get(1);
+		private final RuleCall cTryPropsTryPropertyParserRuleCall_3_1_0 = (RuleCall)cTryPropsAssignment_3_1.eContents().get(0);
+		private final Assignment cStepsAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cStepsStepParserRuleCall_4_0 = (RuleCall)cStepsAssignment_4.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cCatchesAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cCatchesCatchStepParserRuleCall_6_0 = (RuleCall)cCatchesAssignment_6.eContents().get(0);
+		private final Assignment cFinallyBlockAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cFinallyBlockFinallyStepParserRuleCall_7_0 = (RuleCall)cFinallyBlockAssignment_7.eContents().get(0);
 		
 		//// === TRY / CATCH / FINALLY ===
 		//TryStep:
-		//    'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
+		//    {TryStep} 'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
 		//    catches+=CatchStep*
 		//    finallyBlock=FinallyStep?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
+		//{TryStep} 'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
 		//catches+=CatchStep*
 		//finallyBlock=FinallyStep?
 		public Group getGroup() { return cGroup; }
 		
+		//{TryStep}
+		public Action getTryStepAction_0() { return cTryStepAction_0; }
+		
 		//'TRY'
-		public Keyword getTRYKeyword_0() { return cTRYKeyword_0; }
+		public Keyword getTRYKeyword_1() { return cTRYKeyword_1; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
+		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 		
 		//(properties+=StepProperty | tryProps+=TryProperty)*
-		public Alternatives getAlternatives_2() { return cAlternatives_2; }
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
 		
 		//properties+=StepProperty
-		public Assignment getPropertiesAssignment_2_0() { return cPropertiesAssignment_2_0; }
+		public Assignment getPropertiesAssignment_3_0() { return cPropertiesAssignment_3_0; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_2_0_0() { return cPropertiesStepPropertyParserRuleCall_2_0_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_3_0_0() { return cPropertiesStepPropertyParserRuleCall_3_0_0; }
 		
 		//tryProps+=TryProperty
-		public Assignment getTryPropsAssignment_2_1() { return cTryPropsAssignment_2_1; }
+		public Assignment getTryPropsAssignment_3_1() { return cTryPropsAssignment_3_1; }
 		
 		//TryProperty
-		public RuleCall getTryPropsTryPropertyParserRuleCall_2_1_0() { return cTryPropsTryPropertyParserRuleCall_2_1_0; }
+		public RuleCall getTryPropsTryPropertyParserRuleCall_3_1_0() { return cTryPropsTryPropertyParserRuleCall_3_1_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_3() { return cStepsAssignment_3; }
+		public Assignment getStepsAssignment_4() { return cStepsAssignment_4; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_3_0() { return cStepsStepParserRuleCall_3_0; }
+		public RuleCall getStepsStepParserRuleCall_4_0() { return cStepsStepParserRuleCall_4_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_4() { return cRightCurlyBracketKeyword_4; }
+		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
 		
 		//catches+=CatchStep*
-		public Assignment getCatchesAssignment_5() { return cCatchesAssignment_5; }
+		public Assignment getCatchesAssignment_6() { return cCatchesAssignment_6; }
 		
 		//CatchStep
-		public RuleCall getCatchesCatchStepParserRuleCall_5_0() { return cCatchesCatchStepParserRuleCall_5_0; }
+		public RuleCall getCatchesCatchStepParserRuleCall_6_0() { return cCatchesCatchStepParserRuleCall_6_0; }
 		
 		//finallyBlock=FinallyStep?
-		public Assignment getFinallyBlockAssignment_6() { return cFinallyBlockAssignment_6; }
+		public Assignment getFinallyBlockAssignment_7() { return cFinallyBlockAssignment_7; }
 		
 		//FinallyStep
-		public RuleCall getFinallyBlockFinallyStepParserRuleCall_6_0() { return cFinallyBlockFinallyStepParserRuleCall_6_0; }
+		public RuleCall getFinallyBlockFinallyStepParserRuleCall_7_0() { return cFinallyBlockFinallyStepParserRuleCall_7_0; }
 	}
 	public class TryPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.TryProperty");
@@ -1151,65 +1178,69 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class CatchStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.CatchStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cCATCHKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cCatchPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cCatchPropsCatchPropertyParserRuleCall_1_2_0 = (RuleCall)cCatchPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cCatchStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cCATCHKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cCatchPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cCatchPropsCatchPropertyParserRuleCall_2_2_0 = (RuleCall)cCatchPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//CatchStep:
-		//    'CATCH' ('{'
+		//    {CatchStep} 'CATCH' ('{'
 		//        properties+=StepProperty*
 		//        catchProps+=CatchProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'CATCH' ('{'
+		//{CatchStep} 'CATCH' ('{'
 		//    properties+=StepProperty*
 		//    catchProps+=CatchProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{CatchStep}
+		public Action getCatchStepAction_0() { return cCatchStepAction_0; }
+		
 		//'CATCH'
-		public Keyword getCATCHKeyword_0() { return cCATCHKeyword_0; }
+		public Keyword getCATCHKeyword_1() { return cCATCHKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       catchProps+=CatchProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//catchProps+=CatchProperty*
-		public Assignment getCatchPropsAssignment_1_2() { return cCatchPropsAssignment_1_2; }
+		public Assignment getCatchPropsAssignment_2_2() { return cCatchPropsAssignment_2_2; }
 		
 		//CatchProperty
-		public RuleCall getCatchPropsCatchPropertyParserRuleCall_1_2_0() { return cCatchPropsCatchPropertyParserRuleCall_1_2_0; }
+		public RuleCall getCatchPropsCatchPropertyParserRuleCall_2_2_0() { return cCatchPropsCatchPropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class CatchPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.CatchProperty");
@@ -1289,65 +1320,69 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class FinallyStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.FinallyStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cFINALLYKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cFinalPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cFinalPropsFinallyPropertyParserRuleCall_1_2_0 = (RuleCall)cFinalPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cFinallyStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cFINALLYKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cFinalPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cFinalPropsFinallyPropertyParserRuleCall_2_2_0 = (RuleCall)cFinalPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//FinallyStep:
-		//    'FINALLY' ('{'
+		//    {FinallyStep} 'FINALLY' ('{'
 		//        properties+=StepProperty*
 		//        finalProps+=FinallyProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'FINALLY' ('{'
+		//{FinallyStep} 'FINALLY' ('{'
 		//    properties+=StepProperty*
 		//    finalProps+=FinallyProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{FinallyStep}
+		public Action getFinallyStepAction_0() { return cFinallyStepAction_0; }
+		
 		//'FINALLY'
-		public Keyword getFINALLYKeyword_0() { return cFINALLYKeyword_0; }
+		public Keyword getFINALLYKeyword_1() { return cFINALLYKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       finalProps+=FinallyProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//finalProps+=FinallyProperty*
-		public Assignment getFinalPropsAssignment_1_2() { return cFinalPropsAssignment_1_2; }
+		public Assignment getFinalPropsAssignment_2_2() { return cFinalPropsAssignment_2_2; }
 		
 		//FinallyProperty
-		public RuleCall getFinalPropsFinallyPropertyParserRuleCall_1_2_0() { return cFinalPropsFinallyPropertyParserRuleCall_1_2_0; }
+		public RuleCall getFinalPropsFinallyPropertyParserRuleCall_2_2_0() { return cFinalPropsFinallyPropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class FinallyPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.FinallyProperty");
@@ -1379,66 +1414,70 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class BranchStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.BranchStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cBRANCHKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cBranchPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cBranchPropsBranchPropertyParserRuleCall_1_2_0 = (RuleCall)cBranchPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cBranchStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cBRANCHKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cBranchPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cBranchPropsBranchPropertyParserRuleCall_2_2_0 = (RuleCall)cBranchPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//// === BRANCH Step ===
 		//BranchStep:
-		//    'BRANCH' ('{'
+		//    {BranchStep} 'BRANCH' ('{'
 		//        properties+=StepProperty*
 		//        branchProps+=BranchProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'BRANCH' ('{'
+		//{BranchStep} 'BRANCH' ('{'
 		//    properties+=StepProperty*
 		//    branchProps+=BranchProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{BranchStep}
+		public Action getBranchStepAction_0() { return cBranchStepAction_0; }
+		
 		//'BRANCH'
-		public Keyword getBRANCHKeyword_0() { return cBRANCHKeyword_0; }
+		public Keyword getBRANCHKeyword_1() { return cBRANCHKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       branchProps+=BranchProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//branchProps+=BranchProperty*
-		public Assignment getBranchPropsAssignment_1_2() { return cBranchPropsAssignment_1_2; }
+		public Assignment getBranchPropsAssignment_2_2() { return cBranchPropsAssignment_2_2; }
 		
 		//BranchProperty
-		public RuleCall getBranchPropsBranchPropertyParserRuleCall_1_2_0() { return cBranchPropsBranchPropertyParserRuleCall_1_2_0; }
+		public RuleCall getBranchPropsBranchPropertyParserRuleCall_2_2_0() { return cBranchPropsBranchPropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class BranchPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.BranchProperty");
@@ -1496,66 +1535,70 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class RepeatStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.RepeatStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cREPEATKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cPropertiesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cPropertiesStepPropertyParserRuleCall_1_1_0 = (RuleCall)cPropertiesAssignment_1_1.eContents().get(0);
-		private final Assignment cRepeatPropsAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
-		private final RuleCall cRepeatPropsRepeatPropertyParserRuleCall_1_2_0 = (RuleCall)cRepeatPropsAssignment_1_2.eContents().get(0);
-		private final Assignment cStepsAssignment_1_3 = (Assignment)cGroup_1.eContents().get(3);
-		private final RuleCall cStepsStepParserRuleCall_1_3_0 = (RuleCall)cStepsAssignment_1_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_4 = (Keyword)cGroup_1.eContents().get(4);
+		private final Action cRepeatStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cREPEATKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cPropertiesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cPropertiesStepPropertyParserRuleCall_2_1_0 = (RuleCall)cPropertiesAssignment_2_1.eContents().get(0);
+		private final Assignment cRepeatPropsAssignment_2_2 = (Assignment)cGroup_2.eContents().get(2);
+		private final RuleCall cRepeatPropsRepeatPropertyParserRuleCall_2_2_0 = (RuleCall)cRepeatPropsAssignment_2_2.eContents().get(0);
+		private final Assignment cStepsAssignment_2_3 = (Assignment)cGroup_2.eContents().get(3);
+		private final RuleCall cStepsStepParserRuleCall_2_3_0 = (RuleCall)cStepsAssignment_2_3.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_4 = (Keyword)cGroup_2.eContents().get(4);
 		
 		//// === REPEAT Step ===
 		//RepeatStep:
-		//    'REPEAT' ('{'
+		//    {RepeatStep} 'REPEAT' ('{'
 		//        properties+=StepProperty*
 		//        repeatProps+=RepeatProperty*
 		//        steps+=Step*
 		//    '}')?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'REPEAT' ('{'
+		//{RepeatStep} 'REPEAT' ('{'
 		//    properties+=StepProperty*
 		//    repeatProps+=RepeatProperty*
 		//    steps+=Step*
 		//'}')?
 		public Group getGroup() { return cGroup; }
 		
+		//{RepeatStep}
+		public Action getRepeatStepAction_0() { return cRepeatStepAction_0; }
+		
 		//'REPEAT'
-		public Keyword getREPEATKeyword_0() { return cREPEATKeyword_0; }
+		public Keyword getREPEATKeyword_1() { return cREPEATKeyword_1; }
 		
 		//('{'
 		//       properties+=StepProperty*
 		//       repeatProps+=RepeatProperty*
 		//       steps+=Step*
 		//   '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//properties+=StepProperty*
-		public Assignment getPropertiesAssignment_1_1() { return cPropertiesAssignment_1_1; }
+		public Assignment getPropertiesAssignment_2_1() { return cPropertiesAssignment_2_1; }
 		
 		//StepProperty
-		public RuleCall getPropertiesStepPropertyParserRuleCall_1_1_0() { return cPropertiesStepPropertyParserRuleCall_1_1_0; }
+		public RuleCall getPropertiesStepPropertyParserRuleCall_2_1_0() { return cPropertiesStepPropertyParserRuleCall_2_1_0; }
 		
 		//repeatProps+=RepeatProperty*
-		public Assignment getRepeatPropsAssignment_1_2() { return cRepeatPropsAssignment_1_2; }
+		public Assignment getRepeatPropsAssignment_2_2() { return cRepeatPropsAssignment_2_2; }
 		
 		//RepeatProperty
-		public RuleCall getRepeatPropsRepeatPropertyParserRuleCall_1_2_0() { return cRepeatPropsRepeatPropertyParserRuleCall_1_2_0; }
+		public RuleCall getRepeatPropsRepeatPropertyParserRuleCall_2_2_0() { return cRepeatPropsRepeatPropertyParserRuleCall_2_2_0; }
 		
 		//steps+=Step*
-		public Assignment getStepsAssignment_1_3() { return cStepsAssignment_1_3; }
+		public Assignment getStepsAssignment_2_3() { return cStepsAssignment_2_3; }
 		
 		//Step
-		public RuleCall getStepsStepParserRuleCall_1_3_0() { return cStepsStepParserRuleCall_1_3_0; }
+		public RuleCall getStepsStepParserRuleCall_2_3_0() { return cStepsStepParserRuleCall_2_3_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_4() { return cRightCurlyBracketKeyword_1_4; }
+		public Keyword getRightCurlyBracketKeyword_2_4() { return cRightCurlyBracketKeyword_2_4; }
 	}
 	public class RepeatPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.RepeatProperty");
@@ -1635,42 +1678,46 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	public class ExitStepElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.ExitStep");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cEXITKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cExitPropsAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cExitPropsExitPropertyParserRuleCall_1_1_0 = (RuleCall)cExitPropsAssignment_1_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
-		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Action cExitStepAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cEXITKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftCurlyBracketKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cExitPropsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cExitPropsExitPropertyParserRuleCall_2_1_0 = (RuleCall)cExitPropsAssignment_2_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_2_2 = (Keyword)cGroup_2.eContents().get(2);
+		private final Keyword cSemicolonKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//// === EXIT Step ===
 		//ExitStep:
-		//    'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
+		//    {ExitStep} 'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'EXIT' ('{' exitProps+=ExitProperty* '}')? ';'
+		//{ExitStep} 'EXIT' ('{' exitProps+=ExitProperty* '}')? ';'
 		public Group getGroup() { return cGroup; }
 		
+		//{ExitStep}
+		public Action getExitStepAction_0() { return cExitStepAction_0; }
+		
 		//'EXIT'
-		public Keyword getEXITKeyword_0() { return cEXITKeyword_0; }
+		public Keyword getEXITKeyword_1() { return cEXITKeyword_1; }
 		
 		//('{' exitProps+=ExitProperty* '}')?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_1_0() { return cLeftCurlyBracketKeyword_1_0; }
+		public Keyword getLeftCurlyBracketKeyword_2_0() { return cLeftCurlyBracketKeyword_2_0; }
 		
 		//exitProps+=ExitProperty*
-		public Assignment getExitPropsAssignment_1_1() { return cExitPropsAssignment_1_1; }
+		public Assignment getExitPropsAssignment_2_1() { return cExitPropsAssignment_2_1; }
 		
 		//ExitProperty
-		public RuleCall getExitPropsExitPropertyParserRuleCall_1_1_0() { return cExitPropsExitPropertyParserRuleCall_1_1_0; }
+		public RuleCall getExitPropsExitPropertyParserRuleCall_2_1_0() { return cExitPropsExitPropertyParserRuleCall_2_1_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_1_2() { return cRightCurlyBracketKeyword_1_2; }
+		public Keyword getRightCurlyBracketKeyword_2_2() { return cRightCurlyBracketKeyword_2_2; }
 		
 		//';'
-		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
+		public Keyword getSemicolonKeyword_3() { return cSemicolonKeyword_3; }
 	}
 	public class ExitPropertyElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.webmethods.flow.FlowService.ExitProperty");
@@ -2048,7 +2095,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === MAP Step ===
 	//MapStep:
-	//    'MAP' ('{' (mapElements+=MapElement)* '}')? ';';
+	//   {MapStep} 'MAP' ('{' mapElements+=(StepProperty | MappingSetEntry | MappingCopyEntry | TransformStep | DropStep)* '}')? ';';
 	public MapStepElements getMapStepAccess() {
 		return pMapStep;
 	}
@@ -2104,8 +2151,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	}
 	
 	//MappingBlock:
-	//    'input' '{' entries+=MappingEntry* '}'
-	//    | 'output' '{' entries+=MappingEntry* '}';
+	//    direction=('input'|'output') '{' entries+=( MappingCopyEntry | MappingSetEntry)* '}';
 	public MappingBlockElements getMappingBlockAccess() {
 		return pMappingBlock;
 	}
@@ -2186,7 +2232,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === LOOP Step ===
 	//LoopStep:
-	//    'LOOP' ('{'
+	//    {LoopStep} 'LOOP' ('{'
 	//        properties+=StepProperty*
 	//        loopProps+=LoopProperty*
 	//        steps+=Step*
@@ -2213,7 +2259,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === SEQUENCE Step ===
 	//SequenceStep:
-	//    'SEQUENCE' ('{'
+	//    {SequenceStep} 'SEQUENCE' ('{'
 	//        properties+=StepProperty*
 	//        seqProps+=SequenceProperty*
 	//        steps+=Step*
@@ -2238,7 +2284,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === TRY / CATCH / FINALLY ===
 	//TryStep:
-	//    'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
+	//    {TryStep} 'TRY' '{' (properties+=StepProperty | tryProps+=TryProperty)* steps+=Step* '}'
 	//    catches+=CatchStep*
 	//    finallyBlock=FinallyStep?;
 	public TryStepElements getTryStepAccess() {
@@ -2260,7 +2306,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	}
 	
 	//CatchStep:
-	//    'CATCH' ('{'
+	//    {CatchStep} 'CATCH' ('{'
 	//        properties+=StepProperty*
 	//        catchProps+=CatchProperty*
 	//        steps+=Step*
@@ -2286,7 +2332,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	}
 	
 	//FinallyStep:
-	//    'FINALLY' ('{'
+	//    {FinallyStep} 'FINALLY' ('{'
 	//        properties+=StepProperty*
 	//        finalProps+=FinallyProperty*
 	//        steps+=Step*
@@ -2311,7 +2357,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === BRANCH Step ===
 	//BranchStep:
-	//    'BRANCH' ('{'
+	//    {BranchStep} 'BRANCH' ('{'
 	//        properties+=StepProperty*
 	//        branchProps+=BranchProperty*
 	//        steps+=Step*
@@ -2337,7 +2383,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === REPEAT Step ===
 	//RepeatStep:
-	//    'REPEAT' ('{'
+	//    {RepeatStep} 'REPEAT' ('{'
 	//        properties+=StepProperty*
 	//        repeatProps+=RepeatProperty*
 	//        steps+=Step*
@@ -2364,7 +2410,7 @@ public class FlowServiceGrammarAccess extends AbstractElementFinder.AbstractGram
 	
 	//// === EXIT Step ===
 	//ExitStep:
-	//    'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
+	//    {ExitStep} 'EXIT' ('{' exitProps+=ExitProperty* '}')? ';';
 	public ExitStepElements getExitStepAccess() {
 		return pExitStep;
 	}

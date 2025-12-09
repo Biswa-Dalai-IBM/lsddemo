@@ -15,5 +15,9 @@ public class FlowExitExpression extends FlowElementExpression {
 	public void addProperty(FlowStepProperty property) {
 		properties.add(property);
 	}
+	
+	public List<FlowStepProperty> getProperties() {
+		return properties;
+	}
 
 }

@@ -1,0 +1,45 @@
+// Simple try catch Service Test
+service SimpleTestService (
+  input {
+    String n1 [required];
+    String n2 [required];
+  }
+  output {
+    String result;
+    String error;
+  }
+)
+{
+  TRY {
+     INVOKE pub.math:divideInts {
+  
+      timeout: 30;
+      validateInput: true;
+      validateOutput: true;
+      input {
+        copy n1 -> num1;
+        copy n2 -> num2;
+      }
+      output {
+        copy value -> result;
+      }
+    };
+  }CATCH{
+     INVOKE pub.flow:getLastError {
+        timeout: 30;
+        validateInput: true;
+        validateOutput: true;
+        output {
+          copy lastError/error -> error;
+        }
+    };
+  }FINALLY{
+    MAP {
+      set block = "FINALLY BLOCK";
+      drop num1;
+      drop num2;
+      drop value;
+      drop lastError;
+    };
+  };
+}

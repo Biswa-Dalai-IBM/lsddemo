@@ -49,6 +49,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FlowService.ecore#//InvokeStep/mappings"/>
     </genClasses>
     <genClasses ecoreClass="FlowService.ecore#//MappingBlock">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FlowService.ecore#//MappingBlock/direction"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FlowService.ecore#//MappingBlock/entries"/>
     </genClasses>
     <genClasses ecoreClass="FlowService.ecore#//MappingEntry"/>

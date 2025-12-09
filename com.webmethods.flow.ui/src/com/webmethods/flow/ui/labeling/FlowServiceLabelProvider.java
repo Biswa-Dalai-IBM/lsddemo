@@ -8,13 +8,19 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 
 import com.google.inject.Inject;
 import com.webmethods.flow.flowService.BranchStep;
+import com.webmethods.flow.flowService.CatchStep;
+import com.webmethods.flow.flowService.DropStep;
 import com.webmethods.flow.flowService.ExitStep;
+import com.webmethods.flow.flowService.FinallyStep;
 import com.webmethods.flow.flowService.FlowService;
 import com.webmethods.flow.flowService.InvokeStep;
 import com.webmethods.flow.flowService.LoopStep;
 import com.webmethods.flow.flowService.MapStep;
+import com.webmethods.flow.flowService.MappingBlock;
+import com.webmethods.flow.flowService.MappingCopyEntry;
 import com.webmethods.flow.flowService.RepeatStep;
 import com.webmethods.flow.flowService.SequenceStep;
+import com.webmethods.flow.flowService.TransformStep;
 import com.webmethods.flow.flowService.TryStep;
 
 /**
@@ -29,48 +35,71 @@ public class FlowServiceLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate);
 	}
 
-	   String text(InvokeStep step) {
-	        return "INVOKE";
-	    }
+	String text(InvokeStep step) {
+		return "INVOKE";
+	}
 
-	    String text(MapStep step) {
-	        return "MAP";
-	    }
+	String text(MapStep step) {
+		return "MAP";
+	}
 
-	    String text(LoopStep step) {
-	        return "LOOP";
-	    }
-
-	    String text(SequenceStep step) {
-	        return "SEQUENCE";
-	    }
-
-	    String text(BranchStep step) {
-	        return "BRANCH";
-	    }
-
-	    String text(RepeatStep step) {
-	        return "REPEAT";
-	    }
-
-	    String text(TryStep step) {
-	        return "TRY";
-	    }
-
-	    String text(ExitStep step) {
-	        return "EXIT";
-	    }
-
-	    String text(FlowService service) {
-	        return "service: " + service.getName();
-	    }
-	// Labels and icons can be computed like this:
+	String text(LoopStep step) {
+		return "LOOP";
+	}
 	
-//	String text(Greeting ele) {
-//		return "A greeting to " + ele.getName();
-//	}
-//
-//	String image(Greeting ele) {
-//		return "Greeting.gif";
-//	}
+	String text(TransformStep step) {
+		return "TRANSFORM";
+	}
+	
+	String text(DropStep step) {
+		return "drop variable "+step.getPath();
+	}
+	
+	String text(MappingCopyEntry step) {
+		return "copy from "+step.getFromPath()+" to "+step.getToPath();
+	}
+
+	String text(SequenceStep step) {
+		return "SEQUENCE";
+	}
+
+	String text(BranchStep step) {
+		return "BRANCH";
+	}
+
+	String text(RepeatStep step) {
+		return "REPEAT";
+	}
+
+	String text(TryStep step) {
+		return "TRY";
+	}
+
+	String text(ExitStep step) {
+		return "EXIT";
+	}
+
+	String text(CatchStep step) {
+		return "CATCH";
+	}
+	String text(FinallyStep step) {
+		return "FINALLY";
+	}
+	String text(FlowService service) {
+		return "service: " + service.getName();
+	}
+	
+	String text( MappingBlock mappingBlock) {
+		return mappingBlock.getDirection();
+	}
+	
+	// Labels and icons can be computed like this:
+
+	//	String text(Greeting ele) {
+	//		return "A greeting to " + ele.getName();
+	//	}
+	//
+	//	String image(Greeting ele) {
+	//		return "Greeting.gif";
+	//	}
 }

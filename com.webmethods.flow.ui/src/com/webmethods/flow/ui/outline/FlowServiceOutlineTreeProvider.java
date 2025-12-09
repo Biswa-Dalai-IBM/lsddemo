@@ -3,6 +3,7 @@
  */
 package com.webmethods.flow.ui.outline;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
 /**
@@ -11,5 +12,15 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
  * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#outline
  */
 public class FlowServiceOutlineTreeProvider extends DefaultOutlineTreeProvider {
+	
+	@Override
+	protected void _createChildren(Object parent, Object element) {
+		super._createChildren(parent, element);
+	}
+	
+	@Override
+	protected void _createNode(Object parentObject, EObject modelElement) {
+		super._createNode(parentObject, modelElement);
+	}
 
 }

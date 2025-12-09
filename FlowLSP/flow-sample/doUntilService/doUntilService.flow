@@ -1,0 +1,33 @@
+service doUntilService(
+  output {
+    String result;
+  }
+){
+    MAP {
+      set n1 = 1;
+    };
+    
+    DO {
+        maxIteration: -1;
+        INVOKE pub.math:addInts {
+            timeout: 30;
+            validateInput: true;
+            validateOutput: true;
+            input {
+                copy n1 -> num1;
+                set num2=1;
+            }
+            output {
+                copy value -> n1;
+            }
+        };
+    } UNTIL(n1==3);
+
+    MAP {
+      set n1 = result;
+      drop n1;
+      drop num1;
+      drop num2;
+      drop value;
+    };
+}

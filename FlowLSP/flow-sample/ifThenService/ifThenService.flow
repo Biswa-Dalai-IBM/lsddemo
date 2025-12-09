@@ -1,0 +1,26 @@
+service ifThenService(
+    input{
+        String score; 
+    }
+    output {
+        String output;
+    }
+){
+    IF(score>=90){
+        MAP{
+            set output = "Grade: A";
+        };
+    }ELSEIF(score>=75){
+        MAP{
+            set output = "Grade: B";
+        };
+    }ELSEIF(score>=60){
+        MAP{
+            set output = "Grade: C";
+        };
+    }ELSE{
+        MAP{
+            set output = "Grade: D";
+        };
+    };
+}
