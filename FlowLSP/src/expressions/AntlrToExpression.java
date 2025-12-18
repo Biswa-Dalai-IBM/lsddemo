@@ -314,10 +314,18 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression>{
 					for (ParameterDeclaration param : blockSignature.getSourceParameters()) {
 						mapSignature.addSourceParameter(param);
 					}
+					// Copy source identifier if present
+					if (blockSignature.getSourceIdentifier() != null) {
+						mapSignature.setSourceIdentifier(blockSignature.getSourceIdentifier());
+					}
 				}
 				if (blockSignature.hasTargetParameters()) {
 					for (ParameterDeclaration param : blockSignature.getTargetParameters()) {
 						mapSignature.addTargetParameter(param);
+					}
+					// Copy target identifier if present
+					if (blockSignature.getTargetIdentifier() != null) {
+						mapSignature.setTargetIdentifier(blockSignature.getTargetIdentifier());
 					}
 				}
 			}
@@ -465,10 +473,18 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression>{
 					for (ParameterDeclaration param : blockSignature.getSourceParameters()) {
 						mapSignature.addSourceParameter(param);
 					}
+					// Copy source identifier if present
+					if (blockSignature.getSourceIdentifier() != null) {
+						mapSignature.setSourceIdentifier(blockSignature.getSourceIdentifier());
+					}
 				}
 				if (blockSignature.hasTargetParameters()) {
 					for (ParameterDeclaration param : blockSignature.getTargetParameters()) {
 						mapSignature.addTargetParameter(param);
+					}
+					// Copy target identifier if present
+					if (blockSignature.getTargetIdentifier() != null) {
+						mapSignature.setTargetIdentifier(blockSignature.getTargetIdentifier());
 					}
 				}
 			}
@@ -961,6 +977,17 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression>{
 		MapSignature mapSignature = new MapSignature();
 		
 		boolean isSource = ctx.getStart().getText().equals("mapSource");
+		
+		// Extract the identifier from brackets if present
+		// Grammar: 'mapSource' ('[' identifier ']')? '{' parameterDeclaration* '}'
+		if (ctx.identifier() != null) {
+			String identifier = ctx.identifier().getText();
+			if (isSource) {
+				mapSignature.setSourceIdentifier(identifier);
+			} else {
+				mapSignature.setTargetIdentifier(identifier);
+			}
+		}
 		
 		// Process all parameter declarations in this block
 		for (FlowServiceParser.ParameterDeclarationContext paramCtx : ctx.parameterDeclaration()) {

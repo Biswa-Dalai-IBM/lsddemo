@@ -14,8 +14,8 @@ signatureBlock
     | 'output' '{' parameterDeclaration* '}'
     ;
 mapSignatureBlock
-    : 'mapSource' ('[' ']')? '{' parameterDeclaration* '}'
-    | 'mapTarget' ('[' ']')? '{' parameterDeclaration* '}'
+    : 'mapSource' ('[' identifier ']')? '{' parameterDeclaration* '}'
+    | 'mapTarget' ('[' identifier ']')? '{' parameterDeclaration* '}'
     ;
 
 parameterDeclaration

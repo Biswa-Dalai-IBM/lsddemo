@@ -1,6 +1,7 @@
 package expressions.app;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import com.webmethods.dsl.serverjars.utils.FlowUtils;
@@ -31,7 +32,18 @@ import expressions.flow.FlowContainerExpression;
 
 public class FlowGenerator {
 
-	public void generateFlow(FlowProgram program, File targetFolder) {
+	/**
+	 * Generate flow with specified parameters
+	 * @param program The flow program to generate
+	 * @param targetFolder The target folder for output
+	 * @param packageName The package name (e.g., "test")
+	 * @param nsname The namespace name (e.g., "test:fs1")
+	 * @param installRoot Optional install root path
+	 * @throws IOException 
+	 */
+	public void generateFlow(FlowProgram program, File targetFolder, String packageName, String nsname, String installRoot) throws IOException {
+		
+		ServerUtils instance = ServerUtils.getInstance();
 		IData iData = IDataFactory.create();
 		FlowRoot flowRoot = new FlowRoot(iData);
 
@@ -41,12 +53,14 @@ public class FlowGenerator {
 		}
 		
 		try {
-			Package package1 = FlowUtils.getPackage("test");
-			FlowManager.saveFlow(package1, flowRoot, NSName.create("test:fs1"));
+			// Use provided package name and nsname
+			Package package1 = FlowUtils.getPackage(packageName);
+			NSName nsName = NSName.create(nsname);
+			FlowManager.saveFlow(package1, flowRoot, nsName);
 			
 			// Build signature from program
 			NSSignature sig = buildSignature(program);
-			FlowSvcImpl flowSvcImpl = new FlowSvcImpl(package1, NSName.create("test:fs1"), null);
+			FlowSvcImpl flowSvcImpl = new FlowSvcImpl(package1, nsName, null);
 			flowSvcImpl.setFlowRoot(flowRoot);
 			flowSvcImpl.setSignature(sig);
 			flowSvcImpl.setServiceType(NSServiceType.create(NSServiceType.SVC_FLOW, NSServiceType.SVCSUB_DEFAULT));
@@ -56,15 +70,21 @@ public class FlowGenerator {
 			settings.setServiceToInvoke("");
 			flowSvcImpl.setCircuitBreakerSettings(settings);
 			flowSvcImpl.setConcurrentRequestLimitSettings(new ConcurrentRequestLimitConfig());
-			package1.setServiceInfo(NSName.create("test:fs1"), flowSvcImpl);
+			package1.setServiceInfo(nsName, flowSvcImpl);
 			
-			File packageNSDir = Server.getResources().getPackageNSDir("test");
-			File file1 = new File(packageNSDir, "test/fs1");
-			ServerUtils.copyDirectory(file1.getAbsolutePath(), new File(targetFolder, "fs1").getAbsolutePath());
+			// Extract folder name from nsname (e.g., "test:fs1" -> "fs1")
+			String serviceName = nsname.contains(":") ? nsname.substring(nsname.indexOf(":") + 1) : nsname;
+			String packagePath = nsname.contains(":") ? nsname.substring(0, nsname.indexOf(":")) : packageName;
+			
+			File packageNSDir = Server.getResources().getPackageNSDir(packageName);
+			File file1 = new File(packageNSDir, packagePath + "/" + serviceName);
+			ServerUtils.copyDirectory(file1.getAbsolutePath(), new File(targetFolder, serviceName).getAbsolutePath());
+			ServerUtils.copyDirectory(Server.getResources().getPackageDir(packageName).getAbsolutePath(),new File(installRoot,"IntegrationServer/packages/"+packageName).getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 
 	public static void generateFlow(List<FlowElementExpression> expressions, FlowElement element) {
 		if(expressions == null || expressions.isEmpty()) {

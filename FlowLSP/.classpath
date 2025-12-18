@@ -16,8 +16,8 @@
 	<classpathentry kind="lib" path="lib/is-graphql-client.jar"/>
 	<classpathentry kind="lib" path="lib/is-graphql-server.jar"/>
 	<classpathentry kind="lib" path="lib/wm-g11nutils.jar"/>
-	<classpathentry kind="lib" path="lib/wm-isclient.jar"/>
-	<classpathentry kind="lib" path="lib/wm-isserver.jar"/>
+	<classpathentry kind="lib" path="lib/wm-isclient.jar" sourcepath="C:/MyRepo/esb/client/source"/>
+	<classpathentry kind="lib" path="lib/wm-isserver.jar" sourcepath="C:/MyRepo/esb/server/source"/>
 	<classpathentry kind="lib" path="lib/wm-scg-audit.jar"/>
 	<classpathentry kind="lib" path="lib/wm-scg-core.jar"/>
 	<classpathentry kind="lib" path="lib/wm-scg-security.jar"/>

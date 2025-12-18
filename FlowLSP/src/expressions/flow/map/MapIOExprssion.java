@@ -73,6 +73,11 @@ public class MapIOExprssion extends FlowElementExpression {
 				buildParameter(sourceRecord, param);
 			}
 		}
+		
+		String sourceIdentifier = mapSignature.getSourceIdentifier();
+		if(sourceIdentifier!=null && !sourceIdentifier.isEmpty() && !sourceIdentifier.equals("pipeline")) {
+			sourceRecord.setName(sourceIdentifier);
+		}
 		return sourceRecord;
 	}
 	
@@ -89,6 +94,11 @@ public class MapIOExprssion extends FlowElementExpression {
 			for (ParameterDeclaration param : mapSignature.getTargetParameters()) {
 				buildParameter(targetRecord, param);
 			}
+		}
+		
+		String targetIdentifier = mapSignature.getTargetIdentifier();
+		if(targetIdentifier!=null && !targetIdentifier.isEmpty() && !targetIdentifier.equals("pipeline")) {
+			targetRecord.setName(targetIdentifier);
 		}
 		return targetRecord;
 	}

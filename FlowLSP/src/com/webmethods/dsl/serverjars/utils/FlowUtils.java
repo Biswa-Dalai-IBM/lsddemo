@@ -417,9 +417,9 @@ public class FlowUtils{
 		File libFolder = new File(sagtemp,"lib");
 		if(!libFolder.exists()) {
 			libFolder.mkdir();
+			File tmplFile = new File(libFolder,"flow.tmpl");
+			Files.copy(FlowUtils.class.getResourceAsStream("flow.tmpl"), tmplFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
-		File tmplFile = new File(libFolder,"flow.tmpl");
-		Files.copy(FlowUtils.class.getResourceAsStream("flow.tmpl"), tmplFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		serverUtils.configureTempPacakge(packageName);
 		Package package1 = PackageManager.getPackage(packageName);
 		return package1;
