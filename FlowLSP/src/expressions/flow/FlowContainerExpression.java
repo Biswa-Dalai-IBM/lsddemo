@@ -3,6 +3,8 @@ package expressions.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wm.lang.flow.FlowElement;
+
 import expressions.FlowElementExpression;
 
 public class FlowContainerExpression extends FlowElementExpression {
@@ -20,7 +22,9 @@ public class FlowContainerExpression extends FlowElementExpression {
 	}
 	
 	public void addProperty(FlowStepProperty property) {
-		properties.add(property);
+		if(property!=null) {
+			properties.add(property);
+		}
 	}
 	
 	public List<FlowElementExpression> getExpressions() {
@@ -50,5 +54,15 @@ public class FlowContainerExpression extends FlowElementExpression {
 	public String getPropertyValue(String key) {
 		FlowStepProperty prop = getProperty(key);
 		return prop != null ? prop.getValue() : null;
+	}
+
+	@Override
+	public FlowElement getFlowElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void addFlowElement(FlowElement parent) {
+		
 	}
 }

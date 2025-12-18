@@ -4,30 +4,61 @@ service doUntilService(
   }
 ){
     MAP {
-      set n1 = 1;
+    	mapTarget{
+    		String n1;
+    	}
+     	set n1 = 1;
     };
     
     DO {
-        maxIteration: -1;
+        maxIteration: 15;
         INVOKE pub.math:addInts {
             timeout: 30;
             validateInput: true;
             validateOutput: true;
+            
             input {
+            	mapSource[pipeline]{
+    				String n1;
+    				String $iterationCount;
+    			}
+            	mapTarget[addIntsInput]{
+    				String num1;
+    				String num2;
+    			}
                 copy n1 -> num1;
                 set num2=1;
             }
             output {
+            	mapSource[addIntsInput]{
+    				String value;
+    			}
+            	mapTarget[pipeline]{
+            		String num1;
+    				String num2;
+    				String n1;
+    				String value;
+    			}            
                 copy value -> n1;
             }
         };
     } UNTIL(n1==3);
 
     MAP {
-      set n1 = result;
+      mapSource{
+         String num1;
+    	 String num2;
+    	 String n1;
+    	 String value;
+    	 String $iterationCount;
+      }
+      mapTarget{
+    	 String result;
+      }            
+      copy n1 -> result;
+      drop value;
       drop n1;
       drop num1;
       drop num2;
-      drop value;
     };
 }

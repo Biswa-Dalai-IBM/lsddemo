@@ -1,5 +1,9 @@
 package expressions;
 
-public abstract class FlowElementExpression {
+import com.wm.lang.flow.FlowElement;
+
+public abstract class FlowElementExpression implements IFlowExpression{
+	
+	public abstract FlowElement getFlowElement();
 
 }

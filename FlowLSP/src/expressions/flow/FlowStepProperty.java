@@ -1,5 +1,7 @@
 package expressions.flow;
 
+import com.wm.lang.flow.FlowElement;
+
 import expressions.FlowElementExpression;
 
 public class FlowStepProperty extends FlowElementExpression{
@@ -19,6 +21,12 @@ public class FlowStepProperty extends FlowElementExpression{
 
 	public String getValue() {
 		return value;
+	}
+
+	@Override
+	public FlowElement getFlowElement() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

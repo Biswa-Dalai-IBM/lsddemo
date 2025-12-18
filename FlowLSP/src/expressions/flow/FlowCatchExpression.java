@@ -1,5 +1,21 @@
 package expressions.flow;
 
-public class FlowCatchExpression extends FlowContainerExpression {
+import java.util.List;
 
+import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowSequence;
+
+import expressions.FlowElementExpression;
+import expressions.app.FlowGenerator;
+
+public class FlowCatchExpression extends FlowContainerExpression {
+	
+	@Override
+	public void addFlowElement(FlowElement parent) {
+		FlowSequence flowSequence = new FlowSequence(null);
+		flowSequence.setForm(FlowSequence.CATCH);
+		List<FlowElementExpression> expressions = getExpressions();
+		FlowGenerator.generateFlow(expressions, flowSequence);
+		parent.addNode(flowSequence);
+	}
 }

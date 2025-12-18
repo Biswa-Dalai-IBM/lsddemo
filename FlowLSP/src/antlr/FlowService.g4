@@ -13,6 +13,10 @@ signatureBlock
     : 'input' '{' parameterDeclaration* '}'
     | 'output' '{' parameterDeclaration* '}'
     ;
+mapSignatureBlock
+    : 'mapSource' ('[' ']')? '{' parameterDeclaration* '}'
+    | 'mapTarget' ('[' ']')? '{' parameterDeclaration* '}'
+    ;
 
 parameterDeclaration
     : fieldDeclaration
@@ -83,7 +87,7 @@ qualifiedServiceName : ID ('.' ID)* ':' ID ;
 // MAP step
 
 mapStep
-	: 'MAP' ('{' (stepProperty|mappingSetEntry|mappingCopyEntry|transformStep|dropStep)* '}')? ';'
+	: 'MAP' ('{' (stepProperty|mappingSetEntry|mappingCopyEntry|transformStep|dropStep|mapSignatureBlock)* '}')? ';'
 	;
 	
 transformStep
@@ -99,8 +103,8 @@ invokeStep
     ;
 
 mappingBlock
-    : 'input'  '{' (mappingCopyEntry|mappingSetEntry)* '}'
-    | 'output' '{' (mappingCopyEntry|mappingSetEntry)* '}'
+    : 'input'  '{' (mappingCopyEntry|mappingSetEntry|mapSignatureBlock)* '}'
+    | 'output' '{' (mappingCopyEntry|mappingSetEntry|mapSignatureBlock)* '}'
     ;
 
 mappingCopyEntry
@@ -122,6 +126,7 @@ identifier
     | 'input'
     | 'output'
     | 'count'
+    | '$iterationCount'
     ;
 value
     : INT

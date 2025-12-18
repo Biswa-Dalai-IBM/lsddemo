@@ -1,125 +1,144 @@
 package expressions.app;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.List;
 
+import com.webmethods.dsl.serverjars.utils.FlowUtils;
+import com.webmethods.dsl.serverjars.utils.NSRecordUtils;
+import com.webmethods.dsl.serverjars.utils.ServerUtils;
+import com.wm.app.b2b.server.FlowManager;
+import com.wm.app.b2b.server.FlowSvcImpl;
+import com.wm.app.b2b.server.Package;
+import com.wm.app.b2b.server.Server;
+import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
 import com.wm.data.IDataFactory;
-import com.wm.data.IDataUtil;
-import com.wm.lang.flow.FlowBranch;
 import com.wm.lang.flow.FlowElement;
-import com.wm.lang.flow.FlowLoop;
-import com.wm.lang.flow.FlowMap;
-import com.wm.lang.flow.FlowMapCopy;
-import com.wm.lang.flow.FlowMapDelete;
 import com.wm.lang.flow.FlowRoot;
-import com.wm.lang.flow.FlowSequence;
-import com.wm.util.Values;
-import com.wm.util.coder.IDataXMLCoder;
-import com.wm.util.coder.InvalidDatatypeException;
+import com.wm.lang.ns.CircuitBreakerConfig;
+import com.wm.lang.ns.ConcurrentRequestLimitConfig;
+import com.wm.lang.ns.NSName;
+import com.wm.lang.ns.NSRecord;
+import com.wm.lang.ns.NSService;
+import com.wm.lang.ns.NSServiceType;
+import com.wm.lang.ns.NSSignature;
 
 import expressions.FlowElementExpression;
 import expressions.FlowProgram;
-import expressions.flow.FlowBranchExpression;
-import expressions.flow.FlowLoopExpression;
-import expressions.flow.FlowSequenceExpression;
-import expressions.flow.map.FlowMapCopyExpression;
-import expressions.flow.map.FlowMapDropExpression;
-import expressions.flow.map.FlowMapElementExpression;
-import expressions.flow.map.FlowMapSetExpression;
+import expressions.FlowServiceSignature;
+import expressions.ParameterDeclaration;
+import expressions.flow.FlowContainerExpression;
 
 public class FlowGenerator {
 
-	public void generateFlow(FlowProgram program) {
+	public void generateFlow(FlowProgram program, File targetFolder) {
 		IData iData = IDataFactory.create();
 		FlowRoot flowRoot = new FlowRoot(iData);
 
 		List<FlowElementExpression> expressions = program.getExpressions();
-		if(expressions.size()>0) {
-			generateFlow(expressions,flowRoot);
+		if(expressions.size() > 0) {
+			generateFlow(expressions, flowRoot);
 		}
-		IData asData = flowRoot.getAsData();
-		IDataXMLCoder coder = new IDataXMLCoder();
+		
 		try {
-			coder.encode(System.out, asData);
-		} catch (InvalidDatatypeException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			Package package1 = FlowUtils.getPackage("test");
+			FlowManager.saveFlow(package1, flowRoot, NSName.create("test:fs1"));
+			
+			// Build signature from program
+			NSSignature sig = buildSignature(program);
+			FlowSvcImpl flowSvcImpl = new FlowSvcImpl(package1, NSName.create("test:fs1"), null);
+			flowSvcImpl.setFlowRoot(flowRoot);
+			flowSvcImpl.setSignature(sig);
+			flowSvcImpl.setServiceType(NSServiceType.create(NSServiceType.SVC_FLOW, NSServiceType.SVCSUB_DEFAULT));
+			flowSvcImpl.setServiceSigtype(NSService.SIG_JAVA_3_5);
+			flowSvcImpl.setPipelineOption(NSService.NO_PIPELINE);
+			CircuitBreakerConfig settings = new CircuitBreakerConfig();
+			settings.setServiceToInvoke("");
+			flowSvcImpl.setCircuitBreakerSettings(settings);
+			flowSvcImpl.setConcurrentRequestLimitSettings(new ConcurrentRequestLimitConfig());
+			package1.setServiceInfo(NSName.create("test:fs1"), flowSvcImpl);
+			
+			File packageNSDir = Server.getResources().getPackageNSDir("test");
+			File file1 = new File(packageNSDir, "test/fs1");
+			ServerUtils.copyDirectory(file1.getAbsolutePath(), new File(targetFolder, "fs1").getAbsolutePath());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void generateFlow(List<FlowElementExpression> expressions,FlowElement element) {
-		for (FlowElementExpression expression : expressions) {
-
-			if(expression instanceof FlowMapElementExpression) {
-				FlowMapElementExpression mapElementExpression = (FlowMapElementExpression)expression;
-				IData data = IDataFactory.create();
-				FlowMap flowMap = new FlowMap(Values.use(data));
-				List<FlowElementExpression> expressions2 = mapElementExpression.getExpressions();
-				if(expressions2.size()>0) {
-					generateFlow(expressions2,flowMap);
-				}
-				element.addNode(flowMap);
-				
-			}else if(expression instanceof FlowSequenceExpression){
-				FlowSequenceExpression mapElementExpression = (FlowSequenceExpression)expression;
-				IData data = IDataFactory.create();
-				FlowSequence flowSequence = new FlowSequence(Values.use(data));
-				List<FlowElementExpression> expressions2 = mapElementExpression.getExpressions();
-				if(expressions2.size()>0) {
-					generateFlow(expressions2,flowSequence);
-				}
-				element.addNode(flowSequence);
-			}else if(expression instanceof FlowBranchExpression){
-				FlowBranchExpression mapElementExpression = (FlowBranchExpression)expression;
-				IData data = IDataFactory.create();
-				FlowBranch flowBranch = new FlowBranch(Values.use(data));
-				List<FlowElementExpression> expressions2 = mapElementExpression.getExpressions();
-				if(expressions2.size()>0) {
-					generateFlow(expressions2,flowBranch);
-				}
-				element.addNode(flowBranch);
-			}else if(expression instanceof FlowLoopExpression){
-				FlowLoopExpression mapElementExpression = (FlowLoopExpression)expression;
-				IData data = IDataFactory.create();
-				FlowLoop flowLoop = new FlowLoop(Values.use(data));
-				List<FlowElementExpression> expressions2 = mapElementExpression.getExpressions();
-				if(expressions2.size()>0) {
-					generateFlow(expressions2,flowLoop);
-				}
-				element.addNode(flowLoop);
-			}else if(expression instanceof FlowMapCopyExpression){
-				FlowMapCopyExpression mapCopyExpression = (FlowMapCopyExpression)expression;
-				IData data = IDataFactory.create();
-				FlowMapCopy mapCopy = new FlowMapCopy(Values.use(data));
-				String from = mapCopyExpression.getFrom();
-				String to = mapCopyExpression.getTo();
-				mapCopy.setMapFrom(from);
-				mapCopy.setMapTo(to);
-				element.addNode(mapCopy);
-			}else if(expression instanceof FlowMapSetExpression){
-				FlowMapSetExpression mapSetExpression = (FlowMapSetExpression)expression;
-				IData data = IDataFactory.create();
-				FlowMapCopy mapCopy = new FlowMapCopy(Values.use(data));
-				String path = mapSetExpression.getFieldPath();
-				String value = mapSetExpression.getValue();
-				
-				IData data1 = IDataFactory.create();
-				IDataUtil.put(data1.getCursor(), path, value);
-				mapCopy.setMapFrom(path);
-				mapCopy.setFromData(data1);
-				element.addNode(mapCopy);
-			}else if(expression instanceof FlowMapDropExpression){
-				FlowMapDropExpression mapDropExpression = (FlowMapDropExpression)expression;
-				IData data = IDataFactory.create();
-				FlowMapDelete mapDelete = new FlowMapDelete(Values.use(data));
-				String path = mapDropExpression.getFieldName();
-				mapDelete.setField(path);
-				element.addNode(mapDelete);
-			}
-
+	public static void generateFlow(List<FlowElementExpression> expressions, FlowElement element) {
+		if(expressions == null || expressions.isEmpty()) {
+			return;
 		}
-
+		for (FlowElementExpression expression : expressions) {
+			if(expression instanceof FlowContainerExpression) {
+				FlowContainerExpression containerExpression = (FlowContainerExpression)expression;
+				containerExpression.addFlowElement(element);
+			}else {
+				FlowElement childElement = expression.getFlowElement();
+				if(childElement != null) {
+					element.addNode(childElement);
+				}
+			}
+			
+		}
+	}
+	
+	/**
+	 * Build NSSignature from FlowProgram signature
+	 */
+	private NSSignature buildSignature(FlowProgram program) {
+		NSRecord inputRecord = new NSRecord(Namespace.current());
+		NSRecord outputRecord = new NSRecord(Namespace.current());
+		
+		if (program.hasSignature()) {
+			FlowServiceSignature signature = program.getSignature();
+			
+			// Build input record
+			if (signature.hasInputParameters()) {
+				for (ParameterDeclaration param : signature.getInputParameters()) {
+					buildParameter(inputRecord, param);
+				}
+			}
+			
+			// Build output record
+			if (signature.hasOutputParameters()) {
+				for (ParameterDeclaration param : signature.getOutputParameters()) {
+					buildParameter(outputRecord, param);
+				}
+			}
+		}
+		
+		return new NSSignature(inputRecord, outputRecord);
+	}
+	
+	/**
+	 * Build a parameter (field, record, or recordList) and add it to the parent record
+	 */
+	private void buildParameter(NSRecord parent, ParameterDeclaration param) {
+		if (param.isField()) {
+			// Simple field
+			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.isArray());
+		}
+		else if (param.isRecord()) {
+			// Record (not array)
+			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), false);
+			// Add children to nested record
+			if (param.hasChildren()) {
+				for (ParameterDeclaration child : param.getChildren()) {
+					buildParameter(nestedRecord, child);
+				}
+			}
+		}
+		else if (param.isRecordList()) {
+			// RecordList (array of records)
+			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), true);
+			// Add children to nested record
+			if (param.hasChildren()) {
+				for (ParameterDeclaration child : param.getChildren()) {
+					buildParameter(nestedRecord, child);
+				}
+			}
+		}
 	}
 }

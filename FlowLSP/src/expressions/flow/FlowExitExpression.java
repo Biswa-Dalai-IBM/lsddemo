@@ -3,6 +3,9 @@ package expressions.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowExit;
+
 import expressions.FlowElementExpression;
 
 public class FlowExitExpression extends FlowElementExpression {
@@ -18,6 +21,11 @@ public class FlowExitExpression extends FlowElementExpression {
 	
 	public List<FlowStepProperty> getProperties() {
 		return properties;
+	}
+
+	@Override
+	public FlowElement getFlowElement() {
+		return new FlowExit(null);
 	}
 
 }

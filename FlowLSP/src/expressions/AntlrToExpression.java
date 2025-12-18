@@ -11,13 +11,19 @@ import antlr.FlowServiceBaseVisitor;
 import antlr.FlowServiceParser;
 import antlr.FlowServiceParser.BranchPropertyContext;
 import antlr.FlowServiceParser.BranchStepContext;
+import antlr.FlowServiceParser.CaseBlockContext;
 import antlr.FlowServiceParser.CatchPropertyContext;
 import antlr.FlowServiceParser.CatchStepContext;
+import antlr.FlowServiceParser.DoUntilPropertyContext;
+import antlr.FlowServiceParser.DoUntilStepContext;
 import antlr.FlowServiceParser.DropStepContext;
+import antlr.FlowServiceParser.ElseBlockContext;
+import antlr.FlowServiceParser.ElseIfBlockContext;
 import antlr.FlowServiceParser.ExitPropertyContext;
 import antlr.FlowServiceParser.ExitStepContext;
 import antlr.FlowServiceParser.FinallyPropertyContext;
 import antlr.FlowServiceParser.FinallyStepContext;
+import antlr.FlowServiceParser.IfThenStepContext;
 import antlr.FlowServiceParser.InvokePropertyContext;
 import antlr.FlowServiceParser.InvokeStepContext;
 import antlr.FlowServiceParser.LoopPropertyContext;
@@ -26,25 +32,35 @@ import antlr.FlowServiceParser.MapStepContext;
 import antlr.FlowServiceParser.MappingBlockContext;
 import antlr.FlowServiceParser.MappingCopyEntryContext;
 import antlr.FlowServiceParser.MappingSetEntryContext;
+import antlr.FlowServiceParser.ParameterDeclarationContext;
 import antlr.FlowServiceParser.RepeatPropertyContext;
 import antlr.FlowServiceParser.RepeatStepContext;
 import antlr.FlowServiceParser.SequencePropertyContext;
 import antlr.FlowServiceParser.SequenceStepContext;
 import antlr.FlowServiceParser.StepContext;
 import antlr.FlowServiceParser.StepPropertyContext;
+import antlr.FlowServiceParser.SwitchCaseStepContext;
 import antlr.FlowServiceParser.TransformStepContext;
 import antlr.FlowServiceParser.TryPropertyContext;
 import antlr.FlowServiceParser.TryStepContext;
+import antlr.FlowServiceParser.WhileStepContext;
 import expressions.flow.FlowBranchExpression;
+import expressions.flow.FlowCaseExpression;
 import expressions.flow.FlowCatchExpression;
+import expressions.flow.FlowDoUntilExpression;
+import expressions.flow.FlowElseExpression;
+import expressions.flow.FlowElseIfExpression;
 import expressions.flow.FlowExitExpression;
 import expressions.flow.FlowFinallyExpression;
+import expressions.flow.FlowIfThenElseExpression;
 import expressions.flow.FlowInvokeExpression;
 import expressions.flow.FlowLoopExpression;
 import expressions.flow.FlowRepeatExpression;
 import expressions.flow.FlowSequenceExpression;
 import expressions.flow.FlowStepProperty;
+import expressions.flow.FlowSwitchExpression;
 import expressions.flow.FlowTryExpression;
+import expressions.flow.FlowWhileExpression;
 import expressions.flow.map.FlowMapCopyExpression;
 import expressions.flow.map.FlowMapDropExpression;
 import expressions.flow.map.FlowMapElementExpression;
@@ -53,7 +69,25 @@ import expressions.flow.map.FlowMapInvokeExpression;
 import expressions.flow.map.FlowMapSetExpression;
 import expressions.flow.map.MapIOExprssion;
 
-public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpression>{
+public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression>{
+
+	private ScopeManager scopeManager;
+	
+	public AntlrToExpression() {
+		this.scopeManager = new ScopeManager();
+	}
+	
+	public AntlrToExpression(ScopeManager scopeManager) {
+		this.scopeManager = scopeManager;
+	}
+	
+	public ScopeManager getScopeManager() {
+		return scopeManager;
+	}
+	
+	public void setScopeManager(ScopeManager scopeManager) {
+		this.scopeManager = scopeManager;
+	}
 
 	@Override
 	public FlowElementExpression visitStep(StepContext ctx) {
@@ -73,11 +107,86 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 			return visitTryStep(ctx.tryStep());
 		} else if (ctx.exitStep() != null) {
 			return visitExitStep(ctx.exitStep());
-		}
+		} else if (ctx.doUntilStep() != null) {
+			return visitDoUntilStep(ctx.doUntilStep());
+		} else if (ctx.switchCaseStep() != null) {
+			return visitSwitchCaseStep(ctx.switchCaseStep());
+		} else if (ctx.ifThenStep() != null) {
+			return visitIfThenStep(ctx.ifThenStep());
+		} else if (ctx.whileStep() != null) {
+			return visitWhileStep(ctx.whileStep());
+		} 
 
 		return null; 
 	}
 
+	@Override
+	public FlowElementExpression visitWhileStep(WhileStepContext ctx) {
+		FlowWhileExpression expression = new FlowWhileExpression();
+		String condition = processExpression(ctx.expression());
+		expression.setCondition(condition);
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			expression.addChild(visitStep(stepCtx));
+		}
+		return expression;
+	}
+	@Override
+	public FlowElementExpression visitIfThenStep(IfThenStepContext ctx) {
+		FlowIfThenElseExpression expression = new FlowIfThenElseExpression();
+		String condition = processExpression(ctx.expression());
+		expression.setCondition(condition);
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			expression.addChild(visitStep(stepCtx));
+		}
+		for (ElseIfBlockContext stepCtx : ctx.elseIfBlock()) {
+			expression.addElseIfExpressions((FlowElseIfExpression) visitElseIfBlock(stepCtx));
+		}
+		if(ctx.elseBlock()!=null) {
+			expression.setElseExpression((FlowElseExpression) visitElseBlock(ctx.elseBlock()));
+		}
+		return expression;
+	}
+	
+	@Override
+	public FlowElementExpression visitElseIfBlock(ElseIfBlockContext ctx) {
+		FlowElseIfExpression expression = new FlowElseIfExpression();
+		String condition = processExpression(ctx.expression());
+		expression.setCondition(condition);
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			expression.addChild(visitStep(stepCtx));
+		}
+		return expression;
+	}
+	
+	@Override
+	public FlowElementExpression visitElseBlock(ElseBlockContext ctx) {
+		FlowElseExpression expression = new FlowElseExpression();
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			expression.addChild(visitStep(stepCtx));
+		}
+		return expression;
+	}
+	
+	@Override
+	public FlowElementExpression visitSwitchCaseStep(SwitchCaseStepContext ctx) {
+		FlowSwitchExpression flowSwitchExpression = new FlowSwitchExpression();
+		String text = ctx.expression().getText();
+		flowSwitchExpression.setSwitchKey(text);
+		for (CaseBlockContext caseCtx : ctx.caseBlock()) {
+			flowSwitchExpression.addChild(visitCaseBlock(caseCtx));
+		}
+		return flowSwitchExpression;
+	}
+	
+	@Override
+	public FlowElementExpression visitCaseBlock(CaseBlockContext ctx) {
+		FlowCaseExpression caseExpression = new FlowCaseExpression();
+		caseExpression.setCaseValue(ctx.value().getText());
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			caseExpression.addChild(visitStep(stepCtx));
+		}
+		return caseExpression;
+	}
 	@Override
 	public FlowElementExpression visitStepProperty(StepPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
@@ -87,15 +196,139 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 	}
 
 	@Override
+	public FlowElementExpression visitDoUntilStep(DoUntilStepContext ctx) {
+		FlowDoUntilExpression doUntilExpression = new FlowDoUntilExpression();
+
+		// Add properties (e.g., maxIteration)
+		for (FlowServiceParser.DoUntilPropertyContext propCtx : ctx.doUntilProperty()) {
+			doUntilExpression.addProperty( visitDoUntilProperty(propCtx));
+		}
+
+		// Add child steps
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			doUntilExpression.addChild(visitStep(stepCtx));
+		}
+		
+		// Extract and set the UNTIL condition expression
+		// Grammar: 'DO' '{' doUntilProperty* step* '}' 'UNTIL' '(' expression ')' ';'
+		if (ctx.expression() != null) {
+			String untilCondition = processExpression(ctx.expression());
+			doUntilExpression.setUntilCondition(untilCondition);
+		}
+		
+		return doUntilExpression;
+	}
+	
+	@Override
+	public FlowStepProperty visitDoUntilProperty(DoUntilPropertyContext ctx) {
+		
+		String text = ctx.getText();
+		text=text.replace(";", "");
+		String[] split = text.split(":");
+		return new FlowStepProperty(split[0], split[1]);
+	}
+	
+	/**
+	 * Process an expression and add % prefix to variable references.
+	 * Handles all scenarios:
+	 * - x1/y1==5 -> %x1/y1% ==5
+	 * - x1==8 -> %x1% ==8
+	 * - x1==y1 -> %x1% ==%y1%
+	 * - x1/y1&&p1/q1 -> %x1/y1% &&%p1/q1%
+	 */
+	private String processExpression(FlowServiceParser.ExpressionContext ctx) {
+		StringBuilder result = new StringBuilder();
+		
+		// Process all primary expressions and binary operators in sequence
+		List<FlowServiceParser.PrimaryExpressionContext> primaries = ctx.primaryExpression();
+		List<FlowServiceParser.BinaryOperatorContext> operators = ctx.binaryOperator();
+		
+		for (int i = 0; i < primaries.size(); i++) {
+			// Process primary expression
+			String primaryText = processPrimaryExpression(primaries.get(i));
+			result.append(primaryText);
+			
+			// Add operator if exists
+			if (i < operators.size()) {
+				result.append("").append(operators.get(i).getText()).append("");
+			}
+		}
+		
+		return result.toString();
+	}
+	
+	/**
+	 * Process a primary expression and add % prefix to variable references.
+	 */
+	private String processPrimaryExpression(FlowServiceParser.PrimaryExpressionContext ctx) {
+		// Check if it's a variable reference
+		if (ctx.variableRef() != null) {
+			return "%" + ctx.variableRef().getText() + "%";
+		}
+		
+		// Check if it's a literal (number, string, boolean, null)
+		if (ctx.literal() != null) {
+			return ctx.literal().getText();
+		}
+		
+		// Check if it's a parenthesized expression
+		if (ctx.expression() != null) {
+			return "(" + processExpression(ctx.expression()) + ")";
+		}
+		
+		// Check if it's a unary operation
+		if (ctx.unaryOperator() != null) {
+			return ctx.unaryOperator().getText() + processPrimaryExpression(ctx.primaryExpression());
+		}
+		
+		// Check if it's a service reference (ID ('.' ID)* ':' ID)
+		if (ctx.ID() != null && ctx.ID().size() > 0) {
+			return ctx.getText(); // Service references don't need % prefix
+		}
+		
+		// Default: return as-is
+		return ctx.getText();
+	}
+	
+	@Override
 	public FlowElementExpression visitMapStep(MapStepContext ctx) {
 
 		FlowMapElementExpression mapElementExpression = new FlowMapElementExpression();
+		MapSignature mapSignature = new MapSignature();
+		
+		// Enter a new scope for this MAP step
+		if (scopeManager != null) {
+			scopeManager.enterScope("MAP");
+		}
 
 		for (FlowServiceParser.StepPropertyContext propCtx : ctx.stepProperty()) {
 			mapElementExpression.addProperty((FlowStepProperty) visitStepProperty(propCtx));
 		}
 
+		// Process mapSignatureBlock (mapSource/mapTarget) to add variables to scope and collect signature
+		for (ParseTree child : ctx.children) {
+			if (child instanceof FlowServiceParser.MapSignatureBlockContext mapSigCtx) {
+				MapSignature blockSignature = visitMapSignatureBlock(mapSigCtx);
+				// Merge into main mapSignature
+				if (blockSignature.hasSourceParameters()) {
+					for (ParameterDeclaration param : blockSignature.getSourceParameters()) {
+						mapSignature.addSourceParameter(param);
+					}
+				}
+				if (blockSignature.hasTargetParameters()) {
+					for (ParameterDeclaration param : blockSignature.getTargetParameters()) {
+						mapSignature.addTargetParameter(param);
+					}
+				}
+			}
+		}
 		
+		// Set the collected mapSignature on the expression
+		if (mapSignature.hasSourceParameters() || mapSignature.hasTargetParameters()) {
+			mapElementExpression.setMapSignature(mapSignature);
+		}
+		
+		// Process mapping expressions (copy, set, drop, transform)
 		for (ParseTree child : ctx.children) {
 			if (child instanceof FlowServiceParser.MappingCopyEntryContext copyCtx) {
 				mapElementExpression.addMapExpression((FlowMapExpression) visitMappingCopyEntry(copyCtx));
@@ -106,6 +339,11 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 			}else if (child instanceof FlowServiceParser.TransformStepContext setCtx) {
 				mapElementExpression.addMapExpression((FlowMapExpression) visitTransformStep(setCtx));
 			}
+		}
+		
+		// Exit the MAP scope
+		if (scopeManager != null) {
+			scopeManager.exitScope();
 		}
 
 		return mapElementExpression;
@@ -211,7 +449,37 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 
 		MapIOExprssion blockExpr = new MapIOExprssion();
 		blockExpr.setInput(isInput);
+		MapSignature mapSignature = new MapSignature();
+		
+		// Enter a new scope for this mapping block
+		if (scopeManager != null) {
+			scopeManager.enterScope(isInput ? "INVOKE_INPUT" : "INVOKE_OUTPUT");
+		}
 
+		// Process mapSignatureBlock (mapSource/mapTarget) to add variables to scope and collect signature
+		for (ParseTree child : ctx.children) {
+			if (child instanceof FlowServiceParser.MapSignatureBlockContext mapSigCtx) {
+				MapSignature blockSignature = visitMapSignatureBlock(mapSigCtx);
+				// Merge into main mapSignature
+				if (blockSignature.hasSourceParameters()) {
+					for (ParameterDeclaration param : blockSignature.getSourceParameters()) {
+						mapSignature.addSourceParameter(param);
+					}
+				}
+				if (blockSignature.hasTargetParameters()) {
+					for (ParameterDeclaration param : blockSignature.getTargetParameters()) {
+						mapSignature.addTargetParameter(param);
+					}
+				}
+			}
+		}
+		
+		// Set the collected mapSignature on the expression
+		if (mapSignature.hasSourceParameters() || mapSignature.hasTargetParameters()) {
+			blockExpr.setMapSignature(mapSignature);
+		}
+
+		// Process mapping expressions (copy, set)
 		for (ParseTree child : ctx.children) {
 			if (child instanceof FlowServiceParser.MappingCopyEntryContext copyCtx) {
 				blockExpr.addMapExpression(visitMappingCopyEntry(copyCtx));
@@ -219,53 +487,63 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 				blockExpr.addMapExpression(visitMappingSetEntry(setCtx));
 			}
 		}
+		
+		// Exit the mapping block scope
+		if (scopeManager != null) {
+			scopeManager.exitScope();
+		}
 
 		return blockExpr;
 	}
 
 	@Override
 	public FlowElementExpression visitMappingCopyEntry(MappingCopyEntryContext ctx) {
-		List<String> sourcePath = new ArrayList<>();
-		List<String> targetPath = new ArrayList<>();
-
-		int arrowIndex = -1;
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			if (ctx.getChild(i).getText().equals("->")) {
-				arrowIndex = i;
-				break;
-			}
+		// Grammar: 'copy' variableRef '->' variableRef ';'
+		// ctx.variableRef(0) is the source
+		// ctx.variableRef(1) is the target
+		
+		if (ctx.variableRef() == null || ctx.variableRef().size() < 2) {
+			throw new IllegalArgumentException("Invalid copy statement: missing source or target variableRef");
 		}
+		
+		String sourcePath = buildVariableRefPath(ctx.variableRef(0));
+		String targetPath = buildVariableRefPath(ctx.variableRef(1));
 
-		if (arrowIndex == -1) {
-			throw new IllegalArgumentException("Missing '->' in Map copy step");
+		// Create VariableResolver from ScopeManager
+		VariableResolver resolver = null;
+		if (scopeManager != null) {
+			resolver = new VariableResolver(scopeManager);
 		}
-
-		for (int i = 0; i < arrowIndex; i++) {
-			ParseTree child = ctx.getChild(i);
-			if (child instanceof TerminalNode && ((TerminalNode) child).getSymbol().getType() == FlowServiceParser.ID) {
-				sourcePath.add(child.getText());
-			}
-		}
-
-		for (int i = arrowIndex + 1; i < ctx.getChildCount(); i++) {
-			ParseTree child = ctx.getChild(i);
-			if (child instanceof TerminalNode && ((TerminalNode) child).getSymbol().getType() == FlowServiceParser.ID) {
-				targetPath.add(child.getText());
-			}
-		}
-
-		String sPath = sourcePath.stream().collect(Collectors.joining("/"));
-		String tPath = targetPath.stream().collect(Collectors.joining("/"));
-
-		FlowElementExpression expr = new FlowMapCopyExpression(sPath,tPath);
+		
+		FlowElementExpression expr = new FlowMapCopyExpression(sourcePath, targetPath, resolver);
 
 		return expr;
+	}
+	
+	/**
+	 * Helper method to build the full path from a variableRef context.
+	 * Handles both SPECIAL_VAR and identifier paths.
+	 */
+	private String buildVariableRefPath(FlowServiceParser.VariableRefContext varRefCtx) {
+		List<String> pathParts = new ArrayList<>();
+		
+		// Check if it starts with SPECIAL_VAR (e.g., $error, $last)
+		if (varRefCtx.SPECIAL_VAR() != null) {
+			pathParts.add(varRefCtx.SPECIAL_VAR().getText());
+		}
+		
+		// Add all identifier parts
+		for (FlowServiceParser.IdentifierContext idCtx : varRefCtx.identifier()) {
+			pathParts.add(idCtx.getText());
+		}
+		
+		return pathParts.stream().collect(Collectors.joining("/"));
 	}
 
 	@Override
 	public FlowElementExpression visitMappingSetEntry(MappingSetEntryContext ctx) {
 		List<String> path = new ArrayList<>();
-		path.add(ctx.identifier().get(0).getText()); 
+		path.add(ctx.identifier().get(0).getText());
 
 		for (int i = 1; i < ctx.identifier().size(); i++) {
 			path.add(ctx.identifier(i).getText());
@@ -274,7 +552,13 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 		String fieldPath = path.stream().collect(Collectors.joining("/"));
 		String valueText = ctx.value().getText();
 
-		FlowElementExpression expr = new FlowMapSetExpression(fieldPath,valueText);
+		// Create VariableResolver from ScopeManager
+		VariableResolver resolver = null;
+		if (scopeManager != null) {
+			resolver = new VariableResolver(scopeManager);
+		}
+		
+		FlowElementExpression expr = new FlowMapSetExpression(fieldPath, valueText, resolver);
 
 		return expr;
 	}
@@ -352,6 +636,13 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			tryExpression.addChild(visitStep(stepCtx));
+		}
+		for (FlowServiceParser.CatchStepContext stepCtx : ctx.catchStep()) {
+			tryExpression.addCatchExpressions((FlowCatchExpression) visitCatchStep(stepCtx));
+		}
+		FinallyStepContext finallyStep = ctx.finallyStep();
+		if(finallyStep!=null) {
+			tryExpression.setFinallyExpression((FlowFinallyExpression) visitFinallyStep(finallyStep));
 		}
 		return tryExpression;
 	}
@@ -483,6 +774,212 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<FlowElementExpress
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
 		return new FlowStepProperty(key, value);
+	}
+	
+	// ========== Service Signature Visitor Methods ==========
+	
+	@Override
+	public FlowElementExpression visitFlowService(FlowServiceParser.FlowServiceContext ctx) {
+		FlowProgram program = new FlowProgram();
+		
+		// Set service name
+		if (ctx.ID() != null) {
+			program.setLabel(ctx.ID().getText());
+		}
+		
+		// Process signature if present
+		if (ctx.signature() != null) {
+			FlowServiceSignature signature = (FlowServiceSignature) visitSignature(ctx.signature());
+			program.setSignature(signature);
+		}
+		
+		// Process steps
+		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
+			FlowElementExpression stepExpr = visitStep(stepCtx);
+			if (stepExpr != null) {
+				program.addChild(stepExpr);
+			}
+		}
+		
+		return program;
+	}
+	
+	@Override
+	public FlowServiceSignature visitSignature(FlowServiceParser.SignatureContext ctx) {
+		FlowServiceSignature signature = new FlowServiceSignature();
+		
+		// Process all signature blocks (input/output)
+		for (FlowServiceParser.SignatureBlockContext blockCtx : ctx.signatureBlock()) {
+			visitSignatureBlock(blockCtx, signature);
+		}
+		
+		return signature;
+	}
+	
+	/**
+	 * Process a signature block (input or output) and add parameters to the signature
+	 */
+	private void visitSignatureBlock(FlowServiceParser.SignatureBlockContext ctx, FlowServiceSignature signature) {
+		boolean isInput = ctx.getStart().getText().equals("input");
+		
+		// Process all parameter declarations in this block
+		for (FlowServiceParser.ParameterDeclarationContext paramCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration param = processParameterDeclaration(paramCtx);
+			if (param != null) {
+				if (isInput) {
+					signature.addInputParameter(param);
+				} else {
+					signature.addOutputParameter(param);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Visit a parameter declaration (field, record, or recordList)
+	 */
+	private ParameterDeclaration processParameterDeclaration(
+			ParameterDeclarationContext ctx) {
+		
+		if (ctx.fieldDeclaration() != null) {
+			return processFieldDeclaration(ctx.fieldDeclaration());
+		} else if (ctx.recordDeclaration() != null) {
+			return processRecordDeclaration(ctx.recordDeclaration());
+		} else if (ctx.recordListDeclaration() != null) {
+			return processRecordListDeclaration(ctx.recordListDeclaration());
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Visit a field declaration
+	 * Grammar: dataType ('[' ']')? identifier constraints? ';'
+	 */
+	private ParameterDeclaration processFieldDeclaration(
+			FlowServiceParser.FieldDeclarationContext ctx) {
+		
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param =
+				new ParameterDeclaration(name, "field");
+		
+		// Set data type
+		if (ctx.dataType() != null) {
+			param.setDataType(ctx.dataType().getText());
+		}
+		
+		// Check if it's an array
+		boolean isArray = false;
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i).getText().equals("[")) {
+				isArray = true;
+				break;
+			}
+		}
+		param.setArray(isArray);
+		
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		
+		return param;
+	}
+	
+	/**
+	 * Visit a record declaration
+	 * Grammar: 'record' identifier '{' parameterDeclaration* '}' constraints? ';'
+	 */
+	private ParameterDeclaration processRecordDeclaration(
+			FlowServiceParser.RecordDeclarationContext ctx) {
+		
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param =
+				new ParameterDeclaration(name, "record");
+		
+		// Process child parameters
+		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
+			if (childParam != null) {
+				param.addChild(childParam);
+			}
+		}
+		
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		
+		return param;
+	}
+	
+	/**
+	 * Visit a recordList declaration
+	 * Grammar: 'recordList' identifier '{' parameterDeclaration* '}' constraints? ';'
+	 */
+	private ParameterDeclaration processRecordListDeclaration(
+			FlowServiceParser.RecordListDeclarationContext ctx) {
+		
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param =
+				new ParameterDeclaration(name, "recordList");
+		
+		// Process child parameters
+		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
+			if (childParam != null) {
+				param.addChild(childParam);
+			}
+		}
+		
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		
+		return param;
+	}
+	
+	/**
+	 * Process constraints and add them to the parameter
+	 */
+	private void processConstraints(FlowServiceParser.ConstraintsContext ctx,
+			ParameterDeclaration param) {
+		
+		for (FlowServiceParser.ConstraintContext constraintCtx : ctx.constraint()) {
+			String constraintText = constraintCtx.getText();
+			param.addConstraint(constraintText);
+		}
+	}
+	
+	/**
+	 * Visit a mapSignatureBlock (mapSource or mapTarget)
+	 * Adds variables to the current scope
+	 */
+	@Override
+	public MapSignature visitMapSignatureBlock(FlowServiceParser.MapSignatureBlockContext ctx) {
+		MapSignature mapSignature = new MapSignature();
+		
+		boolean isSource = ctx.getStart().getText().equals("mapSource");
+		
+		// Process all parameter declarations in this block
+		for (FlowServiceParser.ParameterDeclarationContext paramCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration param = processParameterDeclaration(paramCtx);
+			if (param != null) {
+				if (isSource) {
+					mapSignature.addSourceParameter(param);
+				} else {
+					mapSignature.addTargetParameter(param);
+				}
+				
+				// Add to current scope for variable resolution
+				if (scopeManager != null) {
+					scopeManager.addVariable(param);
+				}
+			}
+		}
+		
+		return mapSignature;
 	}
 
 }

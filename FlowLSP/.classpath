@@ -7,15 +7,23 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="target/generated-sources/antlr4/src"/>
-	<classpathentry kind="lib" path="lib/antlr-4.13.2-complete.jar">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/ext/enttoolkit.jar"/>
-	<classpathentry kind="lib" path="lib/ext/icu4j.jar"/>
-	<classpathentry kind="lib" path="lib/glassfish/gf.jakarta.mail.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-4.13.2-complete.jar"/>
+	<classpathentry kind="lib" path="lib/axis2-kernel-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/deployer-api.jar"/>
+	<classpathentry kind="lib" path="lib/gf.jakarta.mail.jar"/>
+	<classpathentry kind="lib" path="lib/gf.javax.jms.jar"/>
+	<classpathentry kind="lib" path="lib/gf.webservices-api-osgi.jar"/>
+	<classpathentry kind="lib" path="lib/is-graphql-client.jar"/>
+	<classpathentry kind="lib" path="lib/is-graphql-server.jar"/>
 	<classpathentry kind="lib" path="lib/wm-g11nutils.jar"/>
 	<classpathentry kind="lib" path="lib/wm-isclient.jar"/>
+	<classpathentry kind="lib" path="lib/wm-isserver.jar"/>
+	<classpathentry kind="lib" path="lib/wm-scg-audit.jar"/>
+	<classpathentry kind="lib" path="lib/wm-scg-core.jar"/>
+	<classpathentry kind="lib" path="lib/wm-scg-security.jar"/>
+	<classpathentry kind="lib" path="lib/wsdl4j.jar"/>
+	<classpathentry kind="lib" path="lib/ext/activation.jar"/>
+	<classpathentry kind="lib" path="lib/ext/enttoolkit.jar"/>
+	<classpathentry kind="lib" path="lib/ext/icu4j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

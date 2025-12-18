@@ -11,9 +11,22 @@ public class AntlrToProgram extends FlowServiceBaseVisitor<FlowProgram>{
 
 	@Override
 	public FlowProgram visitFlowService(FlowServiceContext ctx) {
-		AntlrToExpression antlrToExpression = new AntlrToExpression();
+		// Create scope manager and expression visitor
+		ScopeManager scopeManager = new ScopeManager();
+		AntlrToExpression antlrToExpression = new AntlrToExpression(scopeManager);
+		
 		FlowProgram service = new FlowProgram();
 	    service.setLabel(ctx.ID().getText()); // Using label for service name here
+	    service.setScopeManager(scopeManager); // Store scope manager for later use
+
+	    // Load service signature if present and initialize scope
+	    if (ctx.signature() != null) {
+	    	FlowServiceSignature signature = antlrToExpression.visitSignature(ctx.signature());
+	    	service.setSignature(signature);
+	    	
+	    	// Initialize scope manager with service signature
+	    	scopeManager.initializeWithSignature(signature);
+	    }
 
 	    List<FlowElementExpression> children = new ArrayList<>();
 	    for (FlowServiceParser.StepContext stepCtx : ctx.step()) {

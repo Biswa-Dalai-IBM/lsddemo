@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FLOW VERSION="3.2" CLEANUP="true">
+
+	<!-- nodes -->
+
+	<MAP MODE="STANDALONE">
+
+		<!-- nodes -->
+
+		<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
+			GLOBALVARIABLES="false" FIELD="/temp;1;0">
+			<DATA ENCODING="XMLValues" I18N="true">
+
+				<Values version="2.0">
+					<value name="xml">1</value>
+					<record name="type" javaclass="com.wm.util.Values">
+						<value name="node_type">record</value>
+						<value name="node_subtype">unknown</value>
+						<value name="is_public">false</value>
+						<value name="field_name">temp</value>
+						<value name="field_type">string</value>
+						<value name="field_dim">0</value>
+						<value name="nillable">true</value>
+						<value name="form_qualified">false</value>
+						<value name="is_global">false</value>
+					</record>
+				</Values>
+			</DATA>
+		</MAPSET>
+	</MAP>
+
+	<WHILE CONDITION="%count%&gt;%temp%" MAXITERATIONS="0">
+
+		<!-- nodes -->
+
+		<INVOKE SERVICE="pub.math:addInts">
+
+			<!-- nodes -->
+
+			<MAP MODE="INPUT">
+
+				<!-- nodes -->
+
+				<MAPCOPY FROM="/temp;1;0" TO="/num1;1;0">
+				</MAPCOPY>
+
+				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
+					GLOBALVARIABLES="false" FIELD="/num2;1;0">
+					<DATA ENCODING="XMLValues" I18N="true">
+
+						<Values version="2.0">
+							<value name="xml">1</value>
+							<record name="type" javaclass="com.wm.util.Values">
+								<value name="node_type">record</value>
+								<value name="node_subtype">unknown</value>
+								<value name="is_public">false</value>
+								<value name="field_name">num2</value>
+								<value name="field_type">string</value>
+								<value name="field_dim">0</value>
+								<value name="nillable">true</value>
+								<value name="form_qualified">false</value>
+								<value name="is_global">false</value>
+							</record>
+						</Values>
+					</DATA>
+				</MAPSET>
+			</MAP>
+
+			<MAP MODE="OUTPUT">
+
+				<!-- nodes -->
+
+				<MAPCOPY FROM="/value;1;0" TO="/temp;1;0">
+				</MAPCOPY>
+			</MAP>
+		</INVOKE>
+	</WHILE>
+
+	<MAP MODE="STANDALONE">
+
+		<!-- nodes -->
+
+		<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
+			GLOBALVARIABLES="false" FIELD="/temp;1;0">
+			<DATA ENCODING="XMLValues" I18N="true">
+
+				<Values version="2.0">
+					<value name="xml">out</value>
+					<record name="type" javaclass="com.wm.util.Values">
+						<value name="node_type">record</value>
+						<value name="node_subtype">unknown</value>
+						<value name="is_public">false</value>
+						<value name="field_name">temp</value>
+						<value name="field_type">string</value>
+						<value name="field_dim">0</value>
+						<value name="nillable">true</value>
+						<value name="form_qualified">false</value>
+						<value name="is_global">false</value>
+					</record>
+				</Values>
+			</DATA>
+		</MAPSET>
+
+		<MAPDELETE FIELD="/num1;1;0">
+		</MAPDELETE>
+
+		<MAPDELETE FIELD="/num2;1;0">
+		</MAPDELETE>
+
+		<MAPDELETE FIELD="/value;1;0">
+		</MAPDELETE>
+	</MAP>
+</FLOW>

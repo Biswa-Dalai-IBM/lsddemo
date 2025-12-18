@@ -1,5 +1,15 @@
 package expressions.flow.map;
 
+import java.util.List;
+
+import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowMap;
+import com.wm.lang.flow.FlowMapInvoke;
+import com.wm.lang.ns.NSName;
+
+import expressions.FlowElementExpression;
+import expressions.app.FlowGenerator;
+
 public class FlowMapInvokeExpression extends FlowMapExpression{
 	
 	String serviceName;
@@ -35,5 +45,29 @@ public class FlowMapInvokeExpression extends FlowMapExpression{
 	
 	public void setOutput(MapIOExprssion output) {
 		this.output = output;
+	}
+	
+	@Override
+	public FlowElement getFlowElement() {
+		FlowMapInvoke flowMapInvoke = new FlowMapInvoke(null);
+		
+		flowMapInvoke.setService(NSName.create(serviceName));
+		
+		List<FlowElementExpression> mapExpressions = input.getMapExpressions();
+		FlowMap flowMapInput = new FlowMap(null);
+		if(mapExpressions.size()>0) {
+			FlowGenerator.generateFlow(mapExpressions,flowMapInput);
+		}
+		flowMapInvoke.setInputMap(flowMapInput);
+		
+		mapExpressions = output.getMapExpressions();
+		FlowMap flowMapOutput = new FlowMap(null);
+		if(mapExpressions.size()>0) {
+			FlowGenerator.generateFlow(mapExpressions,flowMapOutput);
+		}
+		flowMapInvoke.setOutputMap(flowMapOutput);
+		
+		
+		return flowMapInvoke;
 	}
 }

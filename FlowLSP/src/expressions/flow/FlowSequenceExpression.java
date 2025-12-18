@@ -1,5 +1,20 @@
 package expressions.flow;
 
-public class FlowSequenceExpression extends FlowContainerExpression {
+import java.util.List;
 
+import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowSequence;
+
+import expressions.FlowElementExpression;
+import expressions.app.FlowGenerator;
+
+public class FlowSequenceExpression extends FlowContainerExpression {
+	
+	@Override
+	public void addFlowElement(FlowElement parent) {
+		FlowSequence flowSequence = new FlowSequence(null);
+		List<FlowElementExpression> expressions = getExpressions();
+		FlowGenerator.generateFlow(expressions, flowSequence);
+		parent.addNode(flowSequence);
+	}
 }

@@ -1,5 +1,19 @@
 package expressions.flow;
 
-public class FlowRepeatExpression extends FlowContainerExpression {
+import java.util.List;
 
+import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowRetry;
+
+import expressions.FlowElementExpression;
+import expressions.app.FlowGenerator;
+
+public class FlowRepeatExpression extends FlowContainerExpression {
+	@Override
+	public void addFlowElement(FlowElement parent) {
+		FlowRetry flowRetry = new FlowRetry(null);
+		List<FlowElementExpression> expressions = getExpressions();
+		FlowGenerator.generateFlow(expressions, flowRetry);
+		parent.addNode(flowRetry);
+	}
 }

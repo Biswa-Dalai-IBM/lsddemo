@@ -1,5 +1,6 @@
 package expressions.app;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.CharStream;
@@ -25,8 +26,7 @@ public class ExpressionApp {
 			AntlrToProgram program = new AntlrToProgram();
 			FlowProgram flowProgram = program.visit(antlrAST);
 			FlowGenerator flowGenerator = new FlowGenerator();
-			flowGenerator.generateFlow(flowProgram);
-			System.out.println(flowProgram);
+			flowGenerator.generateFlow(flowProgram,new File(fileName).getParentFile());
 		}
 
 	}
