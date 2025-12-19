@@ -20,6 +20,6 @@
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.antlr.v4.gui.TestRig"/>
     <listAttribute key="org.eclipse.jdt.launching.MODULEPATH"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="FlowLSP"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="antlr.FlowService flowService ${file_prompt} -gui"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="com.wbemethods.dsl.antlr.FlowService flowService ${file_prompt} -gui"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="FlowLSP"/>
 </launchConfiguration>

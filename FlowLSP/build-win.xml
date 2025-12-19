@@ -37,9 +37,9 @@
 	<target name="generateCode">
 		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
 			<arg value="-visitor"/>
-			<arg value="src/antlr/FlowService.g4"/>
+			<arg value="src/com/wbemethods/dsl/antlr/FlowService.g4"/>
 			<arg value="-o"/>
-			<arg value="target/generated-sources/antlr4/src/antlr"/>
+			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr"/>
 			<arg value="-encoding"/>
 			<arg value="UTF-8"/>
 		</java>
