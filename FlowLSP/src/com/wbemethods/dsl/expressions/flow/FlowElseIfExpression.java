@@ -33,6 +33,7 @@ public class FlowElseIfExpression extends FlowContainerExpression {
 	public void updateExpression(FlowElement element) {
 		FlowSequence flowSequence = (FlowSequence) element;
 		condition = flowSequence.getCondition();
+		condition = condition.replaceAll("%", "");
 		super.updateExpression(element);
 	}
 }

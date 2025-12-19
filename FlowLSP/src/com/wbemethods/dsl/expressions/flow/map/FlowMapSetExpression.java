@@ -1,5 +1,6 @@
 package com.wbemethods.dsl.expressions.flow.map;
 
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.VariableResolver;
 import com.wm.data.IData;
 import com.wm.data.IDataFactory;
@@ -56,4 +57,10 @@ public class FlowMapSetExpression extends FlowMapExpression {
 		setData.setInput(value);
 		return setData;
 	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendLine("set " + fieldPath + " = \"" + value + "\";");
+	}
+
 }

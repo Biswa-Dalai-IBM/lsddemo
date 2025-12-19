@@ -3,6 +3,7 @@ package com.wbemethods.dsl.expressions.flow;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.app.FlowGenerator;
 import com.wm.data.IData;
 import com.wm.data.IDataFactory;
@@ -37,5 +38,19 @@ public class FlowSwitchExpression extends FlowContainerExpression {
 		FlowSwitch flowSwitch = (FlowSwitch) element;
 		switchKey = flowSwitch.getSwitchKey();
 		super.updateExpression(element);
+	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("SWITCH(" + switchKey + ") {");
+		context.append("\n");
+		context.increaseIndent();
+
+		for (FlowElementExpression child : getExpressions()) {
+			child.generateText(context);
+		}
+
+		context.decreaseIndent();
+		context.appendIndented("};\n");
 	}
 }

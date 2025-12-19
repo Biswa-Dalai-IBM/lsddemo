@@ -3,26 +3,23 @@ package com.wbemethods.dsl.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wbemethods.dsl.expressions.flow.FlowContainerExpression;
 import com.wbemethods.dsl.expressions.flow.FlowStepProperty;
 import com.wm.lang.flow.FlowElement;
 
-public class FlowProgram extends FlowElementExpression {
+public class FlowProgram extends FlowContainerExpression{
 
 	List<FlowStepProperty> properties;
-	List<FlowElementExpression> expressions;
 	FlowServiceSignature signature;
 	ScopeManager scopeManager;
 
 	public String serviceName;
 
 	public FlowProgram() {
+		super();
 		properties = new ArrayList<FlowStepProperty>();
-		expressions = new ArrayList<FlowElementExpression>();
 	}
 
-	public void addChild(FlowElementExpression expression) {
-		expressions.add(expression);
-	}
 
 	public void addProperty(FlowStepProperty property) {
 		properties.add(property);
@@ -32,9 +29,6 @@ public class FlowProgram extends FlowElementExpression {
 		this.serviceName = serviceName;
 	}
 
-	public List<FlowElementExpression> getExpressions() {
-		return expressions;
-	}
 
 	public void setSignature(FlowServiceSignature signature) {
 		this.signature = signature;
@@ -78,5 +72,37 @@ public class FlowProgram extends FlowElementExpression {
 			}
 		}
 	}
-
+	/**
+	 * Generate flow text for the entire service
+	 */
+	@Override
+	public void generateText(FlowTextContext context) {
+		// Generate service declaration
+		String name = serviceName != null ? serviceName : "generatedService";
+		context.append("service " + name);
+		
+		// Generate signature if present
+		if (hasSignature()) {
+			context.append(" (");
+			context.appendLine("");
+			context.increaseIndent();
+			signature.generateText(context);
+			context.decreaseIndent();
+			context.append(")");
+		}
+		
+		context.appendLine(" {");
+		context.increaseIndent();
+		
+		// Generate flow steps - each expression generates itself
+		List<FlowElementExpression> expressions = getExpressions();
+		if (expressions != null && !expressions.isEmpty()) {
+			for (FlowElementExpression expr : expressions) {
+				expr.generateText(context);
+			}
+		}
+		
+		context.decreaseIndent();
+		context.appendLine("}");
+	}
 }

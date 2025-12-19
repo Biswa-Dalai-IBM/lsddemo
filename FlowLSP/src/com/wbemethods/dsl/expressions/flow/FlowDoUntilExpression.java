@@ -3,6 +3,7 @@ package com.wbemethods.dsl.expressions.flow;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.app.FlowGenerator;
 import com.webmethods.is.util.IDataMap;
 import com.wm.data.IData;
@@ -47,6 +48,21 @@ public class FlowDoUntilExpression extends FlowContainerExpression {
 		dataMap.put(FlowDo.KEY_DO_MAX_ITERATIONS, maxIteration);
 		flowDo.setFromData(dataMap.getIData());
 		parent.addNode(flowDo);
+	}
+	
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("DO {");
+		context.append("\n");
+		context.increaseIndent();
+
+		for (FlowElementExpression child : getExpressions()) {
+			child.generateText(context);
+		}
+
+		context.decreaseIndent();
+		context.appendIndented("} UNTIL( "+untilCondition+" );");
+		context.append("\n");
 	}
 
 }

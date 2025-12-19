@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wm.lang.flow.FlowElement;
 
 /**
@@ -19,38 +20,73 @@ public class FlowContainerExpression extends FlowElementExpression {
 		expressions = new ArrayList<FlowElementExpression>();
 	}
 
+	/**
+	 * Add a child expression. Special handling for ELSEIF, ELSE, CATCH, and FINALLY
+	 * which are attached to their parent IF or TRY expressions rather than added as
+	 * siblings.
+	 */
 	public void addChild(FlowElementExpression expression) {
+		boolean addedToParent = false;
+
+		// Handle UNTIL 
+		
+		if (expression instanceof FlowUntilExpression) {
+			FlowUntilExpression untilExpression = (FlowUntilExpression)expression;
+			FlowDoUntilExpression doUntilExpression = (FlowDoUntilExpression)this;
+			doUntilExpression.setUntilCondition(untilExpression.getCondition());
+		}
+		// Handle ELSEIF - attach to preceding IF
 		if (expression instanceof FlowElseIfExpression) {
-			FlowElementExpression last = expressions.get(expressions.size() - 1);
-			if (last instanceof FlowIfThenElseExpression) {
-				FlowIfThenElseExpression flowIfThenElseExpression = (FlowIfThenElseExpression) last;
-				flowIfThenElseExpression.addElseIfExpressions((FlowElseIfExpression) expression);
+			if (!expressions.isEmpty()) {
+				FlowElementExpression last = expressions.get(expressions.size() - 1);
+				if (last instanceof FlowIfThenElseExpression) {
+					FlowIfThenElseExpression flowIfThenElseExpression = (FlowIfThenElseExpression) last;
+					flowIfThenElseExpression.addElseIfExpressions((FlowElseIfExpression) expression);
+					addedToParent = true;
+				}
 			}
 		}
+
+		// Handle ELSE - attach to preceding IF
 		if (expression instanceof FlowElseExpression) {
-			FlowElementExpression last = expressions.get(expressions.size() - 1);
-			if (last instanceof FlowIfThenElseExpression) {
-				FlowIfThenElseExpression flowIfThenElseExpression = (FlowIfThenElseExpression) last;
-				flowIfThenElseExpression.setElseExpression((FlowElseExpression) expression);
+			if (!expressions.isEmpty()) {
+				FlowElementExpression last = expressions.get(expressions.size() - 1);
+				if (last instanceof FlowIfThenElseExpression) {
+					FlowIfThenElseExpression flowIfThenElseExpression = (FlowIfThenElseExpression) last;
+					flowIfThenElseExpression.setElseExpression((FlowElseExpression) expression);
+					addedToParent = true;
+				}
 			}
 		}
 
+		// Handle CATCH - attach to preceding TRY
 		if (expression instanceof FlowCatchExpression) {
-			FlowElementExpression last = expressions.get(expressions.size() - 1);
-			if (last instanceof FlowTryExpression) {
-				FlowTryExpression tryExpression = (FlowTryExpression) last;
-				tryExpression.addCatchExpressions((FlowCatchExpression) expression);
+			if (!expressions.isEmpty()) {
+				FlowElementExpression last = expressions.get(expressions.size() - 1);
+				if (last instanceof FlowTryExpression) {
+					FlowTryExpression tryExpression = (FlowTryExpression) last;
+					tryExpression.addCatchExpressions((FlowCatchExpression) expression);
+					addedToParent = true;
+				}
 			}
 		}
 
+		// Handle FINALLY - attach to preceding TRY
 		if (expression instanceof FlowFinallyExpression) {
-			FlowElementExpression last = expressions.get(expressions.size() - 1);
-			if (last instanceof FlowTryExpression) {
-				FlowTryExpression tryExpression = (FlowTryExpression) last;
-				tryExpression.setFinallyExpression((FlowFinallyExpression) expression);
+			if (!expressions.isEmpty()) {
+				FlowElementExpression last = expressions.get(expressions.size() - 1);
+				if (last instanceof FlowTryExpression) {
+					FlowTryExpression tryExpression = (FlowTryExpression) last;
+					tryExpression.setFinallyExpression((FlowFinallyExpression) expression);
+					addedToParent = true;
+				}
 			}
 		}
-		expressions.add(expression);
+
+		// Only add to expressions list if not attached to parent
+		if (!addedToParent) {
+			expressions.add(expression);
+		}
 	}
 
 	public List<FlowElementExpression> getExpressions() {
@@ -98,5 +134,11 @@ public class FlowContainerExpression extends FlowElementExpression {
 				addChild(expression);
 			}
 		}
+	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		// TODO Auto-generated method stub
+		
 	}
 }

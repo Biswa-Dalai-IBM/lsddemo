@@ -3,6 +3,7 @@ package com.wbemethods.dsl.expressions.flow;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.flow.map.FlowMapExpression;
 import com.wbemethods.dsl.expressions.flow.map.MapIOExprssion;
 import com.wm.lang.flow.FlowElement;
@@ -109,4 +110,42 @@ public class FlowInvokeExpression extends FlowElementExpression {
 			}
 		}
 	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("INVOKE " + serviceName);
+
+		if (input != null  || output != null || hasProperties()) {
+			context.append(" {\n");
+			context.increaseIndent();
+
+			if (hasProperties()) {
+				for (FlowStepProperty prop : getProperties()) {
+					prop.generateText(context);
+				}
+			}
+
+			if (input != null) {
+				context.appendIndented("input {\n");
+				context.increaseIndent();
+				input.generateText(context);
+				context.decreaseIndent();
+				context.appendLine("}");
+			}
+
+			if (output != null) {
+				context.appendIndented("output {\n");
+				context.increaseIndent();
+				output.generateText(context);
+				context.decreaseIndent();
+				context.appendLine("}");
+			}
+
+			context.decreaseIndent();
+			context.appendIndented("};\n");
+		} else {
+			context.append(";\n");
+		}
+	}
+
 }

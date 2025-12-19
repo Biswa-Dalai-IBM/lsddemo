@@ -34,5 +34,13 @@ public abstract class FlowElementExpression implements IFlowExpression {
 	public List<FlowStepProperty> getProperties() {
 		return properties;
 	}
+	
+	public boolean hasProperties() {
+		if(properties==null || properties.isEmpty()) {
+			return false;
+		}else {
+			return true;
+		}
+	}
 
 }

@@ -3,8 +3,11 @@ package com.wbemethods.dsl.expressions.flow.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.flow.FlowStepProperty;
 import com.wm.lang.flow.FlowElement;
+import com.wm.lang.flow.FlowMap;
 
 public class FlowMapElementExpression extends AbstractFlowMapExpression {
 	List<FlowStepProperty> properties;
@@ -28,7 +31,38 @@ public class FlowMapElementExpression extends AbstractFlowMapExpression {
 
 	@Override
 	public void updateExpression(FlowElement element) {
-		// TODO Auto-generated method stub
-
+		convertFlowMap((FlowMap) element);
 	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("MAP");
+
+		if (hasMapSignature() || hasExpressions() || hasProperties()) {
+			context.append(" {\n");
+			context.increaseIndent();
+
+			if (hasProperties()) {
+				for (FlowStepProperty prop : getProperties()) {
+					prop.generateText(context);
+				}
+			}
+
+			if (hasMapSignature()) {
+				getMapSignature().generateText(context);
+			}
+
+			if (hasExpressions()) {
+				for (FlowElementExpression expr : getMapExpressions()) {
+					expr.generateText(context);
+				}
+			}
+
+			context.decreaseIndent();
+			context.appendIndented("};\n");
+		} else {
+			context.append(";\n");
+		}
+	}
+
 }

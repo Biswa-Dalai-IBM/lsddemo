@@ -20,7 +20,6 @@ import com.wm.util.coder.XMLCoder;
 
 public class FlowUtils {
 
-
 	public static FlowSvcImpl loadFlowService(File flowDir, String packageName, String nsname) {
 		XMLCoder coder = new XMLCoder();
 		FlowSvcImpl flowSvcImpl = new FlowSvcImpl(Values.use(IDataFactory.create()));
@@ -41,7 +40,6 @@ public class FlowUtils {
 		}
 		return flowSvcImpl;
 	}
-
 
 	public static File getTempDir() throws IOException {
 		return Server.getHomeDir();

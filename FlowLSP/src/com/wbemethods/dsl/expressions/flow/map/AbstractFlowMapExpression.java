@@ -20,6 +20,7 @@ import com.wm.lang.flow.FlowMapDelete;
 import com.wm.lang.flow.FlowMapInvoke;
 import com.wm.lang.flow.FlowMapSet;
 import com.wm.lang.ns.NSRecord;
+import com.wm.util.Values;
 
 public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	List<FlowElementExpression> expressions;
@@ -197,7 +198,15 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 				}
 			}
 		}
-
+		IData asData = flowMap.getAsData();
+		IDataCursor ic = asData.getCursor();
+		Values target = Values.use(IDataUtil.getIData(ic, FlowMap.KEY_TARGET));
+		Values source = Values.use(IDataUtil.getIData(ic, FlowMap.KEY_SOURCE));
+		
+		NSRecord targetRec = target != null ? NSRecord.createRecord(Namespace.current(), target) : null;
+		NSRecord sourceRec = source != null ? NSRecord.createRecord(Namespace.current(), source) : null;
+        mapSignature = new MapSignature();
+        mapSignature.updateSignature(sourceRec, targetRec);
 	}
 
 	/**
@@ -228,7 +237,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 		cursor.destroy();
 
 		if (from != null && to != null) {
-			return new FlowMapCopyExpression(from, to, null);
+			return new FlowMapCopyExpression(calculatePath(from), calculatePath(to));
 		}
 
 		return null;
@@ -242,14 +251,32 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 		IDataCursor cursor = data.getCursor();
 
 		String field = IDataUtil.getString(cursor, "field");
-		String value = IDataUtil.getString(cursor, "value");
+		String value = IDataUtil.getString(cursor, "data");
+
 		cursor.destroy();
 
 		if (field != null && value != null) {
-			return new FlowMapSetExpression(field, value, null);
+			return new FlowMapSetExpression(calculatePath(field), value);
 		}
 
 		return null;
+	}
+
+	public static String calculatePath(String xPath) {
+		String path="";
+		String[] tokens = xPath.split("/");
+		for (String t : tokens) {
+			if(t.isEmpty()) {
+				continue;
+			}
+			String[] params = t.split(";");
+			if(path.isEmpty()) {
+				path=path.concat(params[0]);
+			}else {
+				path=path.concat("/").concat(params[0]);
+			}
+		}
+		return path;
 	}
 
 	/**
@@ -263,7 +290,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 		cursor.destroy();
 
 		if (field != null) {
-			return new FlowMapDropExpression(field);
+			return new FlowMapDropExpression(calculatePath(field));
 		}
 
 		return null;

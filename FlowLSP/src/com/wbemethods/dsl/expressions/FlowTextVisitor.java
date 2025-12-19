@@ -1,16 +1,17 @@
 package com.wbemethods.dsl.expressions;
 
 /**
- * Base interface for all flow expressions. Implements Visitor pattern for text
- * generation.
+ * Visitor interface for generating flow text from expressions. Each expression
+ * implements this to generate its own text representation.
  */
-public interface IFlowExpression extends FlowTextVisitor {
+public interface FlowTextVisitor {
 
 	/**
 	 * Generate flow text for this expression
 	 * 
 	 * @param context The text generation context
 	 */
-	@Override
 	void generateText(FlowTextContext context);
 }
+
+// Made with Bob

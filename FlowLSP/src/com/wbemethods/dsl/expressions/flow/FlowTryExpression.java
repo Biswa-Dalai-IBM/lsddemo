@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
@@ -49,5 +50,31 @@ public class FlowTryExpression extends FlowContainerExpression {
 
 	public void setFinallyExpression(FlowFinallyExpression finallyExpression) {
 		this.finallyExpression = finallyExpression;
+	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("TRY {");
+		context.append("\n");
+		context.increaseIndent();
+
+		for (FlowElementExpression child : getExpressions()) {
+			child.generateText(context);
+		}
+
+		context.decreaseIndent();
+		context.appendIndented("}");
+
+		if (catchExpressions != null && !catchExpressions.isEmpty()) {
+			for (FlowCatchExpression catchExpr : catchExpressions) {
+				catchExpr.generateText(context);
+			}
+		}
+
+		if (finallyExpression != null) {
+			finallyExpression.generateText(context);
+		}
+
+		context.append(";\n");
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
@@ -63,6 +64,48 @@ public class FlowIfThenElseExpression extends FlowContainerExpression {
 	public void updateExpression(FlowElement element) {
 		FlowSequence flowSequence = (FlowSequence) element;
 		condition = flowSequence.getCondition();
+		condition = condition.replaceAll("%", "");
 		super.updateExpression(element);
 	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("IF(" + condition + ") {");
+		context.append("\n");
+		context.increaseIndent();
+
+		for (FlowElementExpression child : getExpressions()) {
+			child.generateText(context);
+		}
+
+		context.decreaseIndent();
+		context.appendIndented("}");
+
+		if (elseIfExpressions != null) {
+			for (FlowElseIfExpression elseIf : elseIfExpressions) {
+				context.append("ELSEIF(" + elseIf.getCondition() + ") {");
+				context.append("\n");
+				context.increaseIndent();
+				for (FlowElementExpression child : elseIf.getExpressions()) {
+					child.generateText(context);
+				}
+				context.decreaseIndent();
+				context.appendIndented("}");
+			}
+		}
+
+		if (elseExpression != null) {
+			context.append("ELSE {");
+			context.append("\n");
+			context.increaseIndent();
+			for (FlowElementExpression child : elseExpression.getExpressions()) {
+				child.generateText(context);
+			}
+			context.decreaseIndent();
+			context.appendIndented("}");
+		}
+
+		context.append(";\n");
+	}
+
 }

@@ -20,7 +20,9 @@ import com.wbemethods.dsl.expressions.flow.FlowSequenceExpression;
 import com.wbemethods.dsl.expressions.flow.FlowStepProperty;
 import com.wbemethods.dsl.expressions.flow.FlowSwitchExpression;
 import com.wbemethods.dsl.expressions.flow.FlowTryExpression;
-import com.wbemethods.dsl.expressions.flow.map.FlowMapExpression;
+import com.wbemethods.dsl.expressions.flow.FlowUntilExpression;
+import com.wbemethods.dsl.expressions.flow.FlowWhileExpression;
+import com.wbemethods.dsl.expressions.flow.map.FlowMapElementExpression;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.lang.flow.FlowBranch;
@@ -33,6 +35,8 @@ import com.wm.lang.flow.FlowMap;
 import com.wm.lang.flow.FlowRetry;
 import com.wm.lang.flow.FlowSequence;
 import com.wm.lang.flow.FlowSwitch;
+import com.wm.lang.flow.FlowUntil;
+import com.wm.lang.flow.FlowWhile;
 
 /**
  * Factory for creating FlowElementExpression instances from FlowElement
@@ -46,13 +50,15 @@ public class FlowExpressionFactory {
 	static {
 		// Register creators for each FlowElement type
 		EXPRESSION_CREATORS.put(FlowInvoke.class, FlowInvokeExpression::new);
-		EXPRESSION_CREATORS.put(FlowMap.class, FlowMapExpression::new);
+		EXPRESSION_CREATORS.put(FlowMap.class, FlowMapElementExpression::new);
 		EXPRESSION_CREATORS.put(FlowLoop.class, FlowLoopExpression::new);
 		EXPRESSION_CREATORS.put(FlowBranch.class, FlowBranchExpression::new);
 		EXPRESSION_CREATORS.put(FlowRetry.class, FlowRepeatExpression::new);
 		EXPRESSION_CREATORS.put(FlowExit.class, FlowExitExpression::new);
 		EXPRESSION_CREATORS.put(FlowDo.class, FlowDoUntilExpression::new);
 		EXPRESSION_CREATORS.put(FlowSwitch.class, FlowSwitchExpression::new);
+		EXPRESSION_CREATORS.put(FlowUntil.class, FlowUntilExpression::new);
+		EXPRESSION_CREATORS.put(FlowWhile.class, FlowWhileExpression::new);
 		// FlowSequence is handled separately due to form-based logic
 	}
 
@@ -77,7 +83,7 @@ public class FlowExpressionFactory {
 		if (creator != null) {
 			FlowElementExpression expression = creator.get();
 			expression.updateExpression(element);
-			extractStepProperties(element.getAsData(), expression);
+			//extractStepProperties(element.getAsData(), expression);
 			return expression;
 		}
 

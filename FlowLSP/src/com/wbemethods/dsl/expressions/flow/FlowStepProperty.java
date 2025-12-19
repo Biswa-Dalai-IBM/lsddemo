@@ -1,6 +1,7 @@
 package com.wbemethods.dsl.expressions.flow;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wm.lang.flow.FlowElement;
 
 public class FlowStepProperty extends FlowElementExpression {
@@ -32,6 +33,11 @@ public class FlowStepProperty extends FlowElementExpression {
 	public void updateExpression(FlowElement element) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendLine(key + ": " + value + ";");
 	}
 
 }

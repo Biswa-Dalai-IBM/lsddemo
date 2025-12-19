@@ -168,4 +168,32 @@ public class ParameterDeclaration implements IFlowExpression {
 		return params;
 	}
 
+	@Override
+	public void generateText(FlowTextContext context) {
+		if (isField()) {
+			String arrayStr = isArray() ? "[] " : " ";
+			context.appendLine(dataType + arrayStr + name + ";");
+		} else if (isRecord()) {
+			context.appendLine("record " + name + " {");
+			context.increaseIndent();
+			if (hasChildren()) {
+				for (ParameterDeclaration child : getChildren()) {
+					child.generateText(context);
+				}
+			}
+			context.decreaseIndent();
+			context.appendLine("};");
+		} else if (isRecordList()) {
+			context.appendLine("recordList " + name + " {");
+			context.increaseIndent();
+			if (hasChildren()) {
+				for (ParameterDeclaration child : getChildren()) {
+					child.generateText(context);
+				}
+			}
+			context.decreaseIndent();
+			context.appendLine("};");
+		}
+	}
+
 }

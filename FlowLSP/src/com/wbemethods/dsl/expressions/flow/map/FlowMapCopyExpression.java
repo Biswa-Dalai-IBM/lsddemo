@@ -1,5 +1,6 @@
 package com.wbemethods.dsl.expressions.flow.map;
 
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.VariableResolver;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowMapCopy;
@@ -45,4 +46,10 @@ public class FlowMapCopyExpression extends FlowMapExpression {
 		mapCopy.setMapTo(NSFieldPathBuilder.buildNSFieldPath(to, variableResolver));
 		return mapCopy;
 	}
+
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendLine("copy " + from + " -> " + to + ";");
+	}
+
 }

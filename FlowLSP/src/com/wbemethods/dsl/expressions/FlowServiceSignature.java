@@ -64,6 +64,29 @@ public class FlowServiceSignature implements IFlowExpression {
 		}
 	}
 
+	@Override
+	public void generateText(FlowTextContext context) {
+		if (hasInputParameters()) {
+			context.appendLine("input {");
+			context.increaseIndent();
+			for (ParameterDeclaration param : getInputParameters()) {
+				param.generateText(context);
+			}
+			context.decreaseIndent();
+			context.appendLine("}");
+		}
+
+		if (hasOutputParameters()) {
+			context.appendLine("output {");
+			context.increaseIndent();
+			for (ParameterDeclaration param : getOutputParameters()) {
+				param.generateText(context);
+			}
+			context.decreaseIndent();
+			context.appendLine("}");
+		}
+	}
+
 }
 
 // Made with Bob

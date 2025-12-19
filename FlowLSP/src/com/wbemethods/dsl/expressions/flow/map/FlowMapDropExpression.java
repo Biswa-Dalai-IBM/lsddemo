@@ -1,5 +1,6 @@
 package com.wbemethods.dsl.expressions.flow.map;
 
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowMapDelete;
 
@@ -23,4 +24,8 @@ public class FlowMapDropExpression extends FlowMapExpression {
 		return mapDelete;
 	}
 
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendLine("drop " + fieldName + ";");
+	}
 }

@@ -1,26 +1,16 @@
 package com.wbemethods.dsl.expressions.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.wbemethods.dsl.expressions.FlowElementExpression;
 import com.wbemethods.dsl.expressions.FlowTextContext;
+import com.wbemethods.dsl.expressions.flow.map.AbstractFlowMapExpression;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowExit;
+import com.wm.lang.flow.FlowUntil;
 
-public class FlowExitExpression extends FlowElementExpression {
-	List<FlowStepProperty> properties;
-
-	public FlowExitExpression() {
-		properties = new ArrayList<FlowStepProperty>();
-	}
-
-	public void addProperty(FlowStepProperty property) {
-		properties.add(property);
-	}
-
-	public List<FlowStepProperty> getProperties() {
-		return properties;
+public class FlowUntilExpression extends FlowElementExpression {
+	String condition;
+	public FlowUntilExpression() {
+		super();
 	}
 
 	@Override
@@ -30,13 +20,18 @@ public class FlowExitExpression extends FlowElementExpression {
 
 	@Override
 	public void updateExpression(FlowElement element) {
-		// TODO Auto-generated method stub
-
+		FlowUntil flowUntil = (FlowUntil)element;
+		condition = flowUntil.getCondition();
+		condition = AbstractFlowMapExpression.calculatePath(condition);
+		condition=condition.replaceAll("%", "");
 	}
 
 	@Override
 	public void generateText(FlowTextContext context) {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public String getCondition() {
+		return condition;
 	}
 }
