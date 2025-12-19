@@ -24,6 +24,7 @@ public class FlowCaseExpression extends FlowContainerExpression {
 	public void addFlowElement(FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setCaseValue(caseValue);
+		flowSequence.setForm(FlowSequence.CASE);
 		List<FlowElementExpression> expressions = getExpressions();
 		FlowGenerator.generateFlow(expressions, flowSequence);
 		parent.addNode(flowSequence);
