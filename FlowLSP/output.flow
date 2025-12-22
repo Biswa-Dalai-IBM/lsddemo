@@ -1,0 +1,56 @@
+service fs1 (
+    input {
+        record doc1 {
+            String name;
+            String phone;
+            record address {
+                String state;
+                String pin;
+            };
+        };
+        String test;
+        String[] sl1;
+        String[][] st1;
+        recordList doc2 {
+            String id;
+            String qty;
+            String price;
+            record product {
+                String size;
+                String color;
+            };
+        };
+    }
+) {
+    MAP {
+        mapTarget {
+            record doc1 {
+                String name;
+                String phone;
+                record address {
+                };
+            };
+            String test;
+            String[] sl1;
+            String[][] st1;
+            recordList doc2 {
+                String id;
+                String qty;
+                String price;
+                record product {
+                };
+            };
+        }
+        set test = """<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath""";
+        set sl1 = ["a", "b", "c", "d", "e"];
+        set st1 = [["x", "y", "z"], ["p", "q", "r"]];
+        set doc2 = [{"id":"p1","qty":"12","price":"100","product":{"size":"12","color":"BLACK"}}, {"id":"p2","qty":"20","price":"200","product":{"size":"34","color":"RED"}}];
+        set doc1 = {"name":"Dev","phone":"98787878","address":{"state":"Karnataka","pin":"560001"}};
+    };
+}

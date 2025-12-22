@@ -25,7 +25,7 @@ parameterDeclaration
     ;
 
 fieldDeclaration
-    : dataType ('[' ']')? identifier constraints? ';'
+    : dataType ('[' ']')* identifier constraints? ';'
     ;
 
 recordDeclaration
@@ -131,8 +131,47 @@ identifier
 value
     : INT
     | STRING_LITERAL
+    | MULTILINE_STRING
     | BOOL
     | expression
+    | arrayLiteral
+    | jsonObject
+    ;
+
+arrayLiteral
+    : '[' (arrayElement (',' arrayElement)*)? ']'
+    ;
+
+arrayElement
+    : STRING_LITERAL
+    | INT
+    | FLOAT_LITERAL
+    | BOOL
+    | NULL
+    | arrayLiteral      // Nested arrays for 2D, 3D, etc.
+    | jsonObject        // Objects within arrays
+    ;
+
+jsonObject
+    : '{' (jsonPair (',' jsonPair)*)? '}'
+    ;
+
+jsonPair
+    : STRING_LITERAL ':' jsonValue
+    ;
+
+jsonValue
+    : STRING_LITERAL
+    | INT
+    | FLOAT_LITERAL
+    | BOOL
+    | NULL
+    | jsonArray
+    | jsonObject
+    ;
+
+jsonArray
+    : '[' (jsonValue (',' jsonValue)*)? ']'
     ;
 
 // Expression support for conditions and values
@@ -151,6 +190,7 @@ primaryExpression
 literal
     : INT
     | STRING_LITERAL
+    | MULTILINE_STRING
     | BOOL
     | 'null'
     ;
@@ -337,6 +377,7 @@ SPECIAL_VAR : '$' [a-zA-Z_][a-zA-Z0-9_]* ;  // Special variables like $error, $l
 ID    : [a-zA-Z_][a-zA-Z0-9_]* ;
 INT   : [0-9]+ ;
 FLOAT_LITERAL : [0-9]+ '.' [0-9]+ ;
+MULTILINE_STRING : '"""' .*? '"""' ;  // Triple-quoted strings for XML/multi-line content
 STRING_LITERAL : '"' (~["\\] | '\\' .)* '"' ;
 
 // Whitespace and comments

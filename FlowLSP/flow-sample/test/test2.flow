@@ -1,0 +1,56 @@
+service SendEmailToRecipients {
+ 
+  MAP {
+    comment: "Initialize recipients list";
+	set myArray = ["abc", "xyz", "def"];
+	
+	// Simple JSON object
+	set myRecord = {"name": "John", "age": 30, "active": true};
+	
+	// Complex nested JSON
+	set complexRecord = {
+	    "user": {
+	        "name": "John",
+	        "email": "john@example.com",
+	        "roles": ["admin", "user"]
+	    },
+	    "metadata": {
+	        "created": "2024-01-01",
+	        "version": 1
+	    }
+	};
+	
+	// Simple values (existing functionality preserved)
+	set myString = "hello";
+	set myNumber = 42;
+	set myBool = true;
+  };
+
+  
+  LOOP {
+    comment: "Send email to each recipient";
+    inputArray: "recipients";
+    outputArray: "emailResults";
+
+    MAP {
+      comment: "Extract current recipient";
+      set recipient = $recipients;
+    };
+
+    INVOKE email:sendEmail {
+      input {
+        set to = $recipient;
+        set subject = "Test Email";
+        set body = "Hello, this is a test email.";
+      }
+      output {
+        copy $response -> $emailResult;
+      }
+    };
+
+   MAP {
+      comment: "MAP email result to output array";
+      copy $emailResult -> $emailResults;
+    };
+  };
+}

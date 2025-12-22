@@ -50,9 +50,18 @@ public class NSRecordUtils {
 
 	/**
 	 * Add a field with array dimension
+	 * @deprecated Use addFieldWithDimension(NSRecord, String, String, int) instead
 	 */
+	@Deprecated
 	public static void addFieldWithDimension(NSRecord parent, String fieldName, String type, boolean isArray) {
 		int dimension = isArray ? NSField.DIM_ARRAY : NSField.DIM_SCALAR;
+		addFieldWithDimension(parent, fieldName, type, dimension);
+	}
+
+	/**
+	 * Add a field with specific dimension (0=scalar, 1=1D array, 2=2D array, etc.)
+	 */
+	public static void addFieldWithDimension(NSRecord parent, String fieldName, String type, int dimension) {
 
 		if (type.equals("String")) {
 			parent.addField(

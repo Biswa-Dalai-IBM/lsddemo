@@ -1,5 +1,7 @@
 package com.wbemethods.dsl.expressions.flow.map;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,8 @@ import com.wm.lang.flow.FlowMapInvoke;
 import com.wm.lang.flow.FlowMapSet;
 import com.wm.lang.ns.NSRecord;
 import com.wm.util.Values;
+import com.wm.util.coder.IDataJSONCoder;
+import com.wm.util.coder.InvalidDatatypeException;
 
 public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	List<FlowElementExpression> expressions;
@@ -162,7 +166,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	private void buildParameter(NSRecord parent, ParameterDeclaration param) {
 		if (param.isField()) {
 			// Simple field
-			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.isArray());
+			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.getDimension());
 		} else if (param.isRecord()) {
 			// Record (not array)
 			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), false);
@@ -249,17 +253,52 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	private FlowMapSetExpression convertMapSet(FlowMapSet mapSet) {
 		IData data = mapSet.getAsData();
 		IDataCursor cursor = data.getCursor();
-
 		String field = IDataUtil.getString(cursor, "field");
-		String value = IDataUtil.getString(cursor, "data");
-
-		cursor.destroy();
+		Object value = IDataUtil.get(cursor, "data");
+		if(value instanceof IData) {
+			IData iData = (IData) value;
+			value = converIData2Json(cursor, iData);
+		}else if(value instanceof IData[]) {
+			IData[] datas = (IData[])value;
+			StringBuilder sb = new StringBuilder("[");
+			for (int i = 0; i < datas.length; i++) {
+				if (i > 0) sb.append(", ");
+				String text = converIData2Json(cursor, datas[i]);
+				sb.append(text);
+			}
+			sb.append("]");
+			value = sb.toString();
+		}else if( value instanceof String[]) {
+			String[] arr = (String[]) value;
+			value = convertStringArrayToLiteral(arr);
+		}else if( value instanceof String[][]) {
+			String[][] arr = (String[][]) value;
+			value = convert2DStringArrayToLiteral(arr);
+		}
 
 		if (field != null && value != null) {
-			return new FlowMapSetExpression(calculatePath(field), value);
+			FlowMapSetExpression expression = new FlowMapSetExpression(calculatePath(field), value);
+			return expression;
 		}
 
 		return null;
+	}
+
+	private String converIData2Json(IDataCursor cursor, IData iData) {
+		IDataJSONCoder coder = new IDataJSONCoder();
+		String jsonText = null;
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			coder.encode(outputStream,iData);
+			jsonText = outputStream.toString();
+		} catch (InvalidDatatypeException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		cursor.destroy();
+		return jsonText;
 	}
 
 	public static String calculatePath(String xPath) {
@@ -313,4 +352,48 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 		return null;
 	}
 
+
+	/**
+	 * Convert 1D String array to array literal format
+	 */
+	private String convertStringArrayToLiteral(String[] arr) {
+		StringBuilder sb = new StringBuilder("[");
+		for (int i = 0; i < arr.length; i++) {
+			if (i > 0) sb.append(", ");
+			sb.append("\"").append(escapeString(arr[i])).append("\"");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert 2D String array to nested array literal format
+	 */
+	private String convert2DStringArrayToLiteral(String[][] arr) {
+		StringBuilder sb = new StringBuilder("[");
+		for (int i = 0; i < arr.length; i++) {
+			if (i > 0) sb.append(", ");
+			// Convert each row to an array
+			sb.append("[");
+			for (int j = 0; j < arr[i].length; j++) {
+				if (j > 0) sb.append(", ");
+				sb.append("\"").append(escapeString(arr[i][j])).append("\"");
+			}
+			sb.append("]");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	/**
+	 * Escape special characters in strings
+	 */
+	private String escapeString(String str) {
+		if (str == null) return "";
+		return str.replace("\\", "\\\\")
+				  .replace("\"", "\\\"")
+				  .replace("\n", "\\n")
+				  .replace("\r", "\\r")
+				  .replace("\t", "\\t");
+	}
 }

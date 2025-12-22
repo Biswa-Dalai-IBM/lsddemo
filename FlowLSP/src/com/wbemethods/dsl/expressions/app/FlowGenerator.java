@@ -140,7 +140,7 @@ public class FlowGenerator {
 	private void buildParameter(NSRecord parent, ParameterDeclaration param) {
 		if (param.isField()) {
 			// Simple field
-			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.isArray());
+			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.getDimension());
 		} else if (param.isRecord()) {
 			// Record (not array)
 			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), false);

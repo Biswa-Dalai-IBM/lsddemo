@@ -2,227 +2,220 @@
 
 <FLOW VERSION="3.2" CLEANUP="true">
 
-	<!-- nodes -->
+  <!-- nodes -->
 
-	<SWITCH SWITCHKEY="day">
+<SWITCH  SWITCHKEY="day">
 
-		<!-- nodes -->
+  <!-- nodes -->
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="1">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="1">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"MONDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"MONDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="2">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="2">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"TUESDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"TUESDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="3">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="3">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"WEDNESDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"WEDNESDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="4">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="4">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"THURSDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"THURSDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="5">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="5">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"FRIDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"FRIDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="6">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="6">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"SATURDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
+<Values version="2.0">
+  <value name="xml">"SATURDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
 
-		<SEQUENCE EXIT-ON="FAILURE" CASEVALUE="7">
+<SEQUENCE EXIT-ON="FAILURE" FORM="CASE"  CASEVALUE="7">
 
-			<!-- nodes -->
+  <!-- nodes -->
 
-			<MAP MODE="STANDALONE">
+<MAP MODE="STANDALONE">
 
-				<!-- nodes -->
+  <!-- nodes -->
 
-				<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false"
-					GLOBALVARIABLES="false" FIELD="/output;1;0">
-					<DATA ENCODING="XMLValues" I18N="true">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/output;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
 
-						<Values version="2.0">
-							<value name="xml">"SUNDAY"</value>
-							<record name="type" javaclass="com.wm.util.Values">
-								<value name="node_type">record</value>
-								<value name="node_subtype">unknown</value>
-								<value name="is_public">false</value>
-								<value name="field_name">output</value>
-								<value name="field_type">string</value>
-								<value name="field_dim">0</value>
-								<value name="nillable">true</value>
-								<value name="form_qualified">false</value>
-								<value name="is_global">false</value>
-							</record>
-						</Values>
-					</DATA>
-				</MAPSET>
-			</MAP>
-		</SEQUENCE>
-	</SWITCH>
+<Values version="2.0">
+  <value name="xml">"SUNDAY"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">output</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+</MAP>
+</SEQUENCE>
+</SWITCH>
 </FLOW>

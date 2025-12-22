@@ -115,7 +115,8 @@ public class VariableResolver {
 			cursor.insertAfter("name", param.getName());
 			cursor.insertAfter("type", param.getType());
 			cursor.insertAfter("dataType", param.getDataType());
-			cursor.insertAfter("isArray", param.isArray());
+			cursor.insertAfter("dimension", param.getDimension());
+			cursor.insertAfter("isArray", param.isArray()); // Keep for backward compatibility
 
 			// Add constraints if any
 			if (!param.getConstraints().isEmpty()) {
@@ -154,6 +155,7 @@ public class VariableResolver {
 		info.append("  Name: ").append(param.getName()).append("\n");
 		info.append("  Type: ").append(param.getType()).append("\n");
 		info.append("  DataType: ").append(param.getDataType()).append("\n");
+		info.append("  Dimension: ").append(param.getDimension()).append("\n");
 		info.append("  IsArray: ").append(param.isArray()).append("\n");
 
 		if (!param.getConstraints().isEmpty()) {

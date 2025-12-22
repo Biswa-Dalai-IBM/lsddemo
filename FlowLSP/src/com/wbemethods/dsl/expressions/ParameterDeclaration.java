@@ -14,7 +14,7 @@ public class ParameterDeclaration implements IFlowExpression {
 	private String name;
 	private String type; // "field", "record", "recordList"
 	private String dataType; // For fields: String, Integer, etc.
-	private boolean isArray;
+	private int dimension; // 0 = scalar, 1 = 1D array, 2 = 2D array, etc.
 	private List<String> constraints; // required, optional, etc.
 	private List<ParameterDeclaration> children; // For records
 
@@ -54,13 +54,21 @@ public class ParameterDeclaration implements IFlowExpression {
 		this.dataType = dataType;
 	}
 
-	public boolean isArray() {
-		return isArray;
+	public int getDimension() {
+		return dimension;
 	}
 
-	public void setArray(boolean isArray) {
-		this.isArray = isArray;
+	public void setDimension(int dimension) {
+		this.dimension = dimension;
 	}
+
+	/**
+	 * Check if this parameter is an array (1D or higher)
+	 */
+	public boolean isArray() {
+		return dimension > 0;
+	}
+
 
 	public List<String> getConstraints() {
 		return constraints;
@@ -121,7 +129,7 @@ public class ParameterDeclaration implements IFlowExpression {
 			this.name = name;
 			this.type = "field";
 			setDataType(mapJavaTypeToFlowType(type, subType));
-			setArray(dimension == 1);
+			setDimension(dimension);
 		}
 	}
 
@@ -171,8 +179,17 @@ public class ParameterDeclaration implements IFlowExpression {
 	@Override
 	public void generateText(FlowTextContext context) {
 		if (isField()) {
-			String arrayStr = isArray() ? "[] " : " ";
-			context.appendLine(dataType + arrayStr + name + ";");
+			// Generate array brackets based on dimension
+			StringBuilder arrayStr = new StringBuilder();
+			for (int i = 0; i < dimension; i++) {
+				arrayStr.append("[]");
+			}
+			if (dimension > 0) {
+				arrayStr.append(" ");
+			} else {
+				arrayStr.append(" ");
+			}
+			context.appendLine(dataType + arrayStr.toString() + name + ";");
 		} else if (isRecord()) {
 			context.appendLine("record " + name + " {");
 			context.increaseIndent();

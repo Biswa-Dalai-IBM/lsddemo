@@ -1,0 +1,36 @@
+service TestFlow {
+INVOKE salesforce:queryLeads {
+  input { 
+     set query = "SELECT * FROM Lead";  
+  }  
+  output {
+     copy $records -> $leads;  
+  }
+};
+LOOP {  
+comment: "Sync each lead to Marketo";  
+inputArray: "leads";  
+outputArray: "syncedLeads";
+MAP {   
+set leadEmail = $leads/Email;    
+set leadFirstName = $leads/FirstName;    
+set leadLastName = $leads/LastName;  
+};
+INVOKE marketo:createLead {    
+input {      
+set email = $leadEmail;      
+set firstName = $leadFirstName;      
+set lastName = $leadLastName;    
+}    
+output {      
+copy $response -> $marketoResponse;    
+}  
+};
+MAP {    
+copy $marketoResponse/id -> $syncedLeads/marketoId;    
+copy $leadEmail -> $syncedLeads/email;    
+copy $leadFirstName -> $syncedLeads/firstName;    
+copy $leadLastName -> $syncedLeads/lastName;  
+};
+};
+}

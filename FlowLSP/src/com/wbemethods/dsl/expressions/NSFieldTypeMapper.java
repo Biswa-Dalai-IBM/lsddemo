@@ -72,12 +72,13 @@ public class NSFieldTypeMapper {
 			return NSField.DIM_SCALAR;
 		}
 
-		// RecordList is always an array
+		// RecordList is always an array (1D)
 		if (param.isRecordList()) {
 			return NSField.DIM_ARRAY;
 		}
 
-		return mapArrayToDimension(param.isArray());
+		// Return the dimension directly
+		return param.getDimension();
 	}
 
 	/**
@@ -120,6 +121,8 @@ public class NSFieldTypeMapper {
 			return "Scalar";
 		case NSField.DIM_ARRAY:
 			return "Array";
+		case NSField.DIM_TABLE:
+			return "Table";	
 		default:
 			return "Unknown";
 		}

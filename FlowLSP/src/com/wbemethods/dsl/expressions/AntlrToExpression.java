@@ -566,7 +566,19 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 
 		String fieldPath = path.stream().collect(Collectors.joining("/"));
-		String valueText = ctx.value().getText();
+		String valueText;
+		
+		// Handle different value types
+		if (ctx.value().arrayLiteral() != null) {
+			// Handle array literal: ["abc", "xyz"]
+			valueText = ctx.value().arrayLiteral().getText();
+		} else if (ctx.value().jsonObject() != null) {
+			// Handle JSON object: {"key": "value", ...}
+			valueText = ctx.value().jsonObject().getText();
+		} else {
+			// Handle simple values (INT, STRING_LITERAL, BOOL, expression)
+			valueText = ctx.value().getText();
+		}
 
 		// Create VariableResolver from ScopeManager
 		VariableResolver resolver = null;
@@ -574,8 +586,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			resolver = new VariableResolver(scopeManager);
 		}
 
-		FlowElementExpression expr = new FlowMapSetExpression(fieldPath, valueText, resolver);
-
+		FlowMapSetExpression expr = new FlowMapSetExpression(fieldPath, valueText, resolver);
 		return expr;
 	}
 
@@ -882,15 +893,14 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			param.setDataType(ctx.dataType().getText());
 		}
 
-		// Check if it's an array
-		boolean isArray = false;
+		// Count array dimensions (e.g., [] = 1D, [][] = 2D)
+		int dimension = 0;
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			if (ctx.getChild(i).getText().equals("[")) {
-				isArray = true;
-				break;
+				dimension++;
 			}
 		}
-		param.setArray(isArray);
+		param.setDimension(dimension);
 
 		// Process constraints
 		if (ctx.constraints() != null) {
