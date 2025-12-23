@@ -2,6 +2,10 @@
 
 <project basedir="." default="build" name="FlowLSP">
 	<property environment="env" />
+	<property name="version" value="1.0.0" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="flow-dsl-cli.jar" />
+	
 	<path id="FlowLSP.classpath">
 		<pathelement location="bin" />
 		<pathelement location="lib/antlr-4.13.2-complete.jar" />
@@ -35,6 +39,7 @@
 	<target name="clean">
 		<delete dir="bin" />
 		<delete dir="target" />
+		<delete dir="${dist.dir}" />
 	</target>
 
 	<target name="generateCode">
@@ -63,6 +68,188 @@
 			<exclude name="antlr/src/" />
 			<classpath refid="FlowLSP.classpath" />
 		</javac>
+	</target>
+
+	<!-- Create runnable JAR with all dependencies -->
+	<target name="jar" depends="build" description="Create runnable JAR file">
+		<mkdir dir="${dist.dir}" />
+		
+		<!-- Create manifest -->
+		<manifest file="${dist.dir}/MANIFEST.MF">
+			<attribute name="Main-Class" value="com.wbemethods.dsl.expressions.app.FlowCLI" />
+			<attribute name="Implementation-Version" value="${version}" />
+			<attribute name="Built-By" value="${user.name}" />
+		</manifest>
+		
+		<!-- Create JAR -->
+		<jar destfile="${dist.dir}/${jar.name}" manifest="${dist.dir}/MANIFEST.MF">
+			<fileset dir="bin" />
+		</jar>
+		
+		<echo message="Created runnable JAR: ${dist.dir}/${jar.name}" />
+	</target>
+
+	<!-- Create distribution ZIP with JAR, libraries, and scripts -->
+	<target name="dist" depends="jar" description="Create distribution ZIP file">
+		<mkdir dir="${dist.dir}/flow-dsl-${version}" />
+		<mkdir dir="${dist.dir}/flow-dsl-${version}/lib" />
+		<mkdir dir="${dist.dir}/flow-dsl-${version}/lib/ext" />
+		<mkdir dir="${dist.dir}/flow-dsl-${version}/examples" />
+		
+		<!-- Copy JAR -->
+		<copy file="${dist.dir}/${jar.name}" todir="${dist.dir}/flow-dsl-${version}" />
+		
+		<!-- Copy libraries -->
+		<copy todir="${dist.dir}/flow-dsl-${version}/lib">
+			<fileset dir="lib">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.dir}/flow-dsl-${version}/lib/ext">
+			<fileset dir="lib/ext">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- Copy example flows -->
+		<copy todir="${dist.dir}/flow-dsl-${version}/examples">
+			<fileset dir="flow-sample">
+				<include name="**/*.flow" />
+			</fileset>
+		</copy>
+		
+		<!-- Create Windows batch script with dynamic classpath -->
+		<echo file="${dist.dir}/flow-dsl-${version}/flow-dsl.bat"><![CDATA[@echo off
+REM Flow DSL CLI - Windows Launcher Script
+
+REM Check if JAVA_HOME is set
+if "%JAVA_HOME%"=="" (
+		  echo Warning: JAVA_HOME is not set. Using 'java' from PATH.
+		  set JAVA_CMD=java
+) else (
+		  set JAVA_CMD=%JAVA_HOME%\bin\java
+)
+
+REM Check if Java is available
+%JAVA_CMD% -version >nul 2>&1
+if errorlevel 1 (
+		  echo Error: Java is not found. Please install Java 8 or higher and set JAVA_HOME.
+		  exit /b 1
+)
+
+REM Build classpath with all JARs in lib folder
+set CP=${jar.name}
+for %%i in (lib\*.jar) do set CP=!CP!;%%i
+for %%i in (lib\ext\*.jar) do set CP=!CP!;%%i
+
+REM Enable delayed expansion for the loop
+setlocal enabledelayedexpansion
+
+REM Rebuild classpath with delayed expansion
+set CP=${jar.name}
+for %%i in (lib\*.jar) do set CP=!CP!;%%i
+for %%i in (lib\ext\*.jar) do set CP=!CP!;%%i
+
+REM Run the application
+%JAVA_CMD% -cp !CP! com.wbemethods.dsl.expressions.app.FlowCLI %*
+
+endlocal
+]]></echo>
+		
+		<!-- Create Unix shell script with dynamic classpath -->
+		<echo file="${dist.dir}/flow-dsl-${version}/flow-dsl.sh"><![CDATA[#!/bin/bash
+# Flow DSL CLI - Unix/Linux Launcher Script
+
+# Check if JAVA_HOME is set
+if [ -z "$JAVA_HOME" ]; then
+		  echo "Warning: JAVA_HOME is not set. Using 'java' from PATH."
+		  JAVA_CMD=java
+else
+		  JAVA_CMD="$JAVA_HOME/bin/java"
+fi
+
+# Check if Java is available
+if ! command -v $JAVA_CMD &> /dev/null; then
+		  echo "Error: Java is not found. Please install Java 8 or higher and set JAVA_HOME."
+		  exit 1
+fi
+
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Build classpath with all JARs in lib folder
+CP="$SCRIPT_DIR/${jar.name}"
+
+# Add all JARs from lib directory
+for jar in "$SCRIPT_DIR"/lib/*.jar; do
+		  if [ -f "$jar" ]; then
+		      CP="$CP:$jar"
+		  fi
+done
+
+# Add all JARs from lib/ext directory
+for jar in "$SCRIPT_DIR"/lib/ext/*.jar; do
+		  if [ -f "$jar" ]; then
+		      CP="$CP:$jar"
+		  fi
+done
+
+
+# Run the application
+$JAVA_CMD -cp "$CP" com.wbemethods.dsl.expressions.app.FlowCLI "$@"
+]]></echo>
+		<chmod file="${dist.dir}/flow-dsl-${version}/flow-dsl.sh" perm="755" />
+		
+		<!-- Create README -->
+		<echo file="${dist.dir}/flow-dsl-${version}/README.txt"><![CDATA[Flow DSL CLI - Version ${version}
+========================================
+
+A command-line tool for compiling and decompiling webMethods Flow services.
+
+USAGE:
+------
+Windows: flow-dsl.bat <command> [options]
+Unix/Linux: ./flow-dsl.sh <command> [options]
+
+COMMANDS:
+---------
+decompile  - Convert flow.xml/node.ndf to .flow DSL
+compile    - Convert .flow DSL to flow.xml/node.ndf
+version    - Show version information
+help       - Show help message
+
+EXAMPLES:
+---------
+Decompile:
+		flow-dsl.bat decompile flow-sample/doUntilService test test:fs1 output.flow
+
+Compile:
+		flow-dsl.bat compile input.flow output test test:fs1
+
+For more information, run:
+		flow-dsl.bat help
+
+REQUIREMENTS:
+-------------
+- Java 8 or higher
+- webMethods Integration Server libraries (included in lib/)
+
+LICENSE:
+--------
+Copyright (c) 2024. All rights reserved.
+]]></echo>
+		
+		<!-- Create ZIP -->
+		<zip destfile="${dist.dir}/flow-dsl-${version}.zip" basedir="${dist.dir}/flow-dsl-${version}" />
+		
+		<echo message="Created distribution ZIP: ${dist.dir}/flow-dsl-${version}.zip" />
+	</target>
+
+	<!-- Build everything -->
+	<target name="all" depends="dist" description="Build JAR and distribution ZIP">
+		<echo message="Build complete!" />
+		<echo message="  JAR: ${dist.dir}/${jar.name}" />
+		<echo message="  ZIP: ${dist.dir}/flow-dsl-${version}.zip" />
 	</target>
 
 </project>
