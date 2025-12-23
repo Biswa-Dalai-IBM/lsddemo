@@ -38,16 +38,11 @@ public class FlowMapElementExpression extends AbstractFlowMapExpression {
 	public void generateText(FlowTextContext context) {
 		context.appendIndented("MAP");
 
-		if (hasMapSignature() || hasExpressions() || hasProperties()) {
+		if (hasMapSignature() || hasExpressions()) {
 			context.append(" {\n");
 			context.increaseIndent();
 
-			if (hasProperties()) {
-				for (FlowStepProperty prop : getProperties()) {
-					prop.generateText(context);
-				}
-			}
-
+			generateStepProperties(context);
 			if (hasMapSignature()) {
 				getMapSignature().generateText(context);
 			}

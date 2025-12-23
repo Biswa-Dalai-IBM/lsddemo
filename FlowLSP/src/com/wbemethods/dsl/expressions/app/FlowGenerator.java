@@ -143,7 +143,12 @@ public class FlowGenerator {
 			NSRecordUtils.addFieldWithDimension(parent, param.getName(), param.getDataType(), param.getDimension());
 		} else if (param.isRecord()) {
 			// Record (not array)
-			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), false);
+			NSRecord nestedRecord = null;
+			if(param.hasDocumentReference()) {
+				nestedRecord = NSRecordUtils.addRecordRefField(parent, param.getName(), false,param.getDocumentReference());
+			}else {
+				nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), false);
+			}
 			// Add children to nested record
 			if (param.hasChildren()) {
 				for (ParameterDeclaration child : param.getChildren()) {
@@ -152,7 +157,12 @@ public class FlowGenerator {
 			}
 		} else if (param.isRecordList()) {
 			// RecordList (array of records)
-			NSRecord nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), true);
+			NSRecord nestedRecord = null;
+			if(param.hasDocumentReference()) {
+				nestedRecord = NSRecordUtils.addRecordRefField(parent, param.getName(), true,param.getDocumentReference());
+			}else {
+				nestedRecord = NSRecordUtils.addRecordField(parent, param.getName(), true);
+			}
 			// Add children to nested record
 			if (param.hasChildren()) {
 				for (ParameterDeclaration child : param.getChildren()) {

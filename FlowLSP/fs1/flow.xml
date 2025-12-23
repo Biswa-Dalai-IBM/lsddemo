@@ -29,42 +29,6 @@
         <value name="form_qualified">false</value>
         <value name="is_global">false</value>
         <array name="rec_fields" type="record" depth="1">
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">name</value>
-            <value name="field_type">string</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-          </record>
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">phone</value>
-            <value name="field_type">string</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-          </record>
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">address</value>
-            <value name="field_type">record</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-            <array name="rec_fields" type="record" depth="1">
-            </array>
-            <value name="modifiable">true</value>
-          </record>
         </array>
         <value name="modifiable">true</value>
       </record>
@@ -115,44 +79,68 @@
         <value name="is_global">false</value>
         <value name="is_soap_array_encoding_used">false</value>
         <array name="rec_fields" type="record" depth="1">
+        </array>
+        <value name="modifiable">true</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">sudent</value>
+        <value name="field_type">record</value>
+        <value name="field_dim">0</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+        <array name="rec_fields" type="record" depth="1">
+        </array>
+        <value name="modifiable">true</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">std1</value>
+        <value name="field_type">record</value>
+        <value name="field_dim">1</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+        <value name="is_soap_array_encoding_used">false</value>
+        <array name="rec_fields" type="record" depth="1">
+        </array>
+        <value name="modifiable">true</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">std2</value>
+        <value name="field_type">record</value>
+        <value name="field_dim">0</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+        <array name="rec_fields" type="record" depth="1">
+        </array>
+        <value name="modifiable">true</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">doc3</value>
+        <value name="field_type">record</value>
+        <value name="field_dim">0</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+        <array name="rec_fields" type="record" depth="1">
           <record javaclass="com.wm.util.Values">
             <value name="node_type">record</value>
             <value name="node_subtype">unknown</value>
             <value name="is_public">false</value>
-            <value name="field_name">id</value>
-            <value name="field_type">string</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-          </record>
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">qty</value>
-            <value name="field_type">string</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-          </record>
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">price</value>
-            <value name="field_type">string</value>
-            <value name="field_dim">0</value>
-            <value name="nillable">true</value>
-            <value name="form_qualified">false</value>
-            <value name="is_global">false</value>
-          </record>
-          <record javaclass="com.wm.util.Values">
-            <value name="node_type">record</value>
-            <value name="node_subtype">unknown</value>
-            <value name="is_public">false</value>
-            <value name="field_name">product</value>
+            <value name="field_name">student</value>
             <value name="field_type">record</value>
             <value name="field_dim">0</value>
             <value name="nillable">true</value>
@@ -164,6 +152,161 @@
           </record>
         </array>
         <value name="modifiable">true</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">obj1</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objBool</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Boolean</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objInt</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Integer</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objDouble</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Double</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objFloat</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Float</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objByte</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Byte</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objChar</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Character</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objLong</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Long</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objShort</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.lang.Short</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objDate</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.util.Date</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objBigInt</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.math.BigInteger</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objBigDecimal</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">java.math.BigDecimal</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
+      </record>
+      <record javaclass="com.wm.util.Values">
+        <value name="node_type">record</value>
+        <value name="node_subtype">unknown</value>
+        <value name="is_public">false</value>
+        <value name="field_name">objXOP</value>
+        <value name="field_type">object</value>
+        <value name="field_dim">0</value>
+        <value name="wrapper_type">com.wm.util.XOPObject</value>
+        <value name="nillable">true</value>
+        <value name="form_qualified">false</value>
+        <value name="is_global">false</value>
       </record>
     </array>
     <value name="modifiable">true</value>
@@ -276,36 +419,28 @@
 </DATA>
 </MAPSET>
 
-<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/doc2;2;1">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/doc2;1;1">
   <DATA ENCODING="XMLValues" I18N="true">
 
 <Values version="2.0">
-  <array name="xml" type="record" depth="1">
-    <record javaclass="com.wm.util.Values">
-      <value name="id">p1</value>
-      <value name="qty">12</value>
-      <value name="price">100</value>
-      <record name="product" javaclass="com.wm.util.Values">
-        <value name="size">12</value>
-        <value name="color">BLACK</value>
-      </record>
-    </record>
-    <record javaclass="com.wm.util.Values">
-      <value name="id">p2</value>
-      <value name="qty">20</value>
-      <value name="price">200</value>
-      <record name="product" javaclass="com.wm.util.Values">
-        <value name="size">34</value>
-        <value name="color">RED</value>
-      </record>
-    </record>
+  <array name="xml" type="value" depth="1">
+    <value>{id:p1</value>
+    <value>qty:12</value>
+    <value>price:100</value>
+    <value>product:{size:12</value>
+    <value>color:BLACK}}</value>
+    <value>{id:p2</value>
+    <value>qty:20</value>
+    <value>price:200</value>
+    <value>product:{size:34</value>
+    <value>color:RED}}</value>
   </array>
   <record name="type" javaclass="com.wm.util.Values">
     <value name="node_type">record</value>
     <value name="node_subtype">unknown</value>
     <value name="is_public">false</value>
     <value name="field_name">doc2</value>
-    <value name="field_type">record</value>
+    <value name="field_type">string</value>
     <value name="field_dim">1</value>
     <value name="nillable">true</value>
     <value name="form_qualified">false</value>
@@ -316,25 +451,211 @@
 </DATA>
 </MAPSET>
 
-<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/doc1;2;0">
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/doc1;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <value name="xml">{"name":"Dev","phone":"98787878","address":{"state":"Karnataka","pin":"560001"}}</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">doc1</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/sudent;4;0;test:sudent">
   <DATA ENCODING="XMLValues" I18N="true">
 
 <Values version="2.0">
   <record name="xml" javaclass="com.wm.util.Values">
-    <value name="name">Dev</value>
-    <value name="phone">98787878</value>
+    <value name="name">dd</value>
+    <value name="phone">79070970</value>
     <record name="address" javaclass="com.wm.util.Values">
       <value name="state">Karnataka</value>
-      <value name="pin">560001</value>
+      <value name="pin">56002</value>
     </record>
   </record>
   <record name="type" javaclass="com.wm.util.Values">
     <value name="node_type">record</value>
     <value name="node_subtype">unknown</value>
     <value name="is_public">false</value>
-    <value name="field_name">doc1</value>
-    <value name="field_type">record</value>
+    <value name="field_name">sudent</value>
+    <value name="field_type">recref</value>
     <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+    <value name="modifiable">true</value>
+    <value name="rec_ref">test:sudent</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/std1;4;1;test:sudent">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <array name="xml" type="record" depth="1">
+    <record javaclass="com.wm.util.Values">
+      <value name="name">abc</value>
+      <value name="phone">78787</value>
+      <record name="address" javaclass="com.wm.util.Values">
+        <value name="state">jkljl</value>
+        <value name="pin">789789</value>
+      </record>
+    </record>
+    <record javaclass="com.wm.util.Values">
+      <value name="name">pqr</value>
+      <value name="phone">777080</value>
+      <record name="address" javaclass="com.wm.util.Values">
+        <value name="state">yuiyiyu</value>
+        <value name="pin">79878</value>
+      </record>
+    </record>
+  </array>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">std1</value>
+    <value name="field_type">recref</value>
+    <value name="field_dim">1</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+    <value name="is_soap_array_encoding_used">false</value>
+    <value name="modifiable">true</value>
+    <value name="rec_ref">test:sudent</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/std2;4;0;test:sudent/address;2;0/state;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <value name="xml">wqeqwewq</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">state</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/doc3;2;0/student;4;0;test:sudent/address;2;0/pin;1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <value name="xml">"2523523"</value>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">pin</value>
+    <value name="field_type">string</value>
+    <value name="field_dim">0</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/objBool;3.1;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <Boolean name="xml">true</Boolean>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">objBool</value>
+    <value name="field_type">object</value>
+    <value name="field_dim">0</value>
+    <value name="wrapper_type">java.lang.Boolean</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/objInt;3.6;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <number name="xml" type="Integer">7878</number>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">objInt</value>
+    <value name="field_type">object</value>
+    <value name="field_dim">0</value>
+    <value name="wrapper_type">java.lang.Integer</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/objDouble;3.4;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <double name="xml" type="Double">89898.0</double>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">objDouble</value>
+    <value name="field_type">object</value>
+    <value name="field_dim">0</value>
+    <value name="wrapper_type">java.lang.Double</value>
+    <value name="nillable">true</value>
+    <value name="form_qualified">false</value>
+    <value name="is_global">false</value>
+  </record>
+</Values>
+</DATA>
+</MAPSET>
+
+<MAPSET NAME="Setter" OVERWRITE="true" VARIABLES="false" GLOBALVARIABLES="false" FIELD="/objDate;3.9;0">
+  <DATA ENCODING="XMLValues" I18N="true">
+
+<Values version="2.0">
+  <date name="xml">Fri Jan 31 05:00:00 UTC 2025</date>
+  <record name="type" javaclass="com.wm.util.Values">
+    <value name="node_type">record</value>
+    <value name="node_subtype">unknown</value>
+    <value name="is_public">false</value>
+    <value name="field_name">objDate</value>
+    <value name="field_type">object</value>
+    <value name="field_dim">0</value>
+    <value name="wrapper_type">java.util.Date</value>
     <value name="nillable">true</value>
     <value name="form_qualified">false</value>
     <value name="is_global">false</value>

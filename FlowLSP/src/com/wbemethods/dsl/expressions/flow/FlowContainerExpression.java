@@ -97,23 +97,6 @@ public class FlowContainerExpression extends FlowElementExpression {
 		return expressions != null && !expressions.isEmpty();
 	}
 
-	/**
-	 * Get a property by key (inherited from FlowElementExpression)
-	 */
-	public FlowStepProperty getProperty(String key) {
-		List<FlowStepProperty> props = getProperties();
-		if (props == null)
-			return null;
-		return props.stream().filter(p -> p.getKey().equals(key)).findFirst().orElse(null);
-	}
-
-	/**
-	 * Get property value by key (inherited from FlowElementExpression)
-	 */
-	public String getPropertyValue(String key) {
-		FlowStepProperty prop = getProperty(key);
-		return prop != null ? prop.getValue() : null;
-	}
 
 	@Override
 	public FlowElement getFlowElement() {

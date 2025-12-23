@@ -25,19 +25,21 @@ public class FlowStepProperty extends FlowElementExpression {
 
 	@Override
 	public FlowElement getFlowElement() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void updateExpression(FlowElement element) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void generateText(FlowTextContext context) {
 		context.appendLine(key + ": " + value + ";");
+	}
+	
+	public boolean hasValue() {
+		return value!=null && !value.isBlank();
 	}
 
 }

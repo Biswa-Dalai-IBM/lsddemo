@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.wm.lang.ns.NSField;
 import com.wm.lang.ns.NSRecord;
+import com.wm.lang.ns.NSRecordRef;
 import com.wm.util.JavaWrapperType;
 
 /**
@@ -15,6 +16,7 @@ public class ParameterDeclaration implements IFlowExpression {
 	private String type; // "field", "record", "recordList"
 	private String dataType; // For fields: String, Integer, etc.
 	private int dimension; // 0 = scalar, 1 = 1D array, 2 = 2D array, etc.
+	private String documentReference; // For records: reference to external document type (e.g., "com.example:Student")
 	private List<String> constraints; // required, optional, etc.
 	private List<ParameterDeclaration> children; // For records
 
@@ -67,6 +69,21 @@ public class ParameterDeclaration implements IFlowExpression {
 	 */
 	public boolean isArray() {
 		return dimension > 0;
+	}
+
+	public String getDocumentReference() {
+		return documentReference;
+	}
+
+	public void setDocumentReference(String documentReference) {
+		this.documentReference = documentReference;
+	}
+
+	/**
+	 * Check if this record has a document reference
+	 */
+	public boolean hasDocumentReference() {
+		return documentReference != null && !documentReference.isEmpty();
 	}
 
 
@@ -124,38 +141,24 @@ public class ParameterDeclaration implements IFlowExpression {
 				addChild(child);
 			}
 
-		} else {
+		} else if (type == NSField.FIELD_RECORDREF) {
+			NSRecordRef nestedRecord = (NSRecordRef) field;
+			String paramType = (dimension == 1) ? "recordList" : "record";
+			this.name = name;
+			this.type = paramType;
+			setDimension(dimension);
+			this.documentReference = nestedRecord.getTargetName().getFullName();
+
+		}else {
 			// Simple field
 			this.name = name;
 			this.type = "field";
-			setDataType(mapJavaTypeToFlowType(type, subType));
+			;
+			setDataType(NSFieldTypeMapper.getTypeName(type, subType));
 			setDimension(dimension);
 		}
 	}
 
-	/**
-	 * Map Java type to Flow DSL type
-	 */
-	private String mapJavaTypeToFlowType(int fType, int wType) {
-		if (fType == NSField.FIELD_STRING) {
-			return "String";
-		} else if (fType == NSField.FIELD_OBJECT) {
-			if (wType == JavaWrapperType.JAVA_TYPE_BOOLEAN) {
-				return "Boolean";
-			} else if (wType == JavaWrapperType.JAVA_TYPE_INTEGER) {
-				return "Integer";
-			} else if (wType == JavaWrapperType.JAVA_TYPE_FLOAT) {
-				return "Float";
-			} else if (wType == JavaWrapperType.JAVA_TYPE_DOUBLE) {
-				return "Double";
-			} else if (wType == JavaWrapperType.JAVA_TYPE_DATE) {
-				return "DateTime";
-			}
-		} else if (fType == NSField.FIELD_RECORD) {
-			return "Document";
-		}
-		return "String";
-	}
 
 	/**
 	 * Convert NSRecord to list of ParameterDeclarations
@@ -191,25 +194,47 @@ public class ParameterDeclaration implements IFlowExpression {
 			}
 			context.appendLine(dataType + arrayStr.toString() + name + ";");
 		} else if (isRecord()) {
-			context.appendLine("record " + name + " {");
-			context.increaseIndent();
-			if (hasChildren()) {
-				for (ParameterDeclaration child : getChildren()) {
-					child.generateText(context);
+			// Generate record with optional document reference and optional body
+			if (hasDocumentReference() && !hasChildren()) {
+				// Document reference without body
+				context.appendLine("record " + name + " (" + documentReference + ");");
+			} else {
+				// With body (may or may not have document reference)
+				if (hasDocumentReference()) {
+					context.appendLine("record " + name + " (" + documentReference + ") {");
+				} else {
+					context.appendLine("record " + name + " {");
 				}
+				context.increaseIndent();
+				if (hasChildren()) {
+					for (ParameterDeclaration child : getChildren()) {
+						child.generateText(context);
+					}
+				}
+				context.decreaseIndent();
+				context.appendLine("};");
 			}
-			context.decreaseIndent();
-			context.appendLine("};");
 		} else if (isRecordList()) {
-			context.appendLine("recordList " + name + " {");
-			context.increaseIndent();
-			if (hasChildren()) {
-				for (ParameterDeclaration child : getChildren()) {
-					child.generateText(context);
+			// Generate recordList with optional document reference and optional body
+			if (hasDocumentReference() && !hasChildren()) {
+				// Document reference without body
+				context.appendLine("recordList " + name + " (" + documentReference + ");");
+			} else {
+				// With body (may or may not have document reference)
+				if (hasDocumentReference()) {
+					context.appendLine("recordList " + name + " (" + documentReference + ") {");
+				} else {
+					context.appendLine("recordList " + name + " {");
 				}
+				context.increaseIndent();
+				if (hasChildren()) {
+					for (ParameterDeclaration child : getChildren()) {
+						child.generateText(context);
+					}
+				}
+				context.decreaseIndent();
+				context.appendLine("};");
 			}
-			context.decreaseIndent();
-			context.appendLine("};");
 		}
 	}
 

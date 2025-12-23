@@ -1,0 +1,24 @@
+service testDocumentReference (
+    input {
+        record student1 {
+            String name;
+            String phone;
+        };
+        
+        record student2 (com.example:Student);
+        
+        recordList students (com.example:Student);
+        
+    }
+
+    output {
+        record result (com.example:Student);
+        String status;
+    }
+ ){   
+    MAP {
+        copy student2/name -> result/name;
+        copy student2/phone -> result/phone;
+        set status = "Success";
+    };
+}

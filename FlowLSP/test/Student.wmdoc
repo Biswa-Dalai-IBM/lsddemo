@@ -1,0 +1,17 @@
+document Student {
+    String name;
+    String phone;
+    Integer age;
+    record address {
+        String street;
+        String city;
+        String state;
+        String pin;
+    };
+    record student2 (com.example:Office);
+    String[] hobbies;
+    recordList grades {
+        String subject;
+        Integer score;
+    };
+};

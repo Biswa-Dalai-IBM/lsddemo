@@ -206,6 +206,228 @@
           </array>
           <value name="modifiable">true</value>
         </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">sudent</value>
+          <value name="field_type">recref</value>
+          <value name="field_dim">0</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+          <value name="modifiable">true</value>
+          <value name="rec_ref">test:sudent</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">std1</value>
+          <value name="field_type">recref</value>
+          <value name="field_dim">1</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+          <value name="is_soap_array_encoding_used">false</value>
+          <value name="modifiable">true</value>
+          <value name="rec_ref">test:sudent</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">std2</value>
+          <value name="field_type">recref</value>
+          <value name="field_dim">0</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+          <value name="modifiable">true</value>
+          <value name="rec_ref">test:sudent</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">doc3</value>
+          <value name="field_type">record</value>
+          <value name="field_dim">0</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+          <array name="rec_fields" type="record" depth="1">
+            <record javaclass="com.wm.util.Values">
+              <value name="node_type">record</value>
+              <value name="node_subtype">unknown</value>
+              <value name="is_public">false</value>
+              <value name="field_name">student</value>
+              <value name="field_type">recref</value>
+              <value name="field_dim">0</value>
+              <value name="nillable">true</value>
+              <value name="form_qualified">false</value>
+              <value name="is_global">false</value>
+              <value name="modifiable">true</value>
+              <value name="rec_ref">test:sudent</value>
+            </record>
+          </array>
+          <value name="modifiable">true</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">obj1</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objBool</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Boolean</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objInt</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Integer</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objDouble</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Double</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objFloat</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Float</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objByte</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Byte</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objChar</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Character</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objLong</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Long</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objShort</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.lang.Short</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objDate</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.util.Date</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objBigInt</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.math.BigInteger</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objBigDecimal</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">java.math.BigDecimal</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
+        <record javaclass="com.wm.util.Values">
+          <value name="node_type">record</value>
+          <value name="node_subtype">unknown</value>
+          <value name="is_public">false</value>
+          <value name="field_name">objXOP</value>
+          <value name="field_type">object</value>
+          <value name="field_dim">0</value>
+          <value name="wrapper_type">com.wm.util.XOPObject</value>
+          <value name="nillable">true</value>
+          <value name="form_qualified">false</value>
+          <value name="is_global">false</value>
+        </record>
       </array>
       <value name="modifiable">true</value>
     </record>

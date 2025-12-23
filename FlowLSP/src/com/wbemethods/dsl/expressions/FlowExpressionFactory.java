@@ -83,6 +83,7 @@ public class FlowExpressionFactory {
 		if (creator != null) {
 			FlowElementExpression expression = creator.get();
 			expression.updateExpression(element);
+			expression.updateStepProperties(element);
 			//extractStepProperties(element.getAsData(), expression);
 			return expression;
 		}

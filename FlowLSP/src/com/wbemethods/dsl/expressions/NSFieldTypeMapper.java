@@ -91,6 +91,8 @@ public class NSFieldTypeMapper {
 
 		if (fieldType == NSField.FIELD_STRING) {
 			return "String";
+		}else if (fieldType == NSField.FIELD_RECORD) {
+			return "Document";
 		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_INTEGER) {
 			return "Integer";
 		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_FLOAT) {
@@ -101,7 +103,25 @@ public class NSFieldTypeMapper {
 			return "Boolean";
 		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_DATE) {
 			return "DateTime";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_BIG_DECIMAL) {
+			return "BigDecimal";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_BIG_INTEGER) {
+			return "BigInteger";
+		}  else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_BYTE) {
+			return "Byte";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_byte_ARRAY) {
+			return "byte[]";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_CHARACTER) {
+			return "Char";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_LONG) {
+			return "Long";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_SHORT) {
+			return "Short";
+		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_XOP_OBJECT) {
+			return "XOPObject";
 		} else if (fieldType == NSField.FIELD_OBJECT && javaWrapperType == JavaWrapperType.JAVA_TYPE_UNKNOWN) {
+			return "Object";
+		}  else if (fieldType == NSField.FIELD_OBJECT) {
 			return "Object";
 		} else {
 			return "String";

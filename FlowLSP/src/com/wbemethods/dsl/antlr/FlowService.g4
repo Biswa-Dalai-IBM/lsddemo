@@ -29,11 +29,19 @@ fieldDeclaration
     ;
 
 recordDeclaration
-    : 'record' identifier '{' parameterDeclaration* '}' constraints? ';'
+    : 'record' identifier ('(' documentReference ')')? ('{' parameterDeclaration* '}')? constraints? ';'
+    ;
+
+documentReference
+    : qualifiedDocumentName
+    ;
+
+qualifiedDocumentName
+    : ID ('.' ID)* ':' ID
     ;
 
 recordListDeclaration
-    : 'recordList' identifier '{' parameterDeclaration* '}' constraints? ';'
+    : 'recordList' identifier ('(' documentReference ')')? ('{' parameterDeclaration* '}')? constraints? ';'
     ;
 
 dataType
@@ -45,6 +53,21 @@ dataType
     | BOOLEAN_TYPE
     | DATETIME_TYPE
     | DOCUMENT_TYPE
+    | BYTE_TYPE
+    | CHAR_TYPE
+    | LONG_TYPE
+    | SHORT_TYPE
+    | BIGINTEGER_TYPE
+    | BIGDECIMAL_TYPE
+    | XOPOBJECT_TYPE
+    | BYTE_PRIMITIVE
+    | CHAR_PRIMITIVE
+    | INT_PRIMITIVE
+    | LONG_PRIMITIVE
+    | SHORT_PRIMITIVE
+    | FLOAT_PRIMITIVE
+    | DOUBLE_PRIMITIVE
+    | BOOLEAN_PRIMITIVE
     ;
 
 constraints
@@ -130,6 +153,7 @@ identifier
     ;
 value
     : INT
+    | FLOAT_LITERAL
     | STRING_LITERAL
     | MULTILINE_STRING
     | BOOL
@@ -189,6 +213,7 @@ primaryExpression
 
 literal
     : INT
+    | FLOAT_LITERAL
     | STRING_LITERAL
     | MULTILINE_STRING
     | BOOL
@@ -345,14 +370,31 @@ exitProperty
 
 
 // Keywords (must come before ID to have priority)
-STRING_TYPE   : 'String' ;
-OBJECT_TYPE   : 'Object' ;
-INTEGER_TYPE  : 'Integer' ;
-FLOAT_TYPE    : 'Float' ;
-DOUBLE_TYPE   : 'Double' ;
-BOOLEAN_TYPE  : 'Boolean' ;
-DATETIME_TYPE : 'DateTime' ;
-DOCUMENT_TYPE : 'Document' ;
+STRING_TYPE     : 'String' ;
+OBJECT_TYPE     : 'Object' ;
+INTEGER_TYPE    : 'Integer' ;
+FLOAT_TYPE      : 'Float' ;
+DOUBLE_TYPE     : 'Double' ;
+BOOLEAN_TYPE    : 'Boolean' ;
+DATETIME_TYPE   : 'DateTime' ;
+DOCUMENT_TYPE   : 'Document' ;
+BYTE_TYPE       : 'Byte' ;
+CHAR_TYPE       : 'Char' ;
+LONG_TYPE       : 'Long' ;
+SHORT_TYPE      : 'Short' ;
+BIGINTEGER_TYPE : 'BigInteger' ;
+BIGDECIMAL_TYPE : 'BigDecimal' ;
+XOPOBJECT_TYPE  : 'XOPObject' ;
+
+// Primitive types (lowercase)
+BYTE_PRIMITIVE    : 'byte' ;
+CHAR_PRIMITIVE    : 'char' ;
+INT_PRIMITIVE     : 'int' ;
+LONG_PRIMITIVE    : 'long' ;
+SHORT_PRIMITIVE   : 'short' ;
+FLOAT_PRIMITIVE   : 'float' ;
+DOUBLE_PRIMITIVE  : 'double' ;
+BOOLEAN_PRIMITIVE : 'boolean' ;
 
 // Operators (must come before ID to avoid conflicts)
 PLUS  : '+' ;

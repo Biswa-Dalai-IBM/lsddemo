@@ -2,22 +2,24 @@ package com.wbemethods.dsl.expressions.flow.map;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.VariableResolver;
+import com.webmethods.g11n.text.DateUtils;
 import com.wm.data.IData;
-import com.wm.data.IDataCursor;
-import com.wm.data.IDataFactory;
-import com.wm.data.IDataUtil;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowMapSet;
 import com.wm.lang.ns.NSField;
+import com.wm.util.JavaWrapperType;
 import com.wm.util.coder.IDataJSONCoder;
+import com.wm.validator.DateValidator;
+import com.wm.validator.ValidationResults;
 
 /**
  * Represents a MAP SET operation (field = value)
@@ -57,6 +59,22 @@ public class FlowMapSetExpression extends FlowMapExpression {
 	
 	@Override
 	public FlowElement getFlowElement() {
+		FlowMapSet setData = createFlowMapSet();
+		NSField nsField = NSFieldPathBuilder.buildNSField(fieldPath, variableResolver);
+		setData.setInputType(nsField);
+		
+		Object inputValue = processValueByType(nsField);
+		if (inputValue != null) {
+			setData.setInput(inputValue);
+		}
+		
+		return setData;
+	}
+	
+	/**
+	 * Create and configure a FlowMapSet instance
+	 */
+	private FlowMapSet createFlowMapSet() {
 		FlowMapSet setData = new FlowMapSet(null);
 		String nsFieldPath = NSFieldPathBuilder.buildNSFieldPath(fieldPath, variableResolver);
 		setData.setField(nsFieldPath);
@@ -64,63 +82,177 @@ public class FlowMapSetExpression extends FlowMapExpression {
 		setData.setOverwrite(true);
 		setData.setGlobalVariables(false);
 		setData.setName("Setter");
-		NSField nsField = NSFieldPathBuilder.buildNSField(fieldPath, variableResolver);
-		setData.setInputType(nsField);
-		
-		
-		if(nsField.getType()==NSField.FIELD_RECORD && nsField.getDimensions()==NSField.DIM_SCALAR) {
-			IData data = convertJson2IDada((String)value);
-			if(data!=null) {
-				setData.setInput(data);
-			}
-			
-		}else if(nsField.getType()==NSField.FIELD_RECORD && nsField.getDimensions()==NSField.DIM_ARRAY) {
-			ObjectMapper mapper = new ObjectMapper();
-			List<IData> datas = new ArrayList<IData>();
-			try {
-				JsonNode jsonNode = mapper.readTree((String)value);
-				jsonNode.forEach(n->{
-					IData data = convertJson2IDada(n.toString());
-					if(data!=null) {
-						datas.add(data);
-					}
-				});
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-			setData.setInput((IData[]) datas.toArray(new IData[datas.size()]));
-			
-		}else if(nsField.getType()==NSField.FIELD_STRING && nsField.getDimensions()==NSField.DIM_SCALAR) {
-			String valueStr = (String)value;
-			if(valueStr.startsWith("\"\"\"") && valueStr.endsWith("\"\"\"")) {
-				valueStr = valueStr.substring(3, valueStr.length()-6);
-			}
-			setData.setInput(valueStr);
-		}else if(nsField.getType()==NSField.FIELD_STRING && nsField.getDimensions()==NSField.DIM_ARRAY) {
-			String[] array = ((String) value)
-			        .replace("[", "")
-			        .replace("]", "")
-			        .replace("\"", "")
-			        .split("\\s*,\\s*");
-			setData.setInput(array);
-		}else if(nsField.getType()==NSField.FIELD_STRING && nsField.getDimensions()==NSField.DIM_TABLE) {
-			String text = (String) value;
-			text = text.substring(1, text.length() - 1);
-
-	        String[] rows = text.split("\\],\\s*\\[");
-
-	        String[][] result = new String[rows.length][];
-
-	        for (int i = 0; i < rows.length; i++) {
-	            rows[i] = rows[i].replace("[", "").replace("]", "").replace("\"", "");
-	            result[i] = rows[i].split("\\s*,\\s*");
-	        }
-			setData.setInput(result);
-		}
 		return setData;
 	}
+	
+	/**
+	 * Process value based on NSField type and dimension
+	 */
+	private Object processValueByType(NSField nsField) {
+		int fieldType = nsField.getType();
+		int dimension = nsField.getDimensions();
+		
+		// Handle Record/RecordRef types
+		if (fieldType == NSField.FIELD_RECORD || fieldType == NSField.FIELD_RECORDREF) {
+			return processRecordValue(dimension);
+		}
+		
+		// Handle String types
+		if (fieldType == NSField.FIELD_STRING) {
+			return processStringValue(dimension);
+		}
+		
+		// Handle Object types with JavaWrapperType
+		if (fieldType == NSField.FIELD_OBJECT) {
+			return processObjectValue(nsField, dimension);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Process Record/RecordRef values
+	 */
+	private Object processRecordValue(int dimension) {
+		if (dimension == NSField.DIM_SCALAR) {
+			return convertJson2IData((String) value);
+		} else if (dimension == NSField.DIM_ARRAY) {
+			return convertJsonArrayToIDataArray((String) value);
+		}
+		return null;
+	}
+	
+	/**
+	 * Process String values
+	 */
+	private Object processStringValue(int dimension) {
+		if (dimension == NSField.DIM_SCALAR) {
+			return processScalarString();
+		} else if (dimension == NSField.DIM_ARRAY) {
+			return processStringArray();
+		} else if (dimension == NSField.DIM_TABLE) {
+			return processStringTable();
+		}
+		return null;
+	}
+	
+	/**
+	 * Process Object values with JavaWrapperType
+	 */
+	private Object processObjectValue(NSField nsField, int dimension) {
+		int javaWrapperType = nsField.getJavaWrapperType();
+		
+		if (dimension == NSField.DIM_SCALAR) {
+			return processScalarObjectValue(javaWrapperType);
+		}
+		// Add array handling if needed in the future
+		return null;
+	}
+	
+	/**
+	 * Process scalar object values based on JavaWrapperType
+	 */
+	private Object processScalarObjectValue(int javaWrapperType) {
+		String valueStr = value.toString();
+		
+		switch (javaWrapperType) {
+			case JavaWrapperType.JAVA_TYPE_INTEGER:
+				return Integer.parseInt(valueStr);
+			case JavaWrapperType.JAVA_TYPE_FLOAT:
+				return Float.parseFloat(valueStr);
+			case JavaWrapperType.JAVA_TYPE_DOUBLE:
+				return Double.parseDouble(valueStr);
+			case JavaWrapperType.JAVA_TYPE_BOOLEAN:
+				return Boolean.parseBoolean(valueStr);
+			case JavaWrapperType.JAVA_TYPE_BYTE:
+				return Byte.parseByte(valueStr);
+			case JavaWrapperType.JAVA_TYPE_CHARACTER:
+				return valueStr.isEmpty() ? null : valueStr.charAt(0);
+			case JavaWrapperType.JAVA_TYPE_LONG:
+				return Long.parseLong(valueStr);
+			case JavaWrapperType.JAVA_TYPE_SHORT:
+				return Short.parseShort(valueStr);
+			case JavaWrapperType.JAVA_TYPE_BIG_INTEGER:
+				return new java.math.BigInteger(valueStr);
+			case JavaWrapperType.JAVA_TYPE_BIG_DECIMAL:
+				return new java.math.BigDecimal(valueStr);
+			case JavaWrapperType.JAVA_TYPE_DATE:
+				DateValidator dateValidator = new DateValidator();
+				ValidationResults validate = dateValidator.validate(valueStr);
+				return validate.getResultsValue();
+			case JavaWrapperType.JAVA_TYPE_byte_ARRAY:
+				// byte[] - return as-is or convert if needed
+				return valueStr.getBytes();
+			case JavaWrapperType.JAVA_TYPE_XOP_OBJECT:
+				// XOPObject - return as string for now
+				return valueStr;
+			default:
+				return valueStr;
+		}
+	}
+	
+	/**
+	 * Process scalar string value
+	 */
+	private String processScalarString() {
+		String valueStr = (String) value;
+		if (valueStr.startsWith("\"\"\"") && valueStr.endsWith("\"\"\"")) {
+			return valueStr.substring(3, valueStr.length() - 6);
+		}
+		return valueStr;
+	}
+	
+	/**
+	 * Process string array value
+	 */
+	private String[] processStringArray() {
+		return ((String) value)
+			.replace("[", "")
+			.replace("]", "")
+			.replace("\"", "")
+			.split("\\s*,\\s*");
+	}
+	
+	/**
+	 * Process string table (2D array) value
+	 */
+	private String[][] processStringTable() {
+		String text = (String) value;
+		text = text.substring(1, text.length() - 1);
+		String[] rows = text.split("\\],\\s*\\[");
+		String[][] result = new String[rows.length][];
+		
+		for (int i = 0; i < rows.length; i++) {
+			rows[i] = rows[i].replace("[", "").replace("]", "").replace("\"", "");
+			result[i] = rows[i].split("\\s*,\\s*");
+		}
+		return result;
+	}
+	
+	/**
+	 * Convert JSON array string to IData array
+	 */
+	private IData[] convertJsonArrayToIDataArray(String jsonArrayStr) {
+		ObjectMapper mapper = new ObjectMapper();
+		List<IData> datas = new ArrayList<IData>();
+		try {
+			JsonNode jsonNode = mapper.readTree(jsonArrayStr);
+			jsonNode.forEach(n -> {
+				IData data = convertJson2IData(n.toString());
+				if (data != null) {
+					datas.add(data);
+				}
+			});
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return datas.toArray(new IData[datas.size()]);
+	}
 
-	private IData convertJson2IDada(String text) {
+	/**
+	 * Convert JSON string to IData
+	 */
+	private IData convertJson2IData(String text) {
 		IDataJSONCoder jsonCoder = new IDataJSONCoder();
 		try {
 			return jsonCoder.decodeFromBytes(text.getBytes());
@@ -173,6 +305,11 @@ public class FlowMapSetExpression extends FlowMapExpression {
 				// Simple unquoted string - add regular quotes
 				context.appendLine("set " + fieldPath + " = \"" + strValue + "\";");
 			}
+		}else if(value instanceof Date){
+			Date date = (Date)value;
+			String pattern = DateUtils.calculateDatePattern(Locale.getDefault(), true);
+			String formattedDate = DateUtils.getLocalizedStringUsingPattern(date,Locale.getDefault(),pattern);
+			context.appendLine("set " + fieldPath + " = \"" + formattedDate + "\";");
 		}else {
 			context.appendLine("set " + fieldPath + " = " + valueStr + ";");
 		}

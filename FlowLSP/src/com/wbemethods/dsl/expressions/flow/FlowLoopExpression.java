@@ -3,6 +3,7 @@ package com.wbemethods.dsl.expressions.flow;
 import java.util.List;
 
 import com.wbemethods.dsl.expressions.FlowElementExpression;
+import com.wbemethods.dsl.expressions.FlowTextContext;
 import com.wbemethods.dsl.expressions.app.FlowGenerator;
 import com.wm.data.IData;
 import com.wm.data.IDataFactory;
@@ -31,4 +32,54 @@ public class FlowLoopExpression extends FlowContainerExpression {
 		FlowGenerator.generateFlow(expressions, flowLoop);
 		parent.addNode(flowLoop);
 	}
+
+	@Override
+	public void updateExpression(FlowElement element) {
+		FlowLoop flowLoop = (FlowLoop) element;
+		addProperty(new FlowStepProperty("inputArray", flowLoop.getInArray()));
+		addProperty(new FlowStepProperty("outputArray", flowLoop.getOutArray()));
+		super.updateExpression(element);
+	}
+	@Override
+	public void generateText(FlowTextContext context) {
+		context.appendIndented("LOOP {");
+		context.append("\n");
+		context.increaseIndent();
+
+		// Generate loop properties
+		generateLoopProperties(context);
+
+		// Generate child steps
+		for (FlowElementExpression child : getExpressions()) {
+			child.generateText(context);
+		}
+
+		context.decreaseIndent();
+		context.appendIndented("};");
+		context.append("\n");
+	}
+
+	/**
+	 * Generate loop properties (inputArray, outputArray)
+	 */
+	private void generateLoopProperties(FlowTextContext context) {
+		// Generate inputArray property
+		FlowStepProperty inputArrayProp = getProperty("inputArray");
+		if (inputArrayProp != null) {
+			context.appendIndented("inputArray: \"" + inputArrayProp.getValue() + "\";");
+			context.append("\n");
+		}
+
+		// Generate outputArray property
+		FlowStepProperty outputArrayProp = getProperty("inputArray");
+		if (outputArrayProp != null) {
+			context.appendIndented("outputArray: \"" + outputArrayProp.getValue() + "\";");
+			context.append("\n");
+		}
+
+		// Generate common step properties (comment, label, timeout, scope)
+		generateStepProperties(context);
+	}
+
+
 }

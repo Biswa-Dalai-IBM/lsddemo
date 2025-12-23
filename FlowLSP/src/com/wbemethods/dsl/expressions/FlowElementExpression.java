@@ -42,5 +42,63 @@ public abstract class FlowElementExpression implements IFlowExpression {
 			return true;
 		}
 	}
+	
+	
+	/**
+	 * Get a property by key (inherited from FlowElementExpression)
+	 */
+	public FlowStepProperty getProperty(String key) {
+		List<FlowStepProperty> props = getProperties();
+		if (props == null)
+			return null;
+		return props.stream().filter(p -> p.getKey().equals(key)).findFirst().orElse(null);
+	}
+
+	/**
+	 * Get property value by key (inherited from FlowElementExpression)
+	 */
+	public String getPropertyValue(String key) {
+		FlowStepProperty prop = getProperty(key);
+		return prop != null ? prop.getValue() : null;
+	}
+	
+	/**
+	 * Generate common step properties
+	 */
+	public void generateStepProperties(FlowTextContext context) {
+		// Generate comment property
+		FlowStepProperty commentProp = getProperty("comment");
+		if (commentProp != null && commentProp.hasValue()) {
+			context.appendIndented("comment: \"" + commentProp.getValue() + "\";");
+			context.append("\n");
+		}
+
+		// Generate label property
+		FlowStepProperty labelProp = getProperty("label");
+		if (labelProp != null && labelProp.hasValue()) {
+			context.appendIndented("label: \"" + labelProp.getValue() + "\";");
+			context.append("\n");
+		}
+
+		// Generate timeout property
+		FlowStepProperty timeoutProp = getProperty("timeout");
+		if (timeoutProp != null && timeoutProp.hasValue()) {
+			context.appendIndented("timeout: " + timeoutProp.getValue() + ";");
+			context.append("\n");
+		}
+
+		// Generate scope property
+		FlowStepProperty scopeProp = getProperty("scope");
+		if (scopeProp != null && scopeProp.hasValue()) {
+			context.appendIndented("scope: " + scopeProp.getValue() + ";");
+			context.append("\n");
+		}
+	}
+
+	public void updateStepProperties(FlowElement element) {
+		addProperty(new FlowStepProperty("comment", element.getComment()));
+		addProperty(new FlowStepProperty("label", element.getName()));
+		addProperty(new FlowStepProperty("timeout", element.getTimeoutString()));
+	}
 
 }

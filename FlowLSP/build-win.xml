@@ -1,56 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <project basedir="." default="build" name="FlowLSP">
-	<property environment="env"/>
+	<property environment="env" />
 	<path id="FlowLSP.classpath">
-		<pathelement location="bin"/>
-		<pathelement location="lib/antlr-4.13.2-complete.jar"/>
-		<pathelement location="lib/ext/enttoolkit.jar"/>
-		<pathelement location="lib/ext/icu4j.jar"/>
-		<pathelement location="lib/glassfish/gf.jakarta.mail.jar"/>
-		<pathelement location="lib//wm-g11nutils.jar"/>
-		<pathelement location="lib/wm-isclient.jar"/>
-		<pathelement location="lib/wm-isserver.jar"/>
+		<pathelement location="bin" />
+		<pathelement location="lib/antlr-4.13.2-complete.jar" />
+		<pathelement location="lib/ext/enttoolkit.jar" />
+		<pathelement location="lib/ext/icu4j.jar" />
+		<pathelement location="lib/glassfish/gf.jakarta.mail.jar" />
+		<pathelement location="lib//wm-g11nutils.jar" />
+		<pathelement location="lib/wm-isclient.jar" />
+		<pathelement location="lib/wm-isserver.jar" />
+		<pathelement location="lib/jackson-annotations.jar" />
+		<pathelement location="lib/jackson-core.jar" />
+		<pathelement location="lib/jackson-databind.jar" />
 	</path>
 	<target name="init">
-		<mkdir dir="bin"/>
+		<mkdir dir="bin" />
 		<copy includeemptydirs="false" todir="bin">
 			<fileset dir="src">
-				<exclude name="**/*.launch"/>
-				<exclude name="**/*.java"/>
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
 		<copy includeemptydirs="false" todir="bin">
 			<fileset dir="target/generated-sources/antlr4">
-				<exclude name="**/*.launch"/>
-				<exclude name="**/*.java"/>
-				<exclude name="antlr/src/"/>
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+				<exclude name="antlr/src/" />
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<target name="clean">
-		<delete dir="bin"/>
-		<delete dir="target"/>
+		<delete dir="bin" />
+		<delete dir="target" />
 	</target>
-	
+
 	<target name="generateCode">
 		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
-			<arg value="-visitor"/>
-			<arg value="src/com/wbemethods/dsl/antlr/FlowService.g4"/>
-			<arg value="-o"/>
-			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr"/>
-			<arg value="-encoding"/>
-			<arg value="UTF-8"/>
+			<arg value="-visitor" />
+			<arg value="src/com/wbemethods/dsl/antlr/FlowService.g4" />
+			<arg value="-o" />
+			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr" />
+			<arg value="-encoding" />
+			<arg value="UTF-8" />
+		</java>
+		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
+			<arg value="-visitor" />
+			<arg value="src/com/wbemethods/dsl/antlr/FlowDocument.g4" />
+			<arg value="-o" />
+			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr" />
+			<arg value="-encoding" />
+			<arg value="UTF-8" />
 		</java>
 	</target>
 
 	<target depends="clean,generateCode,init" name="build">
 		<javac debug="true" destdir="bin" includeantruntime="false">
-			<src path="src"/>
-			<src path="target/generated-sources/antlr4"/>
-			<exclude name="antlr/src/"/>
-			<classpath refid="FlowLSP.classpath"/>
+			<src path="src" />
+			<src path="target/generated-sources/antlr4" />
+			<exclude name="antlr/src/" />
+			<classpath refid="FlowLSP.classpath" />
 		</javac>
 	</target>
 

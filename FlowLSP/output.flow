@@ -1,56 +1,96 @@
 service fs1 (
     input {
-        record doc1 {
-            String name;
-            String phone;
-            record address {
-                String state;
-                String pin;
-            };
-        };
-        String test;
-        String[] sl1;
-        String[][] st1;
-        recordList doc2 {
-            String id;
-            String qty;
-            String price;
-            record product {
-                String size;
-                String color;
-            };
-        };
+        String count;
+        String[] s1;
+    }
+    output {
+        String out;
     }
 ) {
     MAP {
         mapTarget {
-            record doc1 {
-                String name;
-                String phone;
-                record address {
-                };
-            };
-            String test;
-            String[] sl1;
-            String[][] st1;
-            recordList doc2 {
-                String id;
-                String qty;
-                String price;
-                record product {
-                };
-            };
+            String count;
+            String[] s1;
+            String temp;
         }
-        set test = """<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath""";
-        set sl1 = ["a", "b", "c", "d", "e"];
-        set st1 = [["x", "y", "z"], ["p", "q", "r"]];
-        set doc2 = [{"id":"p1","qty":"12","price":"100","product":{"size":"12","color":"BLACK"}}, {"id":"p2","qty":"20","price":"200","product":{"size":"34","color":"RED"}}];
-        set doc1 = {"name":"Dev","phone":"98787878","address":{"state":"Karnataka","pin":"560001"}};
+        set temp = "1";
+    };
+    WHILE(count>temp) {
+        INVOKE pub.math:addInts {
+            comment: ;
+            label: null;
+            timeout: ;
+            input {
+                mapSource {
+                    String count;
+                    String[] s1;
+                    String temp;
+                    String $iterationCount;
+                }
+                mapTarget[addIntsInput] {
+                    String num1;
+                    String num2;
+                }
+                copy temp -> num1;
+                set num2 = "1";
+            }
+            output {
+                mapSource[addIntsOutput] {
+                    String value;
+                }
+                mapTarget {
+                    String count;
+                    String[] s1;
+                    String temp;
+                    String num1;
+                    String num2;
+                    String value;
+                }
+                copy value -> temp;
+            }
+        };
+    };
+    MAP {
+        mapSource {
+            String num1;
+            String num2;
+            String count;
+            String[] s1;
+            String temp;
+            String value;
+        }
+        mapTarget {
+            String count;
+            String[] s1;
+            String temp;
+        }
+        set temp = out;
+        drop num1;
+        drop num2;
+        drop value;
+    };
+    LOOP {
+        inputArray: "/s1";
+        outputArray: "/s1";
+        timeout: 11;
+        SEQUENCE {
+            exitOn: "FAILURE";
+            MAP {
+                label: "aa";
+                mapSource {
+                    String count;
+                    String s1;
+                    String temp;
+                    String $iteration;
+                }
+                mapTarget {
+                    String count;
+                    String s1;
+                    String temp;
+                    String out;
+                }
+                copy s1 -> out;
+            };
+        };
     };
 }

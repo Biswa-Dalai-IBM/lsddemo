@@ -919,6 +919,12 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		String name = ctx.identifier().getText();
 		ParameterDeclaration param = new ParameterDeclaration(name, "record");
 
+		// Process document reference if present
+		if (ctx.documentReference() != null) {
+			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
+			param.setDocumentReference(docRef);
+		}
+
 		// Process child parameters
 		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
 			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
@@ -943,6 +949,12 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 
 		String name = ctx.identifier().getText();
 		ParameterDeclaration param = new ParameterDeclaration(name, "recordList");
+
+		// Process document reference if present
+		if (ctx.documentReference() != null) {
+			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
+			param.setDocumentReference(docRef);
+		}
 
 		// Process child parameters
 		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
