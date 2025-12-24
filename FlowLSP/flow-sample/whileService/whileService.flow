@@ -23,7 +23,7 @@ service whileService(
                 copy value -> temp;
             }
          };
-    }
+    };
 
     MAP {
       set temp = out;

@@ -39,7 +39,7 @@ public class FlowCaseExpression extends FlowContainerExpression {
 
 	@Override
 	public void generateText(FlowTextContext context) {
-		context.appendIndented("CASE \"" + caseValue + "\" {");
+		context.appendIndented("CASE \"" + caseValue + "\" :");
 		context.append("\n");
 		context.increaseIndent();
 
@@ -48,6 +48,6 @@ public class FlowCaseExpression extends FlowContainerExpression {
 		}
 
 		context.decreaseIndent();
-		context.appendIndented("}\n");
+		context.appendIndented("\n");
 	}
 }

@@ -119,11 +119,7 @@ public class FlowInvokeExpression extends FlowElementExpression {
 			context.append(" {\n");
 			context.increaseIndent();
 
-			if (hasProperties()) {
-				for (FlowStepProperty prop : getProperties()) {
-					prop.generateText(context);
-				}
-			}
+			generateStepProperties(context);
 
 			if (input != null) {
 				context.appendIndented("input {\n");

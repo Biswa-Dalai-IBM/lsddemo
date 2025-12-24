@@ -347,7 +347,7 @@ caseBlock
 //WHILE Step
 
 whileStep
-    : 'WHILE' '(' expression ')' '{' step* '}'
+    : 'WHILE' '(' expression ')' '{' step* '}' ';'
     ;
 
 // EXIT Step
