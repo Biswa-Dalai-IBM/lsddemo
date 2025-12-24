@@ -45,17 +45,17 @@
 	<target name="generateCode">
 		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
 			<arg value="-visitor" />
-			<arg value="src/com/wbemethods/dsl/antlr/FlowService.g4" />
+			<arg value="src/com/webmethods/dsl/antlr/FlowService.g4" />
 			<arg value="-o" />
-			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr" />
+			<arg value="target/generated-sources/antlr4/src/com/webmethods/dsl/antlr" />
 			<arg value="-encoding" />
 			<arg value="UTF-8" />
 		</java>
 		<java jar="lib/antlr-4.13.2-complete.jar" fork="true" failonerror="true">
 			<arg value="-visitor" />
-			<arg value="src/com/wbemethods/dsl/antlr/FlowDocument.g4" />
+			<arg value="src/com/webmethods/dsl/antlr/FlowDocument.g4" />
 			<arg value="-o" />
-			<arg value="target/generated-sources/antlr4/src/com/wbemethods/dsl/antlr" />
+			<arg value="target/generated-sources/antlr4/src/com/webmethods/dsl/antlr" />
 			<arg value="-encoding" />
 			<arg value="UTF-8" />
 		</java>
@@ -76,7 +76,7 @@
 		
 		<!-- Create manifest -->
 		<manifest file="${dist.dir}/MANIFEST.MF">
-			<attribute name="Main-Class" value="com.wbemethods.dsl.expressions.app.FlowCLI" />
+			<attribute name="Main-Class" value="com.webmethods.dsl.expressions.app.FlowCLI" />
 			<attribute name="Implementation-Version" value="${version}" />
 			<attribute name="Built-By" value="${user.name}" />
 		</manifest>
@@ -120,7 +120,7 @@
 		
 		<!-- Create Windows batch script with dynamic classpath -->
 		<echo file="${dist.dir}/flow-dsl-${version}/flow-dsl.bat"><![CDATA[@echo off
-REM Flow DSL CLI - Windows Launcher Script
+REM Flow DSL CLI - Windwebmethodscher Script
 
 REM Check if JAVA_HOME is set
 if "%JAVA_HOME%"=="" (
@@ -151,7 +151,7 @@ for %%i in (lib\*.jar) do set CP=!CP!;%%i
 for %%i in (lib\ext\*.jar) do set CP=!CP!;%%i
 
 REM Run the application
-%JAVA_CMD% -cp !CP! com.wbemethods.dsl.expressions.app.FlowCLI %*
+%JAVA_CMD% -cp !CP! com.webmethods.dsl.expressions.app.FlowCLI %*
 
 endlocal
 ]]></echo>
@@ -196,7 +196,7 @@ done
 
 
 # Run the application
-$JAVA_CMD -cp "$CP" com.wbemethods.dsl.expressions.app.FlowCLI "$@"
+$JAVA_CMD -cp "$CP" com.webmethods.dsl.expressions.app.FlowCLI "$@"
 ]]></echo>
 		<chmod file="${dist.dir}/flow-dsl-${version}/flow-dsl.sh" perm="755" />
 		
