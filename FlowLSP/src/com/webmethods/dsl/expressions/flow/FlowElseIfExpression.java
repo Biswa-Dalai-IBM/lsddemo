@@ -6,6 +6,7 @@ import com.webmethods.dsl.expressions.FlowElementExpression;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
+import com.wm.lang.ns.Namespace;
 
 public class FlowElseIfExpression extends FlowContainerExpression {
 
@@ -20,12 +21,14 @@ public class FlowElseIfExpression extends FlowContainerExpression {
 	}
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setForm(FlowSequence.ELSEIF);
 		flowSequence.setCondition(condition);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace,expressions, flowSequence);
+		flowSequence.setParent(parent);
+		addFlowProperties(flowSequence);
 		parent.addNode(flowSequence);
 	}
 
@@ -35,5 +38,10 @@ public class FlowElseIfExpression extends FlowContainerExpression {
 		condition = flowSequence.getCondition();
 		condition = condition.replaceAll("%", "");
 		super.updateExpression(element);
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "ELSEIF ("+condition+")";
 	}
 }

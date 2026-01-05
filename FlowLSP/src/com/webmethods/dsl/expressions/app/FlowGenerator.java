@@ -16,7 +16,6 @@ import com.wm.app.b2b.server.FlowManager;
 import com.wm.app.b2b.server.FlowSvcImpl;
 import com.wm.app.b2b.server.Package;
 import com.wm.app.b2b.server.Server;
-import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
 import com.wm.data.IDataFactory;
 import com.wm.lang.flow.FlowElement;
@@ -28,6 +27,7 @@ import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSService;
 import com.wm.lang.ns.NSServiceType;
 import com.wm.lang.ns.NSSignature;
+import com.wm.lang.ns.Namespace;
 
 public class FlowGenerator {
 
@@ -41,16 +41,15 @@ public class FlowGenerator {
 	 * @param installRoot  Optional install root path
 	 * @throws IOException
 	 */
-	public void generateFlow(FlowProgram program, File targetFolder, String packageName, String nsname,
+	public void generateFlow(Namespace namespace, FlowProgram program, File targetFolder, String packageName, String nsname,
 			String installRoot) throws IOException {
 
-		ServerUtils.getInstance();
 		IData iData = IDataFactory.create();
 		FlowRoot flowRoot = new FlowRoot(iData);
 
 		List<FlowElementExpression> expressions = program.getExpressions();
 		if (expressions.size() > 0) {
-			generateFlow(expressions, flowRoot);
+			generateFlow(namespace,expressions, flowRoot);
 		}
 
 		try {
@@ -60,7 +59,7 @@ public class FlowGenerator {
 			FlowManager.saveFlow(package1, flowRoot, nsName);
 
 			// Build signature from program
-			NSSignature sig = buildSignature(program);
+			NSSignature sig = buildSignature(namespace,program);
 			FlowSvcImpl flowSvcImpl = new FlowSvcImpl(package1, nsName, null);
 			flowSvcImpl.setFlowRoot(flowRoot);
 			flowSvcImpl.setSignature(sig);
@@ -87,17 +86,18 @@ public class FlowGenerator {
 		}
 	}
 
-	public static void generateFlow(List<FlowElementExpression> expressions, FlowElement element) {
+	public static void generateFlow(Namespace namespace,List<FlowElementExpression> expressions, FlowElement element) {
 		if (expressions == null || expressions.isEmpty()) {
 			return;
 		}
 		for (FlowElementExpression expression : expressions) {
 			if (expression instanceof FlowContainerExpression) {
 				FlowContainerExpression containerExpression = (FlowContainerExpression) expression;
-				containerExpression.addFlowElement(element);
+				containerExpression.addFlowElement(namespace,element);
 			} else {
-				FlowElement childElement = expression.getFlowElement();
+				FlowElement childElement = expression.getFlowElement(namespace);
 				if (childElement != null) {
+					childElement.setParent(element);
 					element.addNode(childElement);
 				}
 			}
@@ -108,9 +108,9 @@ public class FlowGenerator {
 	/**
 	 * Build NSSignature from FlowProgram signature
 	 */
-	private NSSignature buildSignature(FlowProgram program) {
-		NSRecord inputRecord = new NSRecord(Namespace.current());
-		NSRecord outputRecord = new NSRecord(Namespace.current());
+	private NSSignature buildSignature(Namespace namespace,FlowProgram program) {
+		NSRecord inputRecord = new NSRecord(namespace);
+		NSRecord outputRecord = new NSRecord(namespace);
 
 		if (program.hasSignature()) {
 			FlowServiceSignature signature = program.getSignature();

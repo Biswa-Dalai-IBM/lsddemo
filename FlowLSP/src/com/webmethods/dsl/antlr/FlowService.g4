@@ -4,8 +4,18 @@ grammar FlowService;
 	package com.webmethods.dsl.antlr;
 }
 
+// Top-level rule: optional interface declaration followed by service
+flowService : interfaceDeclaration? 'service' ID signature? '{' step* '}' ;
 
-flowService : 'service' ID signature? '{' step* '}' ;
+// Interface declaration
+interfaceDeclaration
+    : 'interface' qualifiedInterfaceName ';'
+    ;
+
+// Qualified interface name (e.g., abc.test)
+qualifiedInterfaceName
+    : ID ('.' ID)*
+    ;
 
 signature : '(' signatureBlock* ')' ;
 
@@ -96,6 +106,8 @@ step
     | ifThenStep
     | switchCaseStep
     | whileStep
+    | continueStep
+    | breakStep
     ;
     
 
@@ -150,6 +162,8 @@ identifier
     | 'output'
     | 'count'
     | '$iterationCount'
+    | '$iteration'
+    | '$retries'
     ;
 value
     : INT
@@ -345,11 +359,10 @@ caseBlock
     ;
 
 //WHILE Step
-
 whileStep
-    : 'WHILE' '(' expression ')' '{' step* '}' ';'
+    : 'WHILE' '(' expression ')' ('{' stepProperty* doUntilProperty* step* '}')?
     ;
-
+    
 // EXIT Step
 
 exitStep
@@ -362,12 +375,25 @@ exitProperty
     | 'signal' ':' STRING_LITERAL ';'
     | 'failureName' ':' STRING_LITERAL ';'
     | 'failureInstance' ':' STRING_LITERAL ';'
-    | 'exitForm' ':' STRING_LITERAL ';'
+    | 'exitFrom' ':' STRING_LITERAL ';'
     | 'failureMessage' ':' STRING_LITERAL ';'
     ;
     
-    
+// CONTINUE Step
 
+continueStep
+    : 'CONTINUE' ('{' commentProperty* '}')? ';'
+    ;
+    
+// BREAK Step
+
+breakStep
+    : 'BREAK' ('{' commentProperty* '}')? ';'
+    ;
+
+commentProperty
+    : 'comment' ':' STRING_LITERAL ';'
+    ;   
 
 // Keywords (must come before ID to have priority)
 STRING_TYPE     : 'String' ;

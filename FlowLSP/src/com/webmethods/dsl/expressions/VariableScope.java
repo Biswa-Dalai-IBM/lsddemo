@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wm.lang.ns.NSField;
+import com.wm.lang.ns.NSName;
+import com.wm.lang.ns.NSRecord;
+import com.wm.lang.ns.Namespace;
+
 /**
  * Manages variable scope hierarchy for Flow services. Tracks variables from
  * service signatures and map blocks with their types. Supports nested scopes
@@ -71,8 +76,9 @@ public class VariableScope {
 	/**
 	 * Look up a variable path (e.g., "record1/field1") Returns the final field
 	 * declaration with type information
+	 * @param namespace 
 	 */
-	public ParameterDeclaration lookupVariablePath(String path) {
+	public ParameterDeclaration lookupVariablePath(Namespace namespace, String path) {
 		if (path == null || path.isEmpty()) {
 			return null;
 		}
@@ -87,8 +93,15 @@ public class VariableScope {
 		// Navigate through the path
 		for (int i = 1; i < parts.length; i++) {
 			if (!current.hasChildren()) {
+				if(current.hasDocumentReference()) {
+					loadDocumentReference(namespace,current);
+				}
+				if (!current.hasChildren()) {
+					return null; // Path is invalid
+				}
 				return null; // Path is invalid
 			}
+			
 
 			// Find child with matching name
 			ParameterDeclaration found = null;
@@ -107,6 +120,18 @@ public class VariableScope {
 		}
 
 		return current;
+	}
+
+	private void loadDocumentReference(Namespace namespace,ParameterDeclaration current) {
+		NSRecord nsRecord = (NSRecord) namespace.getNode(NSName.create(current.getDocumentReference()));
+		if(nsRecord!=null) {
+			NSField[] fields = nsRecord.getFields();
+			for (NSField nsField : fields) {
+				ParameterDeclaration declaration = new ParameterDeclaration();
+				declaration.updateField(nsField);
+				current.addChild(declaration);
+			}
+		}
 	}
 
 	/**

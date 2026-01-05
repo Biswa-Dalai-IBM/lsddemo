@@ -10,11 +10,12 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowLoop;
+import com.wm.lang.ns.Namespace;
 
 public class FlowLoopExpression extends FlowContainerExpression {
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		IData iData = IDataFactory.create();
 
 		FlowStepProperty property = getProperty("inputArray");
@@ -29,7 +30,9 @@ public class FlowLoopExpression extends FlowContainerExpression {
 		FlowLoop flowLoop = new FlowLoop(iData);
 
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowLoop);
+		FlowGenerator.generateFlow(namespace,expressions, flowLoop);
+		addFlowProperties(flowLoop);
+		flowLoop.setParent(parent);
 		parent.addNode(flowLoop);
 	}
 
@@ -63,23 +66,29 @@ public class FlowLoopExpression extends FlowContainerExpression {
 	 * Generate loop properties (inputArray, outputArray)
 	 */
 	private void generateLoopProperties(FlowTextContext context) {
+		
+		generateStepProperties(context);
+		
 		// Generate inputArray property
 		FlowStepProperty inputArrayProp = getProperty("inputArray");
-		if (inputArrayProp != null) {
+		if (inputArrayProp != null && inputArrayProp.hasValue()) {
 			context.appendIndented("inputArray: \"" + inputArrayProp.getValue() + "\";");
 			context.append("\n");
 		}
 
 		// Generate outputArray property
-		FlowStepProperty outputArrayProp = getProperty("inputArray");
-		if (outputArrayProp != null) {
+		FlowStepProperty outputArrayProp = getProperty("outputArray");
+		if (outputArrayProp != null && outputArrayProp.hasValue()) {
 			context.appendIndented("outputArray: \"" + outputArrayProp.getValue() + "\";");
 			context.append("\n");
 		}
 
 		// Generate common step properties (comment, label, timeout, scope)
-		generateStepProperties(context);
+		
 	}
 
-
+	@Override
+	public String getOutlineNodeName() {
+		return "LOOP";
+	}
 }

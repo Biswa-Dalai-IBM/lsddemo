@@ -3,6 +3,8 @@ package com.webmethods.dsl.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.Token;
+
 /**
  * Represents a document type definition (.doc file)
  * Example: document com.example:Student { ... }
@@ -12,6 +14,8 @@ public class DocumentDeclaration implements IFlowExpression {
 	private String packageName;   // e.g., "com.example"
 	private String documentName;  // e.g., "Student"
 	private List<ParameterDeclaration> fields;
+	private int line;
+	private int column;
 
 	public DocumentDeclaration() {
 		this.fields = new ArrayList<>();
@@ -103,6 +107,30 @@ public class DocumentDeclaration implements IFlowExpression {
 				", documentName='" + documentName + '\'' +
 				", fields=" + fields.size() +
 				'}';
+	}
+	
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public int getCharPositionInLine() {
+		return column;
+	}
+	
+	@Override
+	public void setLocation(Token token) {
+		if(token==null) {
+			return;
+		}
+		this.line=token.getLine();
+		this.column=token.getCharPositionInLine();
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return null;
 	}
 }
 

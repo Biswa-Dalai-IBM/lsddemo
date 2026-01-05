@@ -11,7 +11,6 @@ import com.webmethods.dsl.expressions.MapSignature;
 import com.webmethods.dsl.expressions.ParameterDeclaration;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.webmethods.dsl.expressions.flow.NSRecordUtils;
-import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataUtil;
@@ -22,6 +21,7 @@ import com.wm.lang.flow.FlowMapDelete;
 import com.wm.lang.flow.FlowMapInvoke;
 import com.wm.lang.flow.FlowMapSet;
 import com.wm.lang.ns.NSRecord;
+import com.wm.lang.ns.Namespace;
 import com.wm.util.Values;
 import com.wm.util.coder.IDataJSONCoder;
 import com.wm.util.coder.InvalidDatatypeException;
@@ -64,18 +64,19 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		FlowMap flowMap = new FlowMap(null);
 
 		// Set schema info from mapSource/mapTarget if available
 
 		List<FlowElementExpression> expressions2 = getExpressions();
-		FlowGenerator.generateFlow(expressions2, flowMap);
+		FlowGenerator.generateFlow(namespace,expressions2, flowMap);
 		if (hasMapSignature()) {
 			NSRecord sourceRecord = buildMapSourceRecord(mapSignature);
 			NSRecord targetRecord = buildMapTargetRecord(mapSignature);
 			flowMap.setSchemaInfo(sourceRecord, targetRecord);
 		}
+		addFlowProperties(flowMap);
 		return flowMap;
 	}
 
@@ -89,7 +90,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	 * Build NSRecord from mapSource parameters
 	 */
 	private NSRecord buildMapSourceRecord(MapSignature mapSignature) {
-		NSRecord sourceRecord = new NSRecord(Namespace.current());
+		NSRecord sourceRecord = new NSRecord(null);
 
 		if (mapSignature.hasSourceParameters()) {
 			for (ParameterDeclaration param : mapSignature.getSourceParameters()) {
@@ -104,7 +105,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	 * Build NSRecord from mapTarget parameters
 	 */
 	private NSRecord buildMapTargetRecord(MapSignature mapSignature) {
-		NSRecord targetRecord = new NSRecord(Namespace.current());
+		NSRecord targetRecord = new NSRecord(null);
 
 		if (mapSignature.hasTargetParameters()) {
 			for (ParameterDeclaration param : mapSignature.getTargetParameters()) {
@@ -120,10 +121,10 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	 */
 	public NSRecord getMapSourceRecord() {
 		if (!hasMapSignature()) {
-			return new NSRecord(Namespace.current());
+			return new NSRecord(null);
 		}
 
-		NSRecord sourceRecord = new NSRecord(Namespace.current());
+		NSRecord sourceRecord = new NSRecord(null);
 		if (mapSignature.hasSourceParameters()) {
 			for (ParameterDeclaration param : mapSignature.getSourceParameters()) {
 				buildParameter(sourceRecord, param);
@@ -142,10 +143,10 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 	 */
 	public NSRecord getMapTargetRecord() {
 		if (!hasMapSignature()) {
-			return new NSRecord(Namespace.current());
+			return new NSRecord(null);
 		}
 
-		NSRecord targetRecord = new NSRecord(Namespace.current());
+		NSRecord targetRecord = new NSRecord(null);
 		if (mapSignature.hasTargetParameters()) {
 			for (ParameterDeclaration param : mapSignature.getTargetParameters()) {
 				buildParameter(targetRecord, param);
@@ -199,6 +200,7 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 				FlowElementExpression mapExpr = convertMapOperation(child);
 				if (mapExpr != null) {
 					addMapExpression((FlowMapExpression) mapExpr);
+					mapExpr.updateExpression(child);
 				}
 			}
 		}
@@ -207,8 +209,8 @@ public abstract class AbstractFlowMapExpression extends FlowElementExpression {
 		Values target = Values.use(IDataUtil.getIData(ic, FlowMap.KEY_TARGET));
 		Values source = Values.use(IDataUtil.getIData(ic, FlowMap.KEY_SOURCE));
 		
-		NSRecord targetRec = target != null ? NSRecord.createRecord(Namespace.current(), target) : null;
-		NSRecord sourceRec = source != null ? NSRecord.createRecord(Namespace.current(), source) : null;
+		NSRecord targetRec = target != null ? NSRecord.createRecord(null, target) : null;
+		NSRecord sourceRec = source != null ? NSRecord.createRecord(null, source) : null;
         mapSignature = new MapSignature();
         mapSignature.updateSignature(sourceRec, targetRec);
 	}

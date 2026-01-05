@@ -6,6 +6,7 @@ import com.webmethods.dsl.expressions.flow.map.AbstractFlowMapExpression;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowExit;
 import com.wm.lang.flow.FlowUntil;
+import com.wm.lang.ns.Namespace;
 
 public class FlowUntilExpression extends FlowElementExpression {
 	String condition;
@@ -14,7 +15,7 @@ public class FlowUntilExpression extends FlowElementExpression {
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		return new FlowExit(null);
 	}
 
@@ -33,5 +34,10 @@ public class FlowUntilExpression extends FlowElementExpression {
 	
 	public String getCondition() {
 		return condition;
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "UNTIL ("+condition+")";
 	}
 }

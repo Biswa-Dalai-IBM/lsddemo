@@ -8,6 +8,7 @@ import com.webmethods.dsl.expressions.FlowTextContext;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
+import com.wm.lang.ns.Namespace;
 
 public class FlowTryExpression extends FlowContainerExpression {
 	private List<FlowCatchExpression> catchExpressions;
@@ -18,18 +19,19 @@ public class FlowTryExpression extends FlowContainerExpression {
 	}
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setForm(FlowSequence.TRY);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace,expressions, flowSequence);
 		parent.addNode(flowSequence);
 
 		for (FlowCatchExpression catchExpression : catchExpressions) {
-			catchExpression.addFlowElement(parent);
+			catchExpression.addFlowElement(namespace,parent);
 		}
 
-		finallyExpression.addFlowElement(parent);
+		finallyExpression.addFlowElement(namespace,parent);
+		flowSequence.setParent(parent);
 	}
 
 	public List<FlowCatchExpression> getCatchExpressions() {
@@ -76,5 +78,10 @@ public class FlowTryExpression extends FlowContainerExpression {
 		}
 
 		context.append(";\n");
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "TRY";
 	}
 }

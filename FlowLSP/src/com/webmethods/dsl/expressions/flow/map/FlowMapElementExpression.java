@@ -59,5 +59,10 @@ public class FlowMapElementExpression extends AbstractFlowMapExpression {
 			context.append(";\n");
 		}
 	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "MAP";
+	}
 
 }

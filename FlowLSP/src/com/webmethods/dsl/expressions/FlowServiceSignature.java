@@ -1,8 +1,10 @@
 package com.webmethods.dsl.expressions;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.Token;
+
+import com.webmethods.dsl.expressions.flow.IONode;
 import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSSignature;
 
@@ -10,37 +12,40 @@ import com.wm.lang.ns.NSSignature;
  * Represents the signature (input/output) of a Flow service
  */
 public class FlowServiceSignature implements IFlowExpression {
-
-	private List<ParameterDeclaration> inputParameters;
-	private List<ParameterDeclaration> outputParameters;
+	
+	private IONode input;
+	private IONode output;
+	
+	private int line;
+	private int column;
 
 	public FlowServiceSignature() {
-		this.inputParameters = new ArrayList<>();
-		this.outputParameters = new ArrayList<>();
+		this.input = new IONode("input");
+		this.output = new IONode("output");
 	}
 
 	public void addInputParameter(ParameterDeclaration param) {
-		inputParameters.add(param);
+		input.addParameter(param);
 	}
 
 	public void addOutputParameter(ParameterDeclaration param) {
-		outputParameters.add(param);
+		output.addParameter(param);
 	}
 
 	public List<ParameterDeclaration> getInputParameters() {
-		return inputParameters;
+		return input.getValue();
 	}
 
 	public List<ParameterDeclaration> getOutputParameters() {
-		return outputParameters;
+		return output.getValue();
 	}
 
 	public boolean hasInputParameters() {
-		return inputParameters != null && !inputParameters.isEmpty();
+		return input.hasParameters();
 	}
 
 	public boolean hasOutputParameters() {
-		return outputParameters != null && !outputParameters.isEmpty();
+		return output.hasParameters();
 	}
 
 	public void updateSignature(NSSignature signature) {
@@ -64,29 +69,43 @@ public class FlowServiceSignature implements IFlowExpression {
 		}
 	}
 
+	public IONode getInput() {
+		return input;
+	}
+	
+	public IONode getOutput() {
+		return output;
+	}
+	
 	@Override
 	public void generateText(FlowTextContext context) {
-		if (hasInputParameters()) {
-			context.appendLine("input {");
-			context.increaseIndent();
-			for (ParameterDeclaration param : getInputParameters()) {
-				param.generateText(context);
-			}
-			context.decreaseIndent();
-			context.appendLine("}");
-		}
-
-		if (hasOutputParameters()) {
-			context.appendLine("output {");
-			context.increaseIndent();
-			for (ParameterDeclaration param : getOutputParameters()) {
-				param.generateText(context);
-			}
-			context.decreaseIndent();
-			context.appendLine("}");
-		}
+		input.generateText(context);
+		output.generateText(context);
 	}
 
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public int getCharPositionInLine() {
+		return column;
+	}
+	
+	@Override
+	public void setLocation(Token token) {
+		if(token==null) {
+			return;
+		}
+		this.line=token.getLine();
+		this.column=token.getCharPositionInLine();
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "Signature";
+	}
 }
 
 // Made with Bob

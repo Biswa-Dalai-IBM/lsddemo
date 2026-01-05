@@ -12,10 +12,13 @@ import com.webmethods.dsl.antlr.FlowServiceLexer;
 import com.webmethods.dsl.antlr.FlowServiceParser;
 import com.webmethods.dsl.expressions.AntlrToProgram;
 import com.webmethods.dsl.expressions.FlowProgram;
+import com.webmethods.dsl.serverjars.utils.ServerUtils;
+import com.wm.app.b2b.server.ns.Namespace;
 
 public class ExpressionApp {
 
 	public static void main(String[] args) throws IOException {
+		ServerUtils.getInstance();
 		// Check if using new CLI format
 		if (args.length > 0 && args[0].equals("generateFlow")) {
 			handleGenerateFlowCommand(args);
@@ -28,7 +31,7 @@ public class ExpressionApp {
 			AntlrToProgram program = new AntlrToProgram();
 			FlowProgram flowProgram = program.visit(antlrAST);
 			FlowGenerator flowGenerator = new FlowGenerator();
-			flowGenerator.generateFlow(flowProgram, new File(fileName).getParentFile(), "test", "test:fs1", null);
+			flowGenerator.generateFlow(Namespace.current(),flowProgram, new File(fileName).getParentFile(), "test", "test:fs1", null);
 		} else {
 			printUsage();
 		}
@@ -76,7 +79,7 @@ public class ExpressionApp {
 		// Generate the flow
 		FlowGenerator flowGenerator = new FlowGenerator();
 		File targetFolder = new File(flowPath).getParentFile();
-		flowGenerator.generateFlow(flowProgram, targetFolder, packageName, nsname, installRoot);
+		flowGenerator.generateFlow(Namespace.current(),flowProgram, targetFolder, packageName, nsname, installRoot);
 
 		System.out.println("Flow generated successfully!");
 		System.out.println("  Flow: " + flowPath);

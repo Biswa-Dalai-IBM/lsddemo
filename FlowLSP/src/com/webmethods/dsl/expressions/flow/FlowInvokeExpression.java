@@ -10,6 +10,7 @@ import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowInvoke;
 import com.wm.lang.flow.FlowMap;
 import com.wm.lang.ns.NSName;
+import com.wm.lang.ns.Namespace;
 
 public class FlowInvokeExpression extends FlowElementExpression {
 
@@ -52,14 +53,14 @@ public class FlowInvokeExpression extends FlowElementExpression {
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		FlowInvoke flowInvoke = new FlowInvoke(null);
 		flowInvoke.setService(NSName.create(serviceName));
 		if (input != null) {
 			List<FlowMapExpression> mapExpressions = input.getMapExpressions();
 			FlowMap flowMapInput = new FlowMap(null);
 			if (mapExpressions.size() > 0) {
-				loadChildren(mapExpressions, flowMapInput);
+				loadChildren(namespace,mapExpressions, flowMapInput);
 			}
 			flowInvoke.setInputMap(flowMapInput);
 			flowMapInput.setSchemaInfo(input.getMapSourceRecord(), input.getMapTargetRecord());
@@ -68,7 +69,7 @@ public class FlowInvokeExpression extends FlowElementExpression {
 			List<FlowMapExpression> mapExpressions = output.getMapExpressions();
 			FlowMap flowMapOutput = new FlowMap(null);
 			if (mapExpressions.size() > 0) {
-				loadChildren(mapExpressions, flowMapOutput);
+				loadChildren(namespace,mapExpressions, flowMapOutput);
 			}
 			flowInvoke.setOutputMap(flowMapOutput);
 			flowMapOutput.setSchemaInfo(output.getMapSourceRecord(), output.getMapTargetRecord());
@@ -97,14 +98,15 @@ public class FlowInvokeExpression extends FlowElementExpression {
 		}
 	}
 
-	private void loadChildren(List<FlowMapExpression> expressions, FlowElement element) {
+	private void loadChildren(Namespace namespace,List<FlowMapExpression> expressions, FlowElement element) {
 		for (FlowElementExpression expression : expressions) {
 			if (expression instanceof FlowContainerExpression) {
 				FlowContainerExpression containerExpression = (FlowContainerExpression) expression;
-				containerExpression.addFlowElement(element);
+				containerExpression.addFlowElement(namespace,element);
 			} else {
-				FlowElement childElement = expression.getFlowElement();
+				FlowElement childElement = expression.getFlowElement(namespace);
 				if (childElement != null) {
+					childElement.setParent(element);
 					element.addNode(childElement);
 				}
 			}
@@ -121,7 +123,7 @@ public class FlowInvokeExpression extends FlowElementExpression {
 
 			generateStepProperties(context);
 
-			if (input != null) {
+			if (input != null && input.hasExpressions()) {
 				context.appendIndented("input {\n");
 				context.increaseIndent();
 				input.generateText(context);
@@ -129,7 +131,7 @@ public class FlowInvokeExpression extends FlowElementExpression {
 				context.appendLine("}");
 			}
 
-			if (output != null) {
+			if (output != null && output.hasExpressions()) {
 				context.appendIndented("output {\n");
 				context.increaseIndent();
 				output.generateText(context);
@@ -142,6 +144,11 @@ public class FlowInvokeExpression extends FlowElementExpression {
 		} else {
 			context.append(";\n");
 		}
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "INVOKE ("+serviceName+")";
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.webmethods.dsl.expressions.FlowElementExpression;
 import com.webmethods.dsl.expressions.FlowTextContext;
 import com.wm.lang.flow.FlowElement;
+import com.wm.lang.ns.Namespace;
 
 /**
  * Base class for flow expressions that can contain child expressions. Inherits
@@ -99,12 +100,12 @@ public class FlowContainerExpression extends FlowElementExpression {
 
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 
 	}
 
@@ -123,5 +124,11 @@ public class FlowContainerExpression extends FlowElementExpression {
 	public void generateText(FlowTextContext context) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

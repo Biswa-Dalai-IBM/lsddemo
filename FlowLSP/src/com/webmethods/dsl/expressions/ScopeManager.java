@@ -2,6 +2,8 @@ package com.webmethods.dsl.expressions;
 
 import java.util.Stack;
 
+import com.wm.lang.ns.Namespace;
+
 /**
  * Manages the variable scope stack during flow service traversal. Maintains
  * current scope and provides methods to enter/exit scopes.
@@ -91,8 +93,8 @@ public class ScopeManager {
 	/**
 	 * Look up a variable path (e.g., "record1/field1")
 	 */
-	public ParameterDeclaration lookupVariablePath(String path) {
-		return getCurrentScope().lookupVariablePath(path);
+	public ParameterDeclaration lookupVariablePath(Namespace namespace,String path) {
+		return getCurrentScope().lookupVariablePath(namespace,path);
 	}
 
 	/**

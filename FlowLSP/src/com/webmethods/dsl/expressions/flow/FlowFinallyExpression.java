@@ -7,15 +7,18 @@ import com.webmethods.dsl.expressions.FlowTextContext;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
+import com.wm.lang.ns.Namespace;
 
 public class FlowFinallyExpression extends FlowContainerExpression {
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setForm(FlowSequence.FINALLY);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace,expressions, flowSequence);
+		flowSequence.setParent(parent);
+		addFlowProperties(flowSequence);
 		parent.addNode(flowSequence);
 	}
 
@@ -31,5 +34,10 @@ public class FlowFinallyExpression extends FlowContainerExpression {
 
 		context.decreaseIndent();
 		context.appendIndented("}");
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "FINALLY";
 	}
 }

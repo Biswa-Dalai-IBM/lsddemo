@@ -6,6 +6,7 @@ import java.util.List;
 import com.webmethods.dsl.expressions.flow.FlowContainerExpression;
 import com.webmethods.dsl.expressions.flow.FlowStepProperty;
 import com.wm.lang.flow.FlowElement;
+import com.wm.lang.ns.Namespace;
 
 public class FlowProgram extends FlowContainerExpression{
 
@@ -14,6 +15,7 @@ public class FlowProgram extends FlowContainerExpression{
 	ScopeManager scopeManager;
 
 	public String serviceName;
+	public String interfaceName;
 
 	public FlowProgram() {
 		super();
@@ -29,6 +31,9 @@ public class FlowProgram extends FlowContainerExpression{
 		this.serviceName = serviceName;
 	}
 
+	public String getServiceName() {
+		return serviceName;
+	}
 
 	public void setSignature(FlowServiceSignature signature) {
 		this.signature = signature;
@@ -55,7 +60,7 @@ public class FlowProgram extends FlowContainerExpression{
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -72,11 +77,19 @@ public class FlowProgram extends FlowContainerExpression{
 			}
 		}
 	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return serviceName;
+	}
 	/**
 	 * Generate flow text for the entire service
 	 */
 	@Override
 	public void generateText(FlowTextContext context) {
+		if(interfaceName!=null && !interfaceName.isEmpty()) {
+			context.appendLine("interface " + interfaceName + ";");
+		}
 		// Generate service declaration
 		String name = serviceName != null ? serviceName : "generatedService";
 		context.append("service " + name);
@@ -104,5 +117,13 @@ public class FlowProgram extends FlowContainerExpression{
 		
 		context.decreaseIndent();
 		context.appendLine("}");
+	}
+	
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+	}
+	
+	public String getInterfaceName() {
+		return interfaceName;
 	}
 }

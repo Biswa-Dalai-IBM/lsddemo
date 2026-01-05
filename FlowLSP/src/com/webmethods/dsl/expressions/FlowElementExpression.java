@@ -3,13 +3,19 @@ package com.webmethods.dsl.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.Token;
+
 import com.webmethods.dsl.expressions.flow.FlowStepProperty;
 import com.wm.lang.flow.FlowElement;
+import com.wm.lang.ns.Namespace;
 
 public abstract class FlowElementExpression implements IFlowExpression {
 	List<FlowStepProperty> properties;
+	private int line;
+	private int column;
 
-	public abstract FlowElement getFlowElement();
+	
+	public abstract FlowElement getFlowElement(Namespace namespace);
 
 	public abstract void updateExpression(FlowElement element);
 
@@ -43,7 +49,29 @@ public abstract class FlowElementExpression implements IFlowExpression {
 		}
 	}
 	
-	
+	public void addFlowProperties(FlowElement element){
+		FlowStepProperty labelProp = getProperty("label");
+		if(labelProp!=null) {
+			element.setName(labelProp.getValue());
+		}
+		
+		FlowStepProperty scopeProp = getProperty("scope");
+		if(scopeProp!=null) {
+			element.setScope(scopeProp.getValue());
+		}
+		
+		FlowStepProperty timeoutProp = getProperty("timeout");
+		if(timeoutProp!=null) {
+			element.setTimeoutString(timeoutProp.getValue());
+		}
+		
+		FlowStepProperty commentProp = getProperty("comment");
+		if(commentProp!=null) {
+			element.setComment(commentProp.getValue());
+		}
+		
+		
+	}
 	/**
 	 * Get a property by key (inherited from FlowElementExpression)
 	 */
@@ -99,6 +127,25 @@ public abstract class FlowElementExpression implements IFlowExpression {
 		addProperty(new FlowStepProperty("comment", element.getComment()));
 		addProperty(new FlowStepProperty("label", element.getName()));
 		addProperty(new FlowStepProperty("timeout", element.getTimeoutString()));
+		addProperty(new FlowStepProperty("scope", element.getScope()));
 	}
 
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public int getCharPositionInLine() {
+		return column;
+	}
+	
+	@Override
+	public void setLocation(Token token) {
+		if(token==null) {
+			return;
+		}
+		this.line=token.getLine();
+		this.column=token.getCharPositionInLine();
+	}
 }

@@ -32,5 +32,10 @@ public class MapIOExprssion extends AbstractFlowMapExpression {
 			}
 		}
 	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return isInput?"input":"output";
+	}
 
 }

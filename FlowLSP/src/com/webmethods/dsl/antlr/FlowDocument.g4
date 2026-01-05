@@ -4,8 +4,18 @@ grammar FlowDocument;
 	package com.webmethods.dsl.antlr;
 }
 
-// Root rule for a document file
-document : 'document' ID '{' parameterDeclaration* '}' ';'? EOF ;
+// Root rule for a document file: optional interface declaration followed by document
+document : interfaceDeclaration? 'document' ID '{' parameterDeclaration* '}' ';'? EOF ;
+
+// Interface declaration
+interfaceDeclaration
+    : 'interface' qualifiedInterfaceName ';'
+    ;
+
+// Qualified interface name (e.g., abc.test)
+qualifiedInterfaceName
+    : ID ('.' ID)*
+    ;
 
 qualifiedName : ID ('.' ID)* ':' ID ;
 

@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.webmethods.dsl.expressions.flow.FlowBranchExpression;
+import com.webmethods.dsl.expressions.flow.FlowBreakExpression;
 import com.webmethods.dsl.expressions.flow.FlowCaseExpression;
 import com.webmethods.dsl.expressions.flow.FlowCatchExpression;
+import com.webmethods.dsl.expressions.flow.FlowContinueExpression;
 import com.webmethods.dsl.expressions.flow.FlowDoUntilExpression;
 import com.webmethods.dsl.expressions.flow.FlowElseExpression;
 import com.webmethods.dsl.expressions.flow.FlowElseIfExpression;
@@ -26,6 +28,8 @@ import com.webmethods.dsl.expressions.flow.map.FlowMapElementExpression;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.lang.flow.FlowBranch;
+import com.wm.lang.flow.FlowBreak;
+import com.wm.lang.flow.FlowContinue;
 import com.wm.lang.flow.FlowDo;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowExit;
@@ -59,6 +63,8 @@ public class FlowExpressionFactory {
 		EXPRESSION_CREATORS.put(FlowSwitch.class, FlowSwitchExpression::new);
 		EXPRESSION_CREATORS.put(FlowUntil.class, FlowUntilExpression::new);
 		EXPRESSION_CREATORS.put(FlowWhile.class, FlowWhileExpression::new);
+		EXPRESSION_CREATORS.put(FlowContinue.class, FlowContinueExpression::new);
+		EXPRESSION_CREATORS.put(FlowBreak.class, FlowBreakExpression::new);
 		// FlowSequence is handled separately due to form-based logic
 	}
 

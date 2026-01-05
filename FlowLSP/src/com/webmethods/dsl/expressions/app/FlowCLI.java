@@ -12,6 +12,8 @@ import com.webmethods.dsl.antlr.FlowServiceLexer;
 import com.webmethods.dsl.antlr.FlowServiceParser;
 import com.webmethods.dsl.expressions.AntlrToProgram;
 import com.webmethods.dsl.expressions.FlowProgram;
+import com.webmethods.dsl.serverjars.utils.ServerUtils;
+import com.wm.app.b2b.server.ns.Namespace;
 
 /**
  * Command-line interface for Flow DSL operations
@@ -81,7 +83,12 @@ public class FlowCLI {
 		System.out.println("  Package: " + packageName);
 		System.out.println("  NS Name: " + nsname);
 		System.out.println("  Output: " + outputFile.getAbsolutePath());
-
+		try {
+			ServerUtils.getInstance();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		FlowDecompiler decompiler = new FlowDecompiler();
 		decompiler.decompileFlow(flowDirectory, packageName, nsname, outputFile);
 	}
@@ -168,10 +175,10 @@ public class FlowCLI {
 		// Convert ANTLR AST to FlowProgram
 		AntlrToProgram program = new AntlrToProgram();
 		FlowProgram flowProgram = program.visit(antlrAST);
-
+		
 		// Generate flow.xml and node.ndf
 		FlowGenerator flowGenerator = new FlowGenerator();
-		flowGenerator.generateFlow(flowProgram, targetFolder, packageName, nsname, installRoot);
+		flowGenerator.generateFlow(Namespace.current(),flowProgram, targetFolder, packageName, nsname, installRoot);
 
 		System.out.println("Successfully compiled flow to: " + targetFolder.getAbsolutePath());
 	}

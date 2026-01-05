@@ -7,6 +7,7 @@ import com.webmethods.dsl.expressions.FlowTextContext;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
+import com.wm.lang.ns.Namespace;
 
 public class FlowCaseExpression extends FlowContainerExpression {
 
@@ -19,14 +20,21 @@ public class FlowCaseExpression extends FlowContainerExpression {
 	public String getCaseValue() {
 		return caseValue;
 	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "CASE ("+caseValue+")";
+	}
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setCaseValue(caseValue);
 		flowSequence.setForm(FlowSequence.CASE);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace, expressions, flowSequence);
+		flowSequence.setParent(parent);
+		addFlowProperties(flowSequence);
 		parent.addNode(flowSequence);
 	}
 

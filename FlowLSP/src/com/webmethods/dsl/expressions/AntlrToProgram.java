@@ -3,6 +3,7 @@ package com.webmethods.dsl.expressions;
 import com.webmethods.dsl.antlr.FlowServiceBaseVisitor;
 import com.webmethods.dsl.antlr.FlowServiceParser;
 import com.webmethods.dsl.antlr.FlowServiceParser.FlowServiceContext;
+import com.webmethods.dsl.antlr.FlowServiceParser.InterfaceDeclarationContext;
 
 public class AntlrToProgram extends FlowServiceBaseVisitor<FlowProgram> {
 
@@ -14,6 +15,11 @@ public class AntlrToProgram extends FlowServiceBaseVisitor<FlowProgram> {
 
 		FlowProgram service = new FlowProgram();
 		service.setLabel(ctx.ID().getText()); // Using label for service name here
+		InterfaceDeclarationContext interfaceDeclaration = ctx.interfaceDeclaration();
+		if(interfaceDeclaration!=null) {
+			service.setInterfaceName(interfaceDeclaration.getText());
+		}
+		
 		service.setScopeManager(scopeManager); // Store scope manager for later use
 
 		// Load service signature if present and initialize scope
@@ -26,7 +32,8 @@ public class AntlrToProgram extends FlowServiceBaseVisitor<FlowProgram> {
 		}
 
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
-			service.addChild(antlrToExpression.visitStep(stepCtx));
+			FlowElementExpression visitStep = antlrToExpression.visitStep(stepCtx);
+			service.addChild(visitStep);
 		}
 
 		return service;

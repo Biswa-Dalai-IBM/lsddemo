@@ -3,10 +3,13 @@ package com.webmethods.dsl.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.Token;
+
+import com.webmethods.dsl.antlr.FlowServiceParser;
+import com.webmethods.dsl.antlr.FlowServiceParser.ParameterDeclarationContext;
 import com.wm.lang.ns.NSField;
 import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSRecordRef;
-import com.wm.util.JavaWrapperType;
 
 /**
  * Represents a parameter declaration (field, record, or recordList)
@@ -19,6 +22,9 @@ public class ParameterDeclaration implements IFlowExpression {
 	private String documentReference; // For records: reference to external document type (e.g., "com.example:Student")
 	private List<String> constraints; // required, optional, etc.
 	private List<ParameterDeclaration> children; // For records
+	
+	private int line;
+	private int column;
 
 	public ParameterDeclaration(String name, String type) {
 		this.name = name;
@@ -153,7 +159,6 @@ public class ParameterDeclaration implements IFlowExpression {
 			// Simple field
 			this.name = name;
 			this.type = "field";
-			;
 			setDataType(NSFieldTypeMapper.getTypeName(type, subType));
 			setDimension(dimension);
 		}
@@ -237,5 +242,149 @@ public class ParameterDeclaration implements IFlowExpression {
 			}
 		}
 	}
+	
+	/**
+	 * Visit a field declaration Grammar: dataType ('[' ']')? identifier
+	 * constraints? ';'
+	 */
+	public static ParameterDeclaration processFieldDeclaration(FlowServiceParser.FieldDeclarationContext ctx) {
 
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param = new ParameterDeclaration(name, "field");
+
+		// Set data type
+		if (ctx.dataType() != null) {
+			param.setDataType(ctx.dataType().getText());
+		}
+
+		// Count array dimensions (e.g., [] = 1D, [][] = 2D)
+		int dimension = 0;
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i).getText().equals("[")) {
+				dimension++;
+			}
+		}
+		param.setDimension(dimension);
+
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		param.setLocation(ctx.getStart());
+		return param;
+	}
+
+	/**
+	 * Visit a record declaration Grammar: 'record' identifier '{'
+	 * parameterDeclaration* '}' constraints? ';'
+	 */
+	public static ParameterDeclaration processRecordDeclaration(FlowServiceParser.RecordDeclarationContext ctx) {
+
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param = new ParameterDeclaration(name, "record");
+
+		// Process document reference if present
+		if (ctx.documentReference() != null) {
+			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
+			param.setDocumentReference(docRef);
+		}
+
+		// Process child parameters
+		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
+			if (childParam != null) {
+				param.addChild(childParam);
+			}
+		}
+
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		param.setLocation(ctx.getStart());
+		return param;
+	}
+
+	/**
+	 * Visit a parameter declaration (field, record, or recordList)
+	 */
+	public static ParameterDeclaration processParameterDeclaration(ParameterDeclarationContext ctx) {
+
+		if (ctx.fieldDeclaration() != null) {
+			return processFieldDeclaration(ctx.fieldDeclaration());
+		} else if (ctx.recordDeclaration() != null) {
+			return processRecordDeclaration(ctx.recordDeclaration());
+		} else if (ctx.recordListDeclaration() != null) {
+			return processRecordListDeclaration(ctx.recordListDeclaration());
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Visit a recordList declaration Grammar: 'recordList' identifier '{'
+	 * parameterDeclaration* '}' constraints? ';'
+	 */
+	public static ParameterDeclaration processRecordListDeclaration(FlowServiceParser.RecordListDeclarationContext ctx) {
+
+		String name = ctx.identifier().getText();
+		ParameterDeclaration param = new ParameterDeclaration(name, "recordList");
+
+		// Process document reference if present
+		if (ctx.documentReference() != null) {
+			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
+			param.setDocumentReference(docRef);
+		}
+
+		// Process child parameters
+		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
+			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
+			if (childParam != null) {
+				param.addChild(childParam);
+			}
+		}
+
+		// Process constraints
+		if (ctx.constraints() != null) {
+			processConstraints(ctx.constraints(), param);
+		}
+		param.setLocation(ctx.getStart());
+		return param;
+	}
+
+
+	/**
+	 * Process constraints and add them to the parameter
+	 */
+	private static void processConstraints(FlowServiceParser.ConstraintsContext ctx, ParameterDeclaration param) {
+
+		for (FlowServiceParser.ConstraintContext constraintCtx : ctx.constraint()) {
+			String constraintText = constraintCtx.getText();
+			param.addConstraint(constraintText);
+		}
+	}
+
+	@Override
+	public int getLine() {
+		return line;
+	}
+
+	@Override
+	public int getCharPositionInLine() {
+		return column;
+	}
+
+	@Override
+	public void setLocation(Token token) {
+		if(token==null) {
+			return;
+		}
+		this.line=token.getLine();
+		this.column=token.getCharPositionInLine();
+	}
+
+	@Override
+	public String getOutlineNodeName() {
+		return name;
+	}
 }

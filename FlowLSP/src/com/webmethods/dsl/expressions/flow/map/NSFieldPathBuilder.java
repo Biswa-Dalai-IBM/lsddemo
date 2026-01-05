@@ -4,11 +4,11 @@ import com.webmethods.dsl.expressions.NSFieldTypeMapper;
 import com.webmethods.dsl.expressions.ParameterDeclaration;
 import com.webmethods.dsl.expressions.VariableResolver;
 import com.webmethods.dsl.expressions.flow.NSRecordUtils;
-import com.wm.app.b2b.server.ns.Namespace;
 import com.wm.lang.ns.NSField;
 import com.wm.lang.ns.NSName;
 import com.wm.lang.ns.NSRecord;
 import com.wm.lang.ns.NSRecordRef;
+import com.wm.lang.ns.Namespace;
 
 /**
  * Utility class for building NSField paths from variable paths. Handles type
@@ -23,7 +23,7 @@ public class NSFieldPathBuilder {
 	 * @param variableResolver Resolver for type information
 	 * @return NSField path string, or null if invalid
 	 */
-	public static String buildNSFieldPath(String path, VariableResolver variableResolver) {
+	public static String buildNSFieldPath(Namespace namespace ,String path, VariableResolver variableResolver) {
 		if (path == null || path.isBlank()) {
 			return null;
 		}
@@ -37,17 +37,17 @@ public class NSFieldPathBuilder {
 		String nsPath = "";
 
 		// Build from leaf to root
-		for (int i = parts.length - 1; i >= 0; i--) {
+		for (int i = 0; i <parts.length; i++) {
 			if (previous == null) {
 				// Leaf field - get type information
-				int fieldType = NSField.FIELD_STRING; // Default
 				int dimension = NSField.DIM_SCALAR; // Default
 				String docRef = null;
+				String paramType = null;
 				String dataType = "String";
 				if (variableResolver != null) {
-					ParameterDeclaration param = variableResolver.resolveVariable(parts[i]);
+					ParameterDeclaration param = variableResolver.resolveVariable(namespace,parts[i]);
 					if (param != null) {
-						fieldType = NSFieldTypeMapper.getNSFieldType(param);
+						paramType = param.getType();
 						dimension = NSFieldTypeMapper.getNSFieldDimension(param);
 						if(param.hasDocumentReference()) {
 							docRef = param.getDocumentReference();
@@ -57,15 +57,26 @@ public class NSFieldPathBuilder {
 					
 				}
 				if(docRef!=null) {
-					previous= new NSRecordRef(Namespace.current(),parts[parts.length - 1],NSName.create(docRef),dimension);
+					previous= new NSRecordRef(namespace,parts[i],NSName.create(docRef),dimension);
 				}else {
-					previous = NSRecordUtils.createField(null, parts[i], dataType, dimension);
+					if(paramType!=null && paramType.equals("record")) {
+						previous = new NSRecord(namespace, parts[i], dimension);
+					}else {
+						previous = NSRecordUtils.createField(namespace, parts[i], dataType, dimension);
+					}
 				}
+				previous.setParent(new NSRecord(null));
+				nsPath = previous.getPath();
 			} else {
 				// Parent record - get dimension
 				int recordDimension = NSField.DIM_SCALAR; // Default
 
 				String docRef = null;
+				String paramType = null;
+				String dataType = "String";
+					if(i<parts.length) {
+						paramType="record";
+					}
 				if (variableResolver != null) {
 					// Build partial path up to this level
 					StringBuilder partialPath = new StringBuilder();
@@ -74,35 +85,45 @@ public class NSFieldPathBuilder {
 							partialPath.append("/");
 						partialPath.append(parts[j]);
 					}
-					ParameterDeclaration param = variableResolver.resolveVariable(partialPath.toString());
+					ParameterDeclaration param = variableResolver.resolveVariable(namespace,partialPath.toString());
 					if (param != null) {
 						recordDimension = NSFieldTypeMapper.getNSFieldDimension(param);
 						if(param.hasDocumentReference()) {
 							docRef = param.getDocumentReference();
 						}
+						paramType=param.getType();
+						dataType = param.getDataType();
 					}
 				}
 
-				NSRecord nsRecord = null;
+				NSField nsRecord = null;
 				if(docRef!=null) {
-					nsRecord= new NSRecordRef(Namespace.current(),parts[i],NSName.create(docRef),recordDimension);
+					nsRecord= new NSRecordRef(namespace,parts[i],NSName.create(docRef),recordDimension);
 				}else {
-					nsRecord = new NSRecord(Namespace.current(),  parts[i],  recordDimension);
+					if(paramType!=null && paramType.equals("record")) {
+						nsRecord = new NSRecord(namespace, parts[i], recordDimension);
+					}else {
+						nsRecord = NSRecordUtils.createField(namespace, parts[i], dataType, recordDimension);
+					}
 				}
-				nsRecord.addField(previous);
-				previous.setParent(nsRecord);
-				nsPath = previous.getPath() + nsPath;
-				previous = nsRecord;
+				if(previous instanceof NSRecordRef) {
+					NSRecordRef parentRecord = (NSRecordRef) previous;
+					NSRecord unknowRecord = new NSRecord(namespace);
+					unknowRecord.addField(nsRecord);
+					nsRecord.setParent(unknowRecord);
+					parentRecord.addField(unknowRecord);
+					unknowRecord.setParent(parentRecord);
+					previous = nsRecord;
+				}else if(previous instanceof NSRecord) {
+					NSRecord parentRecord = (NSRecord) previous;
+					parentRecord.addField(nsRecord);
+					nsRecord.setParent(parentRecord);
+					previous = nsRecord;
+				}
+				nsPath = nsRecord.getPath();
 			}
 		}
-
-		if (previous != null) {
-			previous.setParent(new NSRecord(Namespace.current()));
-			nsPath = previous.getPath() + nsPath;
-			return nsPath;
-		}
-
-		return null;
+		return nsPath;
 	}
 
 	/**
@@ -112,7 +133,7 @@ public class NSFieldPathBuilder {
 	 * @param variableResolver Resolver for type information
 	 * @return NSField object, or null if invalid
 	 */
-	public static NSField buildNSField(String path, VariableResolver variableResolver) {
+	public static NSField buildNSField(Namespace namespace,String path, VariableResolver variableResolver) {
 		if (path == null || path.isBlank()) {
 			return null;
 		}
@@ -123,14 +144,14 @@ public class NSFieldPathBuilder {
 		}
 
 		// Get type information for the leaf field
-		int fieldType = NSField.FIELD_STRING; // Default
+		//int fieldType = NSField.FIELD_STRING; // Default
 		int dimension = NSField.DIM_SCALAR; // Default
 		String docRef = null;
 		String dataType = "String";
 		if (variableResolver != null) {
-			ParameterDeclaration param = variableResolver.resolveVariable(path);
+			ParameterDeclaration param = variableResolver.resolveVariable(namespace,path);
 			if (param != null) {
-				fieldType = NSFieldTypeMapper.getNSFieldType(param);
+				//fieldType = NSFieldTypeMapper.getNSFieldType(param);
 				dimension = NSFieldTypeMapper.getNSFieldDimension(param);
 				if(param.hasDocumentReference()) {
 					docRef = param.getDocumentReference();
@@ -139,9 +160,9 @@ public class NSFieldPathBuilder {
 			}
 		}
 		if(docRef!=null) {
-			return new NSRecordRef(Namespace.current(),parts[parts.length - 1],NSName.create(docRef),dimension);
+			return new NSRecordRef(namespace,parts[parts.length - 1],NSName.create(docRef),dimension);
 		}
-		NSField field = NSRecordUtils.createField(null, parts[parts.length - 1], dataType, dimension);
+		NSField field = NSRecordUtils.createField(namespace, parts[parts.length - 1], dataType, dimension);
 		return field;
 	}
 }

@@ -16,6 +16,7 @@ import com.wm.data.IData;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowMapSet;
 import com.wm.lang.ns.NSField;
+import com.wm.lang.ns.Namespace;
 import com.wm.util.JavaWrapperType;
 import com.wm.util.coder.IDataJSONCoder;
 import com.wm.validator.DateValidator;
@@ -58,9 +59,9 @@ public class FlowMapSetExpression extends FlowMapExpression {
 	
 	
 	@Override
-	public FlowElement getFlowElement() {
-		FlowMapSet setData = createFlowMapSet();
-		NSField nsField = NSFieldPathBuilder.buildNSField(fieldPath, variableResolver);
+	public FlowElement getFlowElement(Namespace namespace) {
+		FlowMapSet setData = createFlowMapSet(namespace);
+		NSField nsField = NSFieldPathBuilder.buildNSField(namespace,fieldPath, variableResolver);
 		setData.setInputType(nsField);
 		
 		Object inputValue = processValueByType(nsField);
@@ -74,9 +75,12 @@ public class FlowMapSetExpression extends FlowMapExpression {
 	/**
 	 * Create and configure a FlowMapSet instance
 	 */
-	private FlowMapSet createFlowMapSet() {
+	private FlowMapSet createFlowMapSet(Namespace namespace) {
 		FlowMapSet setData = new FlowMapSet(null);
-		String nsFieldPath = NSFieldPathBuilder.buildNSFieldPath(fieldPath, variableResolver);
+		String nsFieldPath = NSFieldPathBuilder.buildNSFieldPath(namespace,fieldPath, variableResolver);
+		if(nsFieldPath==null) {
+			return null;
+		}
 		setData.setField(nsFieldPath);
 		setData.setVariables(false);
 		setData.setOverwrite(true);
@@ -313,6 +317,11 @@ public class FlowMapSetExpression extends FlowMapExpression {
 		}else {
 			context.appendLine("set " + fieldPath + " = " + valueStr + ";");
 		}
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "SET";
 	}
 
 }

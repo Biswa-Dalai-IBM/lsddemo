@@ -3,6 +3,7 @@ package com.webmethods.dsl.expressions;
 import com.wm.data.IData;
 import com.wm.data.IDataCursor;
 import com.wm.data.IDataFactory;
+import com.wm.lang.ns.Namespace;
 
 /**
  * Resolves variable paths using scope information and creates NSField/NSRecord
@@ -12,22 +13,30 @@ import com.wm.data.IDataFactory;
 public class VariableResolver {
 
 	private ScopeManager scopeManager;
-
+	private VariableScope currentScope;
+	
 	public VariableResolver(ScopeManager scopeManager) {
 		this.scopeManager = scopeManager;
+		this.currentScope = scopeManager.getCurrentScope();
 	}
 
 	/**
 	 * Resolve a variable path and get its type information
+	 * @param namespace 
 	 * 
 	 * @param path Variable path (e.g., "record1/field1" or "field1")
 	 * @return ParameterDeclaration with type information, or null if not found
 	 */
-	public ParameterDeclaration resolveVariable(String path) {
-		if (scopeManager == null) {
+	public ParameterDeclaration resolveVariable(Namespace namespace, String path) {
+		if (currentScope == null) {
 			return null;
 		}
-		return scopeManager.lookupVariablePath(path);
+		
+		ParameterDeclaration lookupVariablePath = currentScope.lookupVariablePath(namespace,path);
+		if(lookupVariablePath==null && scopeManager!=null) {
+			lookupVariablePath=scopeManager.lookupVariablePath(namespace,path);
+		}
+		return lookupVariablePath;
 	}
 
 	/**
@@ -36,8 +45,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return true if the variable exists
 	 */
-	public boolean variableExists(String path) {
-		return resolveVariable(path) != null;
+	public boolean variableExists(Namespace namespace,String path) {
+		return resolveVariable(namespace,path) != null;
 	}
 
 	/**
@@ -46,8 +55,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return Data type string (e.g., "String", "Integer"), or null if not found
 	 */
-	public String getVariableType(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public String getVariableType(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		if (param != null) {
 			return param.getDataType();
 		}
@@ -60,8 +69,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return true if the variable is an array
 	 */
-	public boolean isArray(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public boolean isArray(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		return param != null && param.isArray();
 	}
 
@@ -71,8 +80,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return true if the variable is a record
 	 */
-	public boolean isRecord(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public boolean isRecord(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		return param != null && param.isRecord();
 	}
 
@@ -82,8 +91,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return true if the variable is a record list
 	 */
-	public boolean isRecordList(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public boolean isRecordList(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		return param != null && param.isRecordList();
 	}
 
@@ -94,8 +103,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return IData representing the variable structure, or null if not found
 	 */
-	public IData createIDataForVariable(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public IData createIDataForVariable(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		if (param == null) {
 			return null;
 		}
@@ -144,8 +153,8 @@ public class VariableResolver {
 	 * @param path Variable path
 	 * @return String with variable information
 	 */
-	public String getVariableInfo(String path) {
-		ParameterDeclaration param = resolveVariable(path);
+	public String getVariableInfo(Namespace namespace,String path) {
+		ParameterDeclaration param = resolveVariable(namespace,path);
 		if (param == null) {
 			return "Variable not found: " + path;
 		}

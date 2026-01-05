@@ -3,6 +3,9 @@ package com.webmethods.dsl.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.Token;
+
+import com.webmethods.dsl.expressions.flow.IONode;
 import com.wm.lang.ns.NSRecord;
 
 /**
@@ -14,6 +17,8 @@ public class MapSignature implements IFlowExpression {
 	private List<ParameterDeclaration> targetParameters;
 	private String sourceIdentifier; // e.g., "pipeline"
 	private String targetIdentifier; // e.g., "addIntsInput"
+	private int line;
+	private int column;
 
 	public MapSignature() {
 		this.sourceParameters = new ArrayList<>();
@@ -34,6 +39,14 @@ public class MapSignature implements IFlowExpression {
 
 	public List<ParameterDeclaration> getTargetParameters() {
 		return targetParameters;
+	}
+	
+	public IONode getSourceNode(){
+		return new IONode("mapSource", sourceParameters);
+	}
+	
+	public IONode getTargetNode(){
+		return new IONode("mapTarget", targetParameters);
 	}
 
 	public boolean hasSourceParameters() {
@@ -110,7 +123,30 @@ public class MapSignature implements IFlowExpression {
 			context.appendIndented("}\n");
 		}
 	}
+	
+	@Override
+	public int getLine() {
+		return line;
+	}
 
+	@Override
+	public int getCharPositionInLine() {
+		return column;
+	}
+	
+	@Override
+	public void setLocation(Token token) {
+		if(token==null) {
+			return;
+		}
+		this.line=token.getLine();
+		this.column=token.getCharPositionInLine();
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return null;
+	}
 }
 
 // Made with Bob

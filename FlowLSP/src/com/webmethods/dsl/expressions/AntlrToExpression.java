@@ -11,9 +11,12 @@ import com.webmethods.dsl.antlr.FlowServiceBaseVisitor;
 import com.webmethods.dsl.antlr.FlowServiceParser;
 import com.webmethods.dsl.antlr.FlowServiceParser.BranchPropertyContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.BranchStepContext;
+import com.webmethods.dsl.antlr.FlowServiceParser.BreakStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.CaseBlockContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.CatchPropertyContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.CatchStepContext;
+import com.webmethods.dsl.antlr.FlowServiceParser.CommentPropertyContext;
+import com.webmethods.dsl.antlr.FlowServiceParser.ContinueStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.DoUntilPropertyContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.DoUntilStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.DropStepContext;
@@ -32,7 +35,6 @@ import com.webmethods.dsl.antlr.FlowServiceParser.MapStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.MappingBlockContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.MappingCopyEntryContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.MappingSetEntryContext;
-import com.webmethods.dsl.antlr.FlowServiceParser.ParameterDeclarationContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.RepeatPropertyContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.RepeatStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.SequencePropertyContext;
@@ -45,8 +47,10 @@ import com.webmethods.dsl.antlr.FlowServiceParser.TryPropertyContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.TryStepContext;
 import com.webmethods.dsl.antlr.FlowServiceParser.WhileStepContext;
 import com.webmethods.dsl.expressions.flow.FlowBranchExpression;
+import com.webmethods.dsl.expressions.flow.FlowBreakExpression;
 import com.webmethods.dsl.expressions.flow.FlowCaseExpression;
 import com.webmethods.dsl.expressions.flow.FlowCatchExpression;
+import com.webmethods.dsl.expressions.flow.FlowContinueExpression;
 import com.webmethods.dsl.expressions.flow.FlowDoUntilExpression;
 import com.webmethods.dsl.expressions.flow.FlowElseExpression;
 import com.webmethods.dsl.expressions.flow.FlowElseIfExpression;
@@ -61,6 +65,7 @@ import com.webmethods.dsl.expressions.flow.FlowStepProperty;
 import com.webmethods.dsl.expressions.flow.FlowSwitchExpression;
 import com.webmethods.dsl.expressions.flow.FlowTryExpression;
 import com.webmethods.dsl.expressions.flow.FlowWhileExpression;
+import com.webmethods.dsl.expressions.flow.IONode;
 import com.webmethods.dsl.expressions.flow.map.FlowMapCopyExpression;
 import com.webmethods.dsl.expressions.flow.map.FlowMapDropExpression;
 import com.webmethods.dsl.expressions.flow.map.FlowMapElementExpression;
@@ -115,11 +120,45 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			return visitIfThenStep(ctx.ifThenStep());
 		} else if (ctx.whileStep() != null) {
 			return visitWhileStep(ctx.whileStep());
+		} else if (ctx.continueStep() != null) {
+			return visitContinueStep(ctx.continueStep());
+		} else if (ctx.breakStep() != null) {
+			return visitBreakStep(ctx.breakStep());
 		}
 
 		return null;
 	}
 
+	
+	@Override
+	public FlowElementExpression visitBreakStep(BreakStepContext ctx) {
+		FlowBreakExpression flowBreakExpression = new FlowBreakExpression();
+		for (FlowServiceParser.CommentPropertyContext propCtx : ctx.commentProperty()) {
+			flowBreakExpression.addProperty((FlowStepProperty) visitCommentProperty(propCtx));
+		}
+		flowBreakExpression.setLocation(ctx.getStart());
+		return flowBreakExpression;
+	}
+	@Override
+	public FlowElementExpression visitContinueStep(ContinueStepContext ctx) {
+		FlowContinueExpression continueExpression = new FlowContinueExpression();
+		
+		for (FlowServiceParser.CommentPropertyContext propCtx : ctx.commentProperty()) {
+			continueExpression.addProperty((FlowStepProperty) visitCommentProperty(propCtx));
+		}
+		continueExpression.setLocation(ctx.getStart());
+		return continueExpression;
+	}
+	
+	@Override
+	public FlowElementExpression visitCommentProperty(CommentPropertyContext ctx) {
+		String key = ctx.getChild(0).getText();
+		String value = ctx.getChild(2).getText();
+		return new FlowStepProperty(key, value);
+	}
+	
+	
+	
 	@Override
 	public FlowElementExpression visitWhileStep(WhileStepContext ctx) {
 		FlowWhileExpression expression = new FlowWhileExpression();
@@ -128,6 +167,16 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			expression.addChild(visitStep(stepCtx));
 		}
+		
+		for (FlowServiceParser.StepPropertyContext propCtx : ctx.stepProperty()) {
+			expression.addProperty((FlowStepProperty) visitStepProperty(propCtx));
+		}
+		// Add properties (e.g., maxIteration)
+		for (FlowServiceParser.DoUntilPropertyContext propCtx : ctx.doUntilProperty()) {
+			expression.addProperty(visitDoUntilProperty(propCtx));
+		}
+
+		expression.setLocation(ctx.getStart());
 		return expression;
 	}
 
@@ -145,6 +194,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		if (ctx.elseBlock() != null) {
 			expression.setElseExpression((FlowElseExpression) visitElseBlock(ctx.elseBlock()));
 		}
+		expression.setLocation(ctx.getStart());
 		return expression;
 	}
 
@@ -156,6 +206,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			expression.addChild(visitStep(stepCtx));
 		}
+		expression.setLocation(ctx.getStart());
 		return expression;
 	}
 
@@ -165,6 +216,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			expression.addChild(visitStep(stepCtx));
 		}
+		expression.setLocation(ctx.getStart());
 		return expression;
 	}
 
@@ -176,6 +228,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (CaseBlockContext caseCtx : ctx.caseBlock()) {
 			flowSwitchExpression.addChild(visitCaseBlock(caseCtx));
 		}
+		flowSwitchExpression.setLocation(ctx.getStart());
 		return flowSwitchExpression;
 	}
 
@@ -186,6 +239,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			caseExpression.addChild(visitStep(stepCtx));
 		}
+		caseExpression.setLocation(ctx.getStart());
 		return caseExpression;
 	}
 
@@ -194,7 +248,12 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
 
-		return new FlowStepProperty(key, value);
+		if(value.startsWith("\"") && value.endsWith("\"")) {
+			value=value.substring(1, value.length()-1);
+		}
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -217,7 +276,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			String untilCondition = processExpression(ctx.expression());
 			doUntilExpression.setUntilCondition(untilCondition);
 		}
-
+		doUntilExpression.setLocation(ctx.getStart());
 		return doUntilExpression;
 	}
 
@@ -227,7 +286,10 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		String text = ctx.getText();
 		text = text.replace(";", "");
 		String[] split = text.split(":");
-		return new FlowStepProperty(split[0], split[1]);
+
+		FlowStepProperty flowStepProperty = new FlowStepProperty(split[0], split[1]);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	/**
@@ -353,7 +415,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		if (scopeManager != null) {
 			scopeManager.exitScope();
 		}
-
+		mapElementExpression.setLocation(ctx.getStart());
 		return mapElementExpression;
 	}
 
@@ -388,7 +450,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 
 		FlowElementExpression transformStep = new FlowMapInvokeExpression(qualifiedServiceName, input, output);
-
+		transformStep.setLocation(ctx.getStart());
 		return transformStep;
 	}
 
@@ -403,9 +465,13 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 
 		String fieldPath = path.stream().collect(Collectors.joining("/"));
-
-		FlowElementExpression expr = new FlowMapDropExpression(fieldPath);
-
+		// Create VariableResolver from ScopeManager
+		VariableResolver resolver = null;
+		if (scopeManager != null) {
+			resolver = new VariableResolver(scopeManager);
+		}
+		FlowElementExpression expr = new FlowMapDropExpression(fieldPath,resolver);
+		expr.setLocation(ctx.getStart());
 		return expr;
 
 	}
@@ -447,6 +513,8 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 		step.setInput(input);
 		step.setOutput(output);
+
+		step.setLocation(ctx.getStart());
 		return step;
 	}
 
@@ -508,7 +576,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		if (scopeManager != null) {
 			scopeManager.exitScope();
 		}
-
+		blockExpr.setLocation(ctx.getStart());
 		return blockExpr;
 	}
 
@@ -532,7 +600,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 
 		FlowElementExpression expr = new FlowMapCopyExpression(sourcePath, targetPath, resolver);
-
+		expr.setLocation(ctx.getStart());
 		return expr;
 	}
 
@@ -567,7 +635,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 
 		String fieldPath = path.stream().collect(Collectors.joining("/"));
 		String valueText;
-		
+
 		// Handle different value types
 		if (ctx.value().arrayLiteral() != null) {
 			// Handle array literal: ["abc", "xyz"]
@@ -587,6 +655,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 
 		FlowMapSetExpression expr = new FlowMapSetExpression(fieldPath, valueText, resolver);
+		expr.setLocation(ctx.getStart());
 		return expr;
 	}
 
@@ -594,7 +663,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitInvokeProperty(InvokePropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -613,6 +684,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			loopExpression.addChild(visitStep(stepCtx));
 		}
 
+		loopExpression.setLocation(ctx.getStart());
 		return loopExpression;
 	}
 
@@ -620,7 +692,10 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitLoopProperty(LoopPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -638,7 +713,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			sequenceExpression.addChild(visitStep(stepCtx));
 		}
-
+		sequenceExpression.setLocation(ctx.getStart());
 		return sequenceExpression;
 	}
 
@@ -646,7 +721,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitSequenceProperty(SequencePropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -671,6 +748,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		if (finallyStep != null) {
 			tryExpression.setFinallyExpression((FlowFinallyExpression) visitFinallyStep(finallyStep));
 		}
+		tryExpression.setLocation(ctx.getStart());
 		return tryExpression;
 	}
 
@@ -678,7 +756,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitTryProperty(TryPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -696,6 +776,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			catchExpression.addChild(visitStep(stepCtx));
 		}
+		catchExpression.setLocation(ctx.getStart());
 		return catchExpression;
 	}
 
@@ -703,7 +784,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitCatchProperty(CatchPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -721,6 +804,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			finallyExpression.addChild(visitStep(stepCtx));
 		}
+		finallyExpression.setLocation(ctx.getStart());
 		return finallyExpression;
 	}
 
@@ -728,7 +812,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitFinallyProperty(FinallyPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -748,6 +834,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 			branchExpression.addChild(visitStep(stepCtx));
 		}
 
+		branchExpression.setLocation(ctx.getStart());
 		return branchExpression;
 	}
 
@@ -755,7 +842,12 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitBranchProperty(BranchPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		if(value.startsWith("\"") && value.endsWith("\"")) {
+			value=value.substring(1, value.length()-1);
+		}
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -773,6 +865,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.StepContext stepCtx : ctx.step()) {
 			repeatExpression.addChild(visitStep(stepCtx));
 		}
+		repeatExpression.setLocation(ctx.getStart());
 
 		return repeatExpression;
 	}
@@ -781,7 +874,9 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	public FlowElementExpression visitRepeatProperty(RepeatPropertyContext ctx) {
 		String key = ctx.getChild(0).getText();
 		String value = ctx.getChild(2).getText();
-		return new FlowStepProperty(key, value);
+		FlowStepProperty flowStepProperty = new FlowStepProperty(key, value);
+		flowStepProperty.setLocation(ctx.getStart());
+		return flowStepProperty;
 	}
 
 	@Override
@@ -791,7 +886,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		for (FlowServiceParser.ExitPropertyContext propCtx : ctx.exitProperty()) {
 			exitExpression.addProperty((FlowStepProperty) visitExitProperty(propCtx));
 		}
-
+		exitExpression.setLocation(ctx.getStart());
 		return exitExpression;
 
 	}
@@ -827,19 +922,19 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 				program.addChild(stepExpr);
 			}
 		}
-
+		program.setLocation(ctx.getStart());
 		return program;
 	}
 
 	@Override
 	public FlowServiceSignature visitSignature(FlowServiceParser.SignatureContext ctx) {
 		FlowServiceSignature signature = new FlowServiceSignature();
-
+		signature.setLocation(ctx.getStart());
 		// Process all signature blocks (input/output)
 		for (FlowServiceParser.SignatureBlockContext blockCtx : ctx.signatureBlock()) {
 			visitSignatureBlock(blockCtx, signature);
 		}
-
+		signature.setLocation(ctx.getStart());
 		return signature;
 	}
 
@@ -849,10 +944,12 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	 */
 	private void visitSignatureBlock(FlowServiceParser.SignatureBlockContext ctx, FlowServiceSignature signature) {
 		boolean isInput = ctx.getStart().getText().equals("input");
-
+		IONode ioNode = isInput?signature.getInput():signature.getOutput();
+		ioNode.setLocation(ctx.getStart());
 		// Process all parameter declarations in this block
 		for (FlowServiceParser.ParameterDeclarationContext paramCtx : ctx.parameterDeclaration()) {
-			ParameterDeclaration param = processParameterDeclaration(paramCtx);
+			ParameterDeclaration param = ParameterDeclaration.processParameterDeclaration(paramCtx);
+			param.setLocation(paramCtx.getStart());
 			if (param != null) {
 				if (isInput) {
 					signature.addInputParameter(param);
@@ -863,125 +960,6 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 		}
 	}
 
-	/**
-	 * Visit a parameter declaration (field, record, or recordList)
-	 */
-	private ParameterDeclaration processParameterDeclaration(ParameterDeclarationContext ctx) {
-
-		if (ctx.fieldDeclaration() != null) {
-			return processFieldDeclaration(ctx.fieldDeclaration());
-		} else if (ctx.recordDeclaration() != null) {
-			return processRecordDeclaration(ctx.recordDeclaration());
-		} else if (ctx.recordListDeclaration() != null) {
-			return processRecordListDeclaration(ctx.recordListDeclaration());
-		}
-
-		return null;
-	}
-
-	/**
-	 * Visit a field declaration Grammar: dataType ('[' ']')? identifier
-	 * constraints? ';'
-	 */
-	private ParameterDeclaration processFieldDeclaration(FlowServiceParser.FieldDeclarationContext ctx) {
-
-		String name = ctx.identifier().getText();
-		ParameterDeclaration param = new ParameterDeclaration(name, "field");
-
-		// Set data type
-		if (ctx.dataType() != null) {
-			param.setDataType(ctx.dataType().getText());
-		}
-
-		// Count array dimensions (e.g., [] = 1D, [][] = 2D)
-		int dimension = 0;
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			if (ctx.getChild(i).getText().equals("[")) {
-				dimension++;
-			}
-		}
-		param.setDimension(dimension);
-
-		// Process constraints
-		if (ctx.constraints() != null) {
-			processConstraints(ctx.constraints(), param);
-		}
-
-		return param;
-	}
-
-	/**
-	 * Visit a record declaration Grammar: 'record' identifier '{'
-	 * parameterDeclaration* '}' constraints? ';'
-	 */
-	private ParameterDeclaration processRecordDeclaration(FlowServiceParser.RecordDeclarationContext ctx) {
-
-		String name = ctx.identifier().getText();
-		ParameterDeclaration param = new ParameterDeclaration(name, "record");
-
-		// Process document reference if present
-		if (ctx.documentReference() != null) {
-			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
-			param.setDocumentReference(docRef);
-		}
-
-		// Process child parameters
-		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
-			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
-			if (childParam != null) {
-				param.addChild(childParam);
-			}
-		}
-
-		// Process constraints
-		if (ctx.constraints() != null) {
-			processConstraints(ctx.constraints(), param);
-		}
-
-		return param;
-	}
-
-	/**
-	 * Visit a recordList declaration Grammar: 'recordList' identifier '{'
-	 * parameterDeclaration* '}' constraints? ';'
-	 */
-	private ParameterDeclaration processRecordListDeclaration(FlowServiceParser.RecordListDeclarationContext ctx) {
-
-		String name = ctx.identifier().getText();
-		ParameterDeclaration param = new ParameterDeclaration(name, "recordList");
-
-		// Process document reference if present
-		if (ctx.documentReference() != null) {
-			String docRef = ctx.documentReference().qualifiedDocumentName().getText();
-			param.setDocumentReference(docRef);
-		}
-
-		// Process child parameters
-		for (FlowServiceParser.ParameterDeclarationContext childCtx : ctx.parameterDeclaration()) {
-			ParameterDeclaration childParam = processParameterDeclaration(childCtx);
-			if (childParam != null) {
-				param.addChild(childParam);
-			}
-		}
-
-		// Process constraints
-		if (ctx.constraints() != null) {
-			processConstraints(ctx.constraints(), param);
-		}
-
-		return param;
-	}
-
-	/**
-	 * Process constraints and add them to the parameter
-	 */
-	private void processConstraints(FlowServiceParser.ConstraintsContext ctx, ParameterDeclaration param) {
-
-		for (FlowServiceParser.ConstraintContext constraintCtx : ctx.constraint()) {
-			String constraintText = constraintCtx.getText();
-			param.addConstraint(constraintText);
-		}
-	}
 
 	/**
 	 * Visit a mapSignatureBlock (mapSource or mapTarget) Adds variables to the
@@ -990,7 +968,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 	@Override
 	public MapSignature visitMapSignatureBlock(FlowServiceParser.MapSignatureBlockContext ctx) {
 		MapSignature mapSignature = new MapSignature();
-
+		mapSignature.setLocation(ctx.getStart());
 		boolean isSource = ctx.getStart().getText().equals("mapSource");
 
 		// Extract the identifier from brackets if present
@@ -1006,7 +984,8 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 
 		// Process all parameter declarations in this block
 		for (FlowServiceParser.ParameterDeclarationContext paramCtx : ctx.parameterDeclaration()) {
-			ParameterDeclaration param = processParameterDeclaration(paramCtx);
+			ParameterDeclaration param = ParameterDeclaration.processParameterDeclaration(paramCtx);
+			param.setLocation(paramCtx.getStart());
 			if (param != null) {
 				if (isSource) {
 					mapSignature.addSourceParameter(param);
@@ -1020,7 +999,7 @@ public class AntlrToExpression extends FlowServiceBaseVisitor<IFlowExpression> {
 				}
 			}
 		}
-
+		mapSignature.setLocation(ctx.getStart());
 		return mapSignature;
 	}
 

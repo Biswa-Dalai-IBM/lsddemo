@@ -25,8 +25,10 @@ public class NSFieldTypeMapper {
 			return NSField.FIELD_STRING;
 		case "object":
 			return NSField.FIELD_OBJECT;
-		case "document":
-			return NSField.FIELD_OBJECT; // Document is typically an object
+		case "record":
+			return NSField.FIELD_RECORD; // Document is typically an object
+		case "recordlist":
+			return NSField.FIELD_RECORD; // Document is typically an object
 		default:
 			return NSField.FIELD_OBJECT; // Default for unknown types
 		}
@@ -129,6 +131,48 @@ public class NSFieldTypeMapper {
 
 	}
 
+	
+	
+	/**
+	 * Add a field with specific dimension (0=scalar, 1=1D array, 2=2D array, etc.)
+	 */
+	public static int getJavaWrapperType(String type) {
+		if(type==null) {
+			return 0;
+		}
+		if (type.equals("Integer")) {
+			return JavaWrapperType.JAVA_TYPE_INTEGER;
+		} else if (type.equals("Float")) {
+			return JavaWrapperType.JAVA_TYPE_FLOAT;
+		} else if (type.equals("Double")) {
+			return JavaWrapperType.JAVA_TYPE_DOUBLE;
+		} else if (type.equals("Boolean")) {
+			return JavaWrapperType.JAVA_TYPE_BOOLEAN;
+		} else if (type.equals("DateTime")) {
+			return JavaWrapperType.JAVA_TYPE_DATE;
+		} else if (type.equals("Byte")) {
+			return JavaWrapperType.JAVA_TYPE_BYTE;
+		} else if (type.equals("byte[]")) {
+			return JavaWrapperType.JAVA_TYPE_byte_ARRAY;
+		} else if (type.equals("Char")) {
+			return JavaWrapperType.JAVA_TYPE_CHARACTER;
+		} else if (type.equals("Long")) {
+			return JavaWrapperType.JAVA_TYPE_LONG;
+		} else if (type.equals("Short")) {
+			return JavaWrapperType.JAVA_TYPE_SHORT;
+		} else if (type.equals("BigInteger")) {
+			return JavaWrapperType.JAVA_TYPE_BIG_INTEGER;
+		} else if (type.equals("BigDecimal")) {
+			return JavaWrapperType.JAVA_TYPE_BIG_DECIMAL;
+		} else if (type.equals("XOPObject")) {
+			return JavaWrapperType.JAVA_TYPE_XOP_OBJECT;
+		} else if (type.equals("Object")) {
+			return JavaWrapperType.JAVA_TYPE_UNKNOWN;
+		}
+		return JavaWrapperType.JAVA_TYPE_UNKNOWN;
+	}
+
+	
 	/**
 	 * Get human-readable dimension name from NSField dimension constant
 	 * 

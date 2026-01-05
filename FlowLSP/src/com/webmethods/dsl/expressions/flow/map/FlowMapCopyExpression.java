@@ -4,6 +4,7 @@ import com.webmethods.dsl.expressions.FlowTextContext;
 import com.webmethods.dsl.expressions.VariableResolver;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowMapCopy;
+import com.wm.lang.ns.Namespace;
 
 /**
  * Represents a MAP COPY operation (from -> to)
@@ -40,10 +41,10 @@ public class FlowMapCopyExpression extends FlowMapExpression {
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		FlowMapCopy mapCopy = new FlowMapCopy(null);
-		mapCopy.setMapFrom(NSFieldPathBuilder.buildNSFieldPath(from, variableResolver));
-		mapCopy.setMapTo(NSFieldPathBuilder.buildNSFieldPath(to, variableResolver));
+		mapCopy.setMapFrom(NSFieldPathBuilder.buildNSFieldPath(namespace,from, variableResolver));
+		mapCopy.setMapTo(NSFieldPathBuilder.buildNSFieldPath(namespace,to, variableResolver));
 		return mapCopy;
 	}
 
@@ -52,4 +53,8 @@ public class FlowMapCopyExpression extends FlowMapExpression {
 		context.appendLine("copy " + from + " -> " + to + ";");
 	}
 
+	@Override
+	public String getOutlineNodeName() {
+		return "COPY";
+	}
 }

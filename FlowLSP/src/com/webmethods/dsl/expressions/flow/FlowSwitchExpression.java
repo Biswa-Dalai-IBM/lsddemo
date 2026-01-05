@@ -10,6 +10,7 @@ import com.wm.data.IDataFactory;
 import com.wm.data.IDataUtil;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSwitch;
+import com.wm.lang.ns.Namespace;
 
 public class FlowSwitchExpression extends FlowContainerExpression {
 
@@ -24,12 +25,13 @@ public class FlowSwitchExpression extends FlowContainerExpression {
 	}
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		IData iData = IDataFactory.create();
 		IDataUtil.put(iData.getCursor(), FlowSwitch.KEY_SWITCH_KEY, switchKey);
 		FlowSwitch flowSequence = new FlowSwitch(iData);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace,expressions, flowSequence);
+		flowSequence.setParent(parent);
 		parent.addNode(flowSequence);
 	}
 
@@ -52,5 +54,10 @@ public class FlowSwitchExpression extends FlowContainerExpression {
 
 		context.decreaseIndent();
 		context.appendIndented("};\n");
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "SWITCH(" + switchKey + ")";
 	}
 }

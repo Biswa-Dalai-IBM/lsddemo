@@ -3,6 +3,7 @@ package com.webmethods.dsl.expressions.flow;
 import com.webmethods.dsl.expressions.FlowElementExpression;
 import com.webmethods.dsl.expressions.FlowTextContext;
 import com.wm.lang.flow.FlowElement;
+import com.wm.lang.ns.Namespace;
 
 public class FlowStepProperty extends FlowElementExpression {
 
@@ -13,6 +14,9 @@ public class FlowStepProperty extends FlowElementExpression {
 		super();
 		this.key = key;
 		this.value = value;
+		if(value!=null && value.startsWith("\"") && value.endsWith("\"")) {
+			this.value=value.substring(1, value.length()-1);
+		}
 	}
 
 	public String getKey() {
@@ -24,7 +28,7 @@ public class FlowStepProperty extends FlowElementExpression {
 	}
 
 	@Override
-	public FlowElement getFlowElement() {
+	public FlowElement getFlowElement(Namespace namespace) {
 		return null;
 	}
 
@@ -42,4 +46,8 @@ public class FlowStepProperty extends FlowElementExpression {
 		return value!=null && !value.isBlank();
 	}
 
+	@Override
+	public String getOutlineNodeName() {
+		return key;
+	}
 }

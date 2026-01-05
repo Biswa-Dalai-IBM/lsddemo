@@ -8,6 +8,7 @@ import com.webmethods.dsl.expressions.FlowTextContext;
 import com.webmethods.dsl.expressions.app.FlowGenerator;
 import com.wm.lang.flow.FlowElement;
 import com.wm.lang.flow.FlowSequence;
+import com.wm.lang.ns.Namespace;
 
 public class FlowIfThenElseExpression extends FlowContainerExpression {
 	private String condition;
@@ -28,19 +29,20 @@ public class FlowIfThenElseExpression extends FlowContainerExpression {
 	}
 
 	@Override
-	public void addFlowElement(FlowElement parent) {
+	public void addFlowElement(Namespace namespace,FlowElement parent) {
 		FlowSequence flowSequence = new FlowSequence(null);
 		flowSequence.setForm(FlowSequence.IF);
 		flowSequence.setCondition(condition);
 		List<FlowElementExpression> expressions = getExpressions();
-		FlowGenerator.generateFlow(expressions, flowSequence);
+		FlowGenerator.generateFlow(namespace,expressions, flowSequence);
 		parent.addNode(flowSequence);
 
 		for (FlowElseIfExpression elseIfExpression : elseIfExpressions) {
-			elseIfExpression.addFlowElement(parent);
+			elseIfExpression.addFlowElement(namespace,parent);
 		}
-
-		elseExpression.addFlowElement(parent);
+		if(elseExpression!=null) {
+			elseExpression.addFlowElement(namespace,parent);
+		}
 
 	}
 
@@ -106,6 +108,11 @@ public class FlowIfThenElseExpression extends FlowContainerExpression {
 		}
 
 		context.append(";\n");
+	}
+	
+	@Override
+	public String getOutlineNodeName() {
+		return "IF ("+condition+")";
 	}
 
 }
